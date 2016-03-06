@@ -3,7 +3,7 @@
 	<head>
 		<link href='https://fonts.gstatic.com' rel='preconnect' crossorigin>
 		<link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400,300,600,800' rel='stylesheet' type='text/css'>
-		<link rel="stylesheet" href="https://build.origami.ft.com/v2/bundles/css?modules=o-grid@^4.0.0" />
+		<link rel="stylesheet" href="styles/main.css" />
 		<meta http-equiv="cleartype" content="on" />
 		<meta name="MobileOptimized" content="width" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimal-ui" />
@@ -16,7 +16,11 @@
 		<meta name="twitter:image" content="https://gh.ada.is/81images/screenshot.png">
 		<title>81 Emoji</title>	</head>
 	<body>
-		<h1>Hello World</h1>
+		<div id="emoji__recipient"></div>
+		<div id="emoji__options"></div>
+		<div id="emoji__header"><span id="emoji__text-input" data-prepend="_" data-append="_">_</span><button id="emoji__submit">Send</button></div>
+		<div id="emoji__grid"></div>
+		<div id="emoji__send"></div>
 		<script type="text/javascript" src="main.min.js"></script>
 	</body>
 </html>
