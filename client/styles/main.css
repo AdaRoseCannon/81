@@ -1,0 +1,146 @@
+
+html {
+	background: #FFF0F5;
+}
+
+html, body {
+	font-family: 'Open Sans', sans-serif;
+	font-weight: 400;
+	color: #333;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-weight: 300;
+}
+
+h1, h2, h3 {
+	padding-left: 1em;
+	margin: 1em 0 1.5em 0;
+	border-bottom: 1px solid grey;
+}
+
+a {
+	color: #336ACE;
+}
+
+h2 a {
+	text-decoration: none;
+}
+
+.emoji__grid-item {
+	display: inline-block;
+	height: 2em;
+	font-size: 16vmin;
+	width: 2em;
+	text-align: center;
+	line-height: 2em;
+	flex-basis: 2em;
+}
+
+.emoji__grid-item:before {
+	content: attr(data-emoji);
+}
+
+.emoji__grid-wrapper {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	width: 100vmin;
+	margin: auto;
+	position: relative;
+}
+
+.emoji__grid-wrapper.emoji__sub-grid {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: scale(0.33);
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    opacity: 0;
+	background: #FFF0F5;
+	box-shadow: 0 0 1em black;
+	user-select: none;
+	-o-user-select:none;
+	-moz-user-select: none;
+	-khtml-user-select: none;
+	-webkit-user-select: none;
+}
+
+#emoji__header {
+	display: flex;
+	border-bottom: 1px solid grey;
+	margin-bottom: 0.5em;
+	font-size: 2em;
+}
+
+#emoji__header select, #emoji__header button {
+	font-size: 1em;
+}
+
+#emoji__text-input:before {
+	content: attr(data-prepend);
+}
+
+#emoji__text-input:after {
+	content: attr(data-append);
+}
+
+#emoji__text-input {
+	margin: 0;
+	letter-spacing: 0.3em;
+	text-align: center;
+	display: block;
+	flex-grow: 1;
+	line-height: 2.5em;
+	font-size: 1.2em;
+}
+
+#emoji__submit {
+	margin: 0.2em;
+	padding: 0.5em;
+}
+
+.emoji__grid-wrapper.emoji__sub-grid.expand {
+    transform: scale(1);
+    opacity: 1;
+    z-index: 10;
+}
+
+.top.left .emoji__grid-wrapper.emoji__sub-grid {
+	transform-origin: 0 0 0;
+}
+
+.top.centre .emoji__grid-wrapper.emoji__sub-grid {
+	transform-origin: 50% 0 0;
+}
+
+.top.right .emoji__grid-wrapper.emoji__sub-grid {
+	transform-origin: 100% 0 0;
+}
+
+.middle.left .emoji__grid-wrapper.emoji__sub-grid {
+	transform-origin: 0 50% 0;
+}
+
+.middle.centre .emoji__grid-wrapper.emoji__sub-grid {
+	transform-origin: 50% 50% 0;
+}
+
+.middle.right .emoji__grid-wrapper.emoji__sub-grid {
+	transform-origin: 100% 50% 0;
+}
+
+.bottom.left .emoji__grid-wrapper.emoji__sub-grid {
+	transform-origin: 0 100% 0;
+}
+
+.bottom.centre .emoji__grid-wrapper.emoji__sub-grid {
+	transform-origin: 50% 100% 0;
+}
+
+.bottom.right .emoji__grid-wrapper.emoji__sub-grid {
+	transform-origin: 100% 100% 0;
+}

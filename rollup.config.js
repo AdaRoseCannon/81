@@ -1,6 +1,7 @@
 import commonjs from 'rollup-plugin-commonjs';
 import nodeResolve from 'rollup-plugin-node-resolve';
 import json from 'rollup-plugin-json';
+import babel from 'rollup-plugin-babel';
 
 export default {
   intro: '(function () {\nvar define = false;\n',
@@ -12,6 +13,10 @@ export default {
     commonjs({
       include: 'node_modules/**'
     }),
-    json()
+    json(),
+    babel({
+      exclude: 'node_modules/**',
+      presets: [ "es2015-rollup" ]
+    })
   ]
 };
