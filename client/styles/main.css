@@ -36,6 +36,11 @@ h2 a {
 	padding: 0.2em;
 }
 
+
+.custom-ul-select:not(.expanded) li:not([data-selected]) {
+	display: none;
+}
+
 .custom-ul-select.expanded {
 	z-index: 10;
 	background: grey;
@@ -45,6 +50,10 @@ h2 a {
 	top: 50%;
 	transform: translate(-50%, -50%);
 	box-shadow: 0 0 1em black;
+}
+
+.emoji__emoji {
+	pointer-events: none;
 }
 
 .emoji__grid-item {
