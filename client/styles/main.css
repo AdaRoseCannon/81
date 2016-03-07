@@ -30,6 +30,23 @@ h2 a {
 	text-decoration: none;
 }
 
+.custom-ul-select {
+	list-style: none;
+	margin: 0;
+	padding: 0.2em;
+}
+
+.custom-ul-select.expanded {
+	z-index: 10;
+	background: grey;
+	border: 1px solid black;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	box-shadow: 0 0 1em black;
+}
+
 .emoji__grid-item {
 	display: inline-block;
 	height: 2em;
@@ -38,10 +55,6 @@ h2 a {
 	text-align: center;
 	line-height: 2em;
 	flex-basis: 2em;
-}
-
-.emoji__grid-item:before {
-	content: attr(data-emoji);
 }
 
 .emoji__grid-wrapper {
@@ -63,10 +76,6 @@ h2 a {
 	background: #FFF0F5;
 	box-shadow: 0 0 1em black;
 	user-select: none;
-	-o-user-select:none;
-	-moz-user-select: none;
-	-khtml-user-select: none;
-	-webkit-user-select: none;
 }
 
 #emoji__header {
@@ -74,18 +83,20 @@ h2 a {
 	border-bottom: 1px solid grey;
 	margin-bottom: 0.5em;
 	font-size: 2em;
+	height: 3em;
+}
+
+#emoji__skin-tone-selector__wrapper ul {
+	line-height: 3em;
+}
+
+img {
+	vertical-align: middle;
+	pointer-events: none;
 }
 
 #emoji__header select, #emoji__header button {
 	font-size: 1em;
-}
-
-#emoji__text-input:before {
-	content: attr(data-prepend);
-}
-
-#emoji__text-input:after {
-	content: attr(data-append);
 }
 
 #emoji__text-input {

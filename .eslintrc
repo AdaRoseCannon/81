@@ -3,7 +3,8 @@
     "env": {
         "node": true,
         "es6": true,
-        "browser": true
+        "browser": true,
+        "sourceType": "module"
     },
     "ecmaFeatures": {
         "modules": true
@@ -29,6 +30,6 @@
         "no-var": 2,
         "prefer-const": 1,
         "no-const-assign": 2,
-        "space-after-keywords": 2
+        "keyword-spacing": 2
     }
 }

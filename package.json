@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "Send Emoji",
   "scripts": {
-    "build:main": "mkdir -p build && rollup -i ./lib/main.js -o ./build/main.js -c -m inline && uglifyjs --source-map ./build/main.min.map.json -m --screw-ie8 ./build/main.js > ./build/main.min.js && wc -c ./build/main.min.js",
-    "build:sw": "mkdir -p build && rollup -i ./lib/sw.js     -o ./build/sw.js   -c -m inline && uglifyjs --source-map ./build/sw.min.map.json   -m --screw-ie8 ./build/sw.js   > ./build/sw.min.js   && wc -c ./build/sw.min.js",
+    "build:main": "mkdir -p build/scripts && rollup -i ./lib/main.js -o ./build/scripts/main.js -c -m && cd build/scripts && uglifyjs --source-map main.min.js.map -m --screw-ie8 main.js -o main.min.js && wc -c main.min.js",
+    "build:sw": "mkdir -p build           && rollup -i ./lib/sw.js     -o ./build/sw.js   -c -m       && cd build && uglifyjs --source-map sw.min.js.map   -m --screw-ie8 sw.js   -o sw.min.js   && wc -c sw.min.js",
     "build:js": "npm run build:sw && npm run build:main",
     "build:other": "mkdir -p build && rsync -rtv client/ build/",
     "watch": "./parallel.sh \"nodemon --watch ./lib -e js --exec npm run build:js\" \"nodemon --watch ./client -e css,html,png,json --exec npm run build:other\" \"http-server build\"",
