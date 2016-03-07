@@ -10,6 +10,7 @@ html, body {
 	margin: 0;
 	padding: 0;
 	overflow: hidden;
+	height: 100%;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -54,16 +55,24 @@ h2 a {
 
 .emoji__emoji {
 	pointer-events: none;
+	align-self: center;
 }
 
 .emoji__grid-item {
-	display: inline-block;
-	height: 2em;
-	font-size: 16vmin;
-	width: 2em;
 	text-align: center;
-	line-height: 2em;
-	flex-basis: 2em;
+	vertical-align: middle;
+	flex-basis: 33%;
+	overflow: hidden;
+	max-width: 33%;
+	display: flex;
+	justify-content: center;
+	align-content: center;
+}
+
+.emoji__grid-item:before {
+	content:'';
+	float:left;
+	padding-top:100%;
 }
 
 .emoji__grid-wrapper {
@@ -71,6 +80,7 @@ h2 a {
 	flex-wrap: wrap;
 	justify-content: center;
 	width: 100vmin;
+	max-width: calc(100vh - 8em);
 	margin: auto;
 	position: relative;
 }
@@ -118,9 +128,45 @@ img {
 	font-size: 1.2em;
 }
 
-#emoji__submit {
-	margin: 0.2em;
-	padding: 0.5em;
+#emoji__text-input img {
+	margin-left: 0.3em;
+}
+
+#emoji__send {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	text-align: center;
+	font-size: 1.5em;
+	display: flex;
+}
+
+button {
+	box-shadow: 0px 0.6em 0.9em -0.4em #276873;
+	background:linear-gradient(to bottom, #599bb3 5%, #408c99 100%);
+	background-color:#599bb3;
+	border-radius:0.5em;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:1.25em;
+	font-weight:bold;
+	padding:0.5em 0.8em;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #3d768a;
+}
+button:hover {
+	background:linear-gradient(to bottom, #408c99 5%, #599bb3 100%);
+	background-color:#408c99;
+}
+button:active {
+	position:relative;
+	top:1px;
+}
+button:focus {
+	outline: none;
 }
 
 .emoji__grid-wrapper.emoji__sub-grid.expand {
