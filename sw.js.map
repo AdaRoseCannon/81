@@ -1,0 +1,1 @@
+{"version":3,"file":"sw.js","sources":["../lib/sw.js"],"sourcesContent":["'use strict';\n\nconsole.log('Service Worker');\n"],"names":[],"mappings":";;;AAEA,QAAQ,GAAR,CAAY,gBAAZ;"}
