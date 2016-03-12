@@ -3,11 +3,13 @@
     "env": {
         "node": true,
         "es6": true,
-        "browser": true,
-        "sourceType": "module"
+        "browser": true
     },
     "ecmaFeatures": {
         "modules": true
+    },
+    parserOptions : {
+        sourceType: "module"
     },
     "rules": {
         "no-unused-vars": 2,

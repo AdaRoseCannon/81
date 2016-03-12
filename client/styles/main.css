@@ -7,8 +7,14 @@ html, body {
 	padding: 0;
 	overflow: hidden;
 	height: 100%;
+	width: 100vw;
 	background: #FFF0F5;
 	font-size: 24px;
+	position: absolute;
+}
+
+html {
+	background: black;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -286,6 +292,7 @@ body.emoji-input #emoji__grid {
 	border-radius: 0.2em;
 	justify-content: center;
 	padding: 0.1em 0;
+	width: 5em;
 }
 
 #emoji__text-input {
