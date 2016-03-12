@@ -1,8 +1,4 @@
 
-html {
-	background: #FFF0F5;
-}
-
 html, body {
 	font-family: 'Open Sans', sans-serif;
 	font-weight: 400;
@@ -11,6 +7,8 @@ html, body {
 	padding: 0;
 	overflow: hidden;
 	height: 100%;
+	background: #FFF0F5;
+	font-size: 24px;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -21,6 +19,7 @@ h1, h2, h3 {
 	padding-left: 1em;
 	margin: 1em 0 1.5em 0;
 	border-bottom: 1px solid grey;
+	font-size: 1.2em;
 }
 
 a {
@@ -31,12 +30,157 @@ h2 a {
 	text-decoration: none;
 }
 
+label {
+	display: block;
+}
+
+img {
+	vertical-align: middle;
+	pointer-events: none;
+}
+
+button {
+	box-shadow: 0px 0.3em 0.5em -0.4em #276873;
+	background:linear-gradient(to bottom, #599bb3 5%, #408c99 100%);
+	background-color:#599bb3;
+	border-radius:0.5em;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:0.7em;
+	font-weight:bold;
+	padding:0.3em 0.4em;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #3d768a;
+	margin: 0.1em;
+}
+button:hover {
+	background:linear-gradient(to bottom, #408c99 5%, #599bb3 100%);
+	background-color:#408c99;
+}
+button:active {
+	position:relative;
+	top:1px;
+}
+button:focus {
+	outline: none;
+}
+
+.magic-checkbox {
+	display: none;
+}
+
+.magic-checkbox + div {
+	display: inline-flex;
+	align-items: center;
+	height: 1em;
+	width: 1.5em;
+	background: white;
+	border: 1px solid grey;
+	vertical-align: middle;
+	border-radius: 1em;
+	box-shadow: 0 0.1em 0.5em -0.3em black inset;
+	margin-left: 0.3em;
+	font-size: 1em;
+	padding: 0 0.03em;
+	box-sizing: border-box;
+	transition: background-color ease 0.3s;
+}
+
+.magic-checkbox + div:before {
+	content: '';
+	display: block;
+	height: 0.8em;
+	width: 0.8em;
+	background: white;
+	border: 1px solid grey;
+	border-radius: 1em;
+	box-shadow: 0 0.1em 0.5em -0.3em black;
+	box-sizing: border-box;
+	transition: transform ease 0.3s;
+}
+
+.magic-checkbox:checked + div {
+	background-color: #13BB23;
+}
+
+.magic-checkbox:checked + div:before {
+	transform: translateX(0.5em);
+}
+
+.modal {
+    display: block;
+    position: absolute;
+    margin: 10px;
+    z-index: 10;
+    background: inherit;
+    box-shadow: 0 0 1em 0.3em rgba(0,0,0,0.2);
+	transition: transform ease 0.3s;
+}
+
+.modal .heading {
+	margin: 0.2em 0;
+}
+
+.modal .content {
+	padding: 1em;
+	display: flex;
+	flex-direction: column;
+}
+
+.modal .content > * {
+	margin-top: 1em;
+	display: block;
+}
+
+
+#emoji__messages {
+	position: absolute;
+	padding: 0;
+	margin: 0;
+}
+
+#emoji__messages > li {
+	list-style: none;
+	margin: 0.5em 1em;
+	padding: 0.2em;
+	border-radius: 0.5em;
+}
+
+#emoji__messages > li.sent {
+	background: #C5C5C5;
+	margin-right: 0.4em;
+}
+
+#emoji__messages > li.received {
+	background: #13BB23;
+	margin-left: 0.4em;
+}
+
+#emoji__options {
+	transform: translateX(100vw);
+    z-index: 20;
+}
+
+body.options #emoji__options {
+	transform: translateX(0);
+}
+
+#emoji__recipient {
+	flex-grow: 1;
+}
+
+#emoji__content {
+	position: relative;
+}
+
 .custom-ul-select {
 	list-style: none;
 	margin: 0;
 	padding: 0.2em;
+	display: inline-block;
 }
-
 
 .custom-ul-select:not(.expanded) li:not([data-selected]) {
 	display: none;
@@ -48,9 +192,23 @@ h2 a {
 	border: 1px solid black;
 	position: absolute;
 	left: 50%;
-	top: 50%;
-	transform: translate(-50%, -50%);
+	top: 0;
+	transform: translate(-50%, 0);
 	box-shadow: 0 0 1em black;
+}
+
+#emoji__grid {
+	position: relative;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	margin: 10px;
+	transform: translateY(100vh);
+	background: white;
+}
+
+body.emoji-input #emoji__grid {
+	transform: translateY(0);
 }
 
 .emoji__emoji {
@@ -101,31 +259,46 @@ h2 a {
 	display: flex;
 	border-bottom: 1px solid grey;
 	margin-bottom: 0.5em;
-	font-size: 2em;
 	height: 3em;
+	align-items: center;
 }
 
 #emoji__skin-tone-selector__wrapper ul {
 	line-height: 3em;
 }
 
-img {
-	vertical-align: middle;
-	pointer-events: none;
-}
-
 #emoji__header select, #emoji__header button {
 	font-size: 1em;
 }
 
-#emoji__text-input {
-	margin: 0;
-	letter-spacing: 0.3em;
+#emoji__recipient {
+	padding: 0.2em 0;
+	font-size: 1em;
+}
+
+.text-input {
+	margin: 0.2em;
 	text-align: center;
-	display: block;
+	font-size: 0.6em;
+	background: white;
+	border: 1px solid grey;
+	box-shadow: 0 0.1em 0.5em -0.3em black inset;
+	border-radius: 0.2em;
+	justify-content: center;
+	padding: 0.1em 0;
+}
+
+#emoji__text-input {
+	letter-spacing: 0.3em;
+	display: flex;
 	flex-grow: 1;
-	line-height: 2.5em;
-	font-size: 1.2em;
+}
+
+#emoji__grid-handle {
+	display: block;
+	background: rgba(0,0,0,0.1);
+	color: grey;
+	text-align: center;
 }
 
 #emoji__text-input img {
@@ -138,35 +311,8 @@ img {
 	left: 0;
 	right: 0;
 	text-align: center;
-	font-size: 1.5em;
+	font-size: 2em;
 	display: flex;
-}
-
-button {
-	box-shadow: 0px 0.6em 0.9em -0.4em #276873;
-	background:linear-gradient(to bottom, #599bb3 5%, #408c99 100%);
-	background-color:#599bb3;
-	border-radius:0.5em;
-	display:inline-block;
-	cursor:pointer;
-	color:#ffffff;
-	font-family:Arial;
-	font-size:1.25em;
-	font-weight:bold;
-	padding:0.5em 0.8em;
-	text-decoration:none;
-	text-shadow:0px 1px 0px #3d768a;
-}
-button:hover {
-	background:linear-gradient(to bottom, #408c99 5%, #599bb3 100%);
-	background-color:#408c99;
-}
-button:active {
-	position:relative;
-	top:1px;
-}
-button:focus {
-	outline: none;
 }
 
 .emoji__grid-wrapper.emoji__sub-grid.expand {

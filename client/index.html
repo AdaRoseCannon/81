@@ -16,14 +16,28 @@
 		<meta name="twitter:image" content="https://gh.ada.is/81images/screenshot.png">
 		<title>81 Emoji</title>	</head>
 	<body>
-		<div id="emoji__recipient"></div>
-		<div id="emoji__options"></div>
 		<div id="emoji__header">
-			<span id="emoji__skin-tone-selector__wrapper"></span>
+			<input class="text-input" type="text" id="emoji__recipient" placeholder="Recipient"></input>
+			<button id="emoji__options-button">⚙</button>
 		</div>
-		<div id="emoji__grid"></div>
+		<div id="emoji__options" class="modal">
+			<h1 class="heading">Settings<span id="emoji__options-exit" style="float: right; padding: 0.3em; margin-top: -0.4em;">×</span></h1>
+			<div class="content">
+				<button class="emoji__register">Login With Twitter</button>
+				<label>Select Skintone <span id="emoji__skin-tone-selector__wrapper"></span></label>
+				<label>Recieve Anon Emoji<input type="checkbox" class="magic-checkbox"></input><div></div></label>
+			</div>
+		</div>
+		<div id="emoji__content">
+			<ul id="emoji__messages">
+				<li class="received">You currently cannot recieve messages, as you are not logged in with Twitter. <div><button class="emoji__register">Login With Twitter</button></div></li>
+			</ul>
+			<div id="emoji__grid" class="modal">
+				<div id="emoji__grid-handle">● ● ●</div>
+			</div>
+		</div>
 		<div id="emoji__send">
-			<span id="emoji__text-input"></span>
+			<span id="emoji__text-input" class="text-input"></span>
 			<button id="emoji__submit">Send</button></div>
 		</div>
 		<script type="text/javascript" src="/scripts/main.js"></script>
