@@ -40,7 +40,8 @@ label {
 	display: block;
 }
 
-img {
+img.emoji {
+	max-height: 1em;
 	vertical-align: middle;
 	pointer-events: none;
 }
@@ -194,7 +195,7 @@ body.options #emoji__options {
 
 .custom-ul-select.expanded {
 	z-index: 10;
-	background: grey;
+	background: white;
 	border: 1px solid black;
 	position: absolute;
 	left: 50%;
@@ -213,10 +214,6 @@ body.options #emoji__options {
 	background: white;
 }
 
-body.emoji-input #emoji__grid {
-	transform: translateY(0);
-}
-
 .emoji__emoji {
 	pointer-events: none;
 	align-self: center;
@@ -231,6 +228,7 @@ body.emoji-input #emoji__grid {
 	display: flex;
 	justify-content: center;
 	align-content: center;
+	font-size: 2em;
 }
 
 .emoji__grid-item:before {
@@ -270,7 +268,8 @@ body.emoji-input #emoji__grid {
 }
 
 #emoji__skin-tone-selector__wrapper ul {
-	line-height: 3em;
+	font-size: 2em;
+	line-height: 1em;
 }
 
 #emoji__header select, #emoji__header button {
@@ -284,8 +283,6 @@ body.emoji-input #emoji__grid {
 
 .text-input {
 	margin: 0.2em;
-	text-align: center;
-	font-size: 0.6em;
 	background: white;
 	border: 1px solid grey;
 	box-shadow: 0 0.1em 0.5em -0.3em black inset;

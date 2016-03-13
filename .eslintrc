@@ -5,11 +5,9 @@
         "es6": true,
         "browser": true
     },
-    "ecmaFeatures": {
-        "modules": true
-    },
     parserOptions : {
-        sourceType: "module"
+        sourceType: "module",
+        ecmaVersion: 6
     },
     "rules": {
         "no-unused-vars": 2,
