@@ -123,7 +123,6 @@ button:focus {
     z-index: 10;
     background: inherit;
     box-shadow: 0 0 1em 0.3em rgba(0,0,0,0.2);
-	transition: transform ease 0.3s;
 }
 
 .modal .heading {
@@ -168,10 +167,6 @@ button:focus {
 #emoji__options {
 	transform: translateX(100vw);
     z-index: 20;
-}
-
-body.options #emoji__options {
-	transform: translateX(0);
 }
 
 #emoji__recipient {
