@@ -242,7 +242,7 @@ body.options #emoji__options {
 	flex-wrap: wrap;
 	justify-content: center;
 	width: 100vmin;
-	max-width: calc(100vh - 8em);
+	max-width: 100%;
 	margin: auto;
 	position: relative;
 }
@@ -257,6 +257,7 @@ body.options #emoji__options {
 	background: #FFF0F5;
 	box-shadow: 0 0 1em black;
 	user-select: none;
+	flex-grow: 1;
 }
 
 #emoji__header {
