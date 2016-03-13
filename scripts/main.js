@@ -6998,7 +6998,8 @@ function touchInit() {
 		// trigger:'#emoji__grid-handle',
 		onDragEnd: function onDragEnd() {
 			grid(this.y < 100);
-		}
+		},
+		force3D: true
 	});
 
 	Draggable$1.create('#emoji__options', {
@@ -7006,13 +7007,15 @@ function touchInit() {
 		// trigger:'#emoji__options .heading',
 		onDragEnd: function onDragEnd() {
 			options(this.x < 100);
-		}
+		},
+		force3D: true
 	});
 
 	Draggable$1.create('#skin-tone-selector', {
 		type: 'y',
 		bounds: '#emoji__options',
-		edgeResistance: 0.65
+		edgeResistance: 0.65,
+		force3D: true
 	});
 }
 
