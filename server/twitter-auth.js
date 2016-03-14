@@ -1,10 +1,11 @@
 const passport = require('passport');
 const Strategy = require('passport-twitter').Strategy;
 const app = require('express')();
-const redisHost = process.env.REDIS_HOST || '127.0.0.1';
-const redisPort = Number(process.env.REDIS_PORT) || 6379;
 const appSecret = process.env.APP_SECRET || 'oh dear oh dear';
 
+// use memory caching
+// const nodeCouchDB = require('node-couchdb');
+// const couch = new nodeCouchDB('localhost', 5984);
 
 // Configure the Twitter strategy for use by Passport.
 //
@@ -74,5 +75,10 @@ app.get('/auth/profile',
 		res.json('profile', { user: req.user });
 	}
 );
+
+app.get('/auth/logout', function (req, res) {
+	req.logout();
+	res.redirect('/');
+});
 
 module.exports = app;

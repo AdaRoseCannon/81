@@ -23,7 +23,12 @@
 		<div id="emoji__options" class="modal">
 			<h1 class="heading">Settings<span id="emoji__options-exit" style="float: right; padding: 0.3em; margin-top: -0.4em;">×</span></h1>
 			<div class="content">
-				<button class="emoji__register">Login With Twitter</button>
+				{{#if user}}
+				<a href="/auth/logout"><button class="emoji__register">Logout</button></a>
+				{{else}}
+				<a href="/auth/twitter"><button class="emoji__register">Login With Twitter</button></a>
+				{{/if}}
+
 				<label>Select Skintone <span id="emoji__skin-tone-selector__wrapper"></span></label>
 				<label>Recieve Anon Emoji<input type="checkbox" class="magic-checkbox"></input><div></div></label>
 			</div>
@@ -34,7 +39,7 @@
 				<li class="received">Hello World</li>
 				{{else}}
 				<script>document.write(`
-					<li class="received" timestamp="${Date.now()}">You currently cannot recieve messages, as you are not logged in with Twitter. <div><button class="emoji__register">Login With Twitter</button></div></li>
+					<li class="received" timestamp="${Date.now()}">You currently cannot recieve messages, as you are not logged in with Twitter. <div><a href="/auth/twitter"><button class="emoji__register">Login With Twitter</button></a></div></li>
 				`);</script>
 				{{/if}}
 			</ul>
