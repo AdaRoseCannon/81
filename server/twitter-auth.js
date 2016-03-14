@@ -135,7 +135,7 @@ app.get('/auth/detail',
 		redisGet(genUserNameToId({username: req.query.username}))
 		.then(id => {
 
-			if (!req.query.username) {
+			if (!id) {
 				return res.json({
 					error: 'No user by that username'
 				});
