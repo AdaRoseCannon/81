@@ -1,10 +1,10 @@
-const toolbox = require('sw-toolbox');
+import {router} from 'sw-toolbox';
 
 // Try network but fallback to cache
-toolbox.router.default = toolbox.networkFirst;
+router.default = toolbox.networkFirst;
 
 // Data should query the network first
-toolbox.router.any('/api/*', toolbox.networkOnly);
+router.any('/api/*', toolbox.networkOnly);
 
 // Data should query the network first
-toolbox.router.any('/auth/*', toolbox.networkOnly);
+router.any('/auth/*', toolbox.networkOnly);
