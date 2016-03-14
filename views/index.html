@@ -30,7 +30,13 @@
 		</div>
 		<div id="emoji__content">
 			<ul id="emoji__messages">
-				<li class="received">You currently cannot recieve messages, as you are not logged in with Twitter. <div><button class="emoji__register">Login With Twitter</button></div></li>
+				{{#if user}}
+				<li class="received">Hello World</li>
+				{{else}}
+				<script>document.write(`
+					<li class="received" timestamp="${Date.now()}">You currently cannot recieve messages, as you are not logged in with Twitter. <div><button class="emoji__register">Login With Twitter</button></div></li>
+				`);</script>
+				{{/if}}
 			</ul>
 			<div id="emoji__grid" class="modal">
 				<div id="emoji__grid-handle">● ● ●</div>
