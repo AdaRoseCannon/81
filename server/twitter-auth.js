@@ -118,7 +118,18 @@ app.get('/auth/twitter/return',
 app.get('/auth/profile',
 	require('connect-ensure-login').ensureLoggedIn('/auth/twitter'),
 	function(req, res){
-		res.json('profile', { user: req.user });
+		res.json({ user: req.user });
+	}
+);
+
+app.get('/auth/badend',
+	require('connect-ensure-login').ensureLoggedIn('/auth/twitter'),
+	function(req, res){
+		redisGet(genIdToProfile(req.user.id))
+		.then(str => JSON.parse(str))
+		.then(profile => {
+			res.json(profile);
+		});
 	}
 );
 
