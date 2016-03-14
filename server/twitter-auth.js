@@ -75,14 +75,16 @@ passport.use(new Strategy(
 ));
 
 passport.serializeUser(function(user, cb) {
-	cb(null, user.id);
+	cb(null, String(user.id));
 });
 
 passport.deserializeUser(function(id, cb) {
+	console.log('Getting user for ' + id);
 	redisGet(genIdToProfile({id}))
 	.then(data => JSON.parse(data))
-	.catch(e => console.log(e))
+	.catch(e => cb(e))
 	.then(user => {
+		console.log('USER INFO!!!' + user);
 		cb(null, getSummary(user));
 	});
 });
