@@ -85,7 +85,6 @@ passport.deserializeUser(function(id, cb) {
 	.then(data => JSON.parse(data))
 	.catch(e => cb(e))
 	.then(user => {
-		console.log('USER INFO!!!' + user);
 		cb(null, getSummary(user));
 	});
 });
@@ -130,7 +129,7 @@ app.get('/auth/badend',
 	function(req, res){
 
 		console.log('Loading data for: ' + req.user.id);
-		redisGet(genIdToProfile(req.user.id))
+		redisGet(genIdToProfile({id: req.user.id}))
 		.then(str => JSON.parse(str))
 		.then(profile => {
 			res.json(profile);
@@ -141,12 +140,12 @@ app.get('/auth/badend',
 app.get('/auth/detail',
 	function(req, res){
 
-		console.log('Loading data for: ' + req.query.id);
-		redisGet(genUserNameToId(req.query.id))
+		console.log('Loading data for: ' + req.query.username);
+		redisGet(genUserNameToId({username: req.query.username}))
 		.then(id => {
 
 			console.log('Found Id');
-			redisGet(genIdToProfile(id))
+			redisGet(genIdToProfile({id}))
 			.then(str => JSON.parse(str))
 			.then(profile => {
 				res.json(profile);
