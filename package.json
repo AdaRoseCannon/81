@@ -9,7 +9,7 @@
     "build:other": "mkdir -p build && cp client/* build/ || true && cp -r client/images build/images",
     "watch": "./parallel.sh \"nodemon --watch ./client/scripts -e js --exec npm run build:js\" \"nodemon --watch ./client -e css,html,png,json --exec npm run build:other\" \"http-server build\"",
     "build": "npm run clean; ./parallel.sh \"npm run build:other\" \"npm run build:js\" \"npm run build:styles\"",
-	"build:styles": "node-sass ./client/styles/main.scss -o ./build/styles/",
+    "build:styles": "node-sass ./client/styles/main.scss -o ./build/styles/",
     "deploy": "npm run build && git-directory-deploy --directory ./build",
     "clean": "rm -rf ./build",
     "install": "npm run build",
@@ -44,6 +44,7 @@
     "rollup-plugin-commonjs": "^2.2.1",
     "rollup-plugin-json": "^2.0.0",
     "rollup-plugin-node-resolve": "^1.4.0",
+    "sw-toolbox": "^3.1.1",
     "uglify-js": "^2.6.1"
   }
 }

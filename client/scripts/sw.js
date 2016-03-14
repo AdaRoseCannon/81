@@ -1,3 +1,10 @@
-'use strict';
+const toolbox = require('sw-toolbox');
 
-console.log('Service Worker');
+// Try network but fallback to cache
+toolbox.router.default = toolbox.networkFirst;
+
+// Data should query the network first
+toolbox.router.any('/api/*', toolbox.networkOnly);
+
+// Data should query the network first
+toolbox.router.any('/auth/*', toolbox.networkOnly);

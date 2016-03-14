@@ -31,6 +31,10 @@ function genUserNameToId(profile) {
 	return 'v1.0.0_id_by_username_' + profile.username;
 }
 
+function genMessagesForId(profile) {
+	return 'v1.0.0_messages_for_' + profile.id;
+}
+
 function getSummary(profile) {
 	return {
 		id: profile.id,

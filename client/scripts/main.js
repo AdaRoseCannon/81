@@ -9,10 +9,12 @@ import selectablePopup from './lib/selectable-popup';
 import addScript from './lib/add-script';
 import * as settings from './lib/settings';
 import touchInit from './lib/touch';
+import swPromise from './lib/sw.js';
 
 Promise.all([
 	addScript('https://cdn.rawgit.com/AdaRoseEdwards/dirty-dom/v1.2.2/build/dirty-dom-lib.min.js').promise,
 	addScript('https://twemoji.maxcdn.com/2/twemoji.min.js').promise,
+	swPromise
 ]).then(() => {
 
 	let cursorPos = 0;
@@ -93,4 +95,5 @@ Promise.all([
 
 	// Add button interactions
 	touchInit();
-});
+})
+.catch(e => console.log(e));
