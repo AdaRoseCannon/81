@@ -124,31 +124,31 @@ app.get('/auth/profile',
 	}
 );
 
-app.get('/auth/badend',
-	require('connect-ensure-login').ensureLoggedIn('/auth/twitter'),
-	function(req, res){
-
-		console.log('Loading data for: ' + req.user.id);
-		redisGet(genIdToProfile({id: req.user.id}))
-		.then(str => JSON.parse(str))
-		.then(profile => {
-			res.json(profile);
-		});
-	}
-);
-
 app.get('/auth/detail',
 	function(req, res){
 
-		console.log('Loading data for: ' + req.query.username);
+		if (!req.query.username) {
+			return res.json({
+				error: 'No username param'
+			});
+		}
+
 		redisGet(genUserNameToId({username: req.query.username}))
 		.then(id => {
 
-			console.log('Found Id');
+			if (!req.query.username) {
+				return res.json({
+					error: 'No user by that username'
+				});
+			}
+
 			redisGet(genIdToProfile({id}))
 			.then(str => JSON.parse(str))
 			.then(profile => {
-				res.json(profile);
+				res.json(getSummary(profile));
+			})
+			.catch(e => {
+				error: e.message;
 			});
 		});
 	}
