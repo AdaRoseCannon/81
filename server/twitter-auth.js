@@ -80,7 +80,6 @@ passport.serializeUser(function(user, cb) {
 });
 
 passport.deserializeUser(function(id, cb) {
-	console.log('Getting user for ' + id);
 	redisGet(genIdToProfile({id}))
 	.then(data => JSON.parse(data))
 	.catch(e => cb(e))
@@ -147,10 +146,13 @@ app.get('/auth/detail',
 			.then(profile => {
 				res.json(getSummary(profile));
 			})
-			.catch(e => {
-				error: e.message;
-			});
-		});
+			.catch(e => res.json({
+				error: e.message
+			}));
+		})
+		.catch(e => res.json({
+			error: e.message
+		}));
 	}
 );
 
