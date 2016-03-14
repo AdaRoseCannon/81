@@ -16,7 +16,7 @@ app.set('view engine', 'html');
 
 app.get('*', express.static('build'));
 app.use(require('./twitter-auth'));
-app.use((req, res, next) => (console.log(req.user), next()));
+
 app.use('/', (req, res) => res.render('index', {
 	user: !!req.user
 }));

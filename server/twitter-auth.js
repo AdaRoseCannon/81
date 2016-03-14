@@ -64,9 +64,6 @@ passport.use(new Strategy(
 		})
 		.then(profile => {
 
-			console.log(profile);
-			console.log('STORING DATA FOR: ' + profile.id);
-
 			return Promise.all([
 				redisSet(genIdToProfile(profile), JSON.stringify(profile)),
 
@@ -131,10 +128,29 @@ app.get('/auth/profile',
 app.get('/auth/badend',
 	require('connect-ensure-login').ensureLoggedIn('/auth/twitter'),
 	function(req, res){
+
+		console.log('Loading data for: ' + req.user.id);
 		redisGet(genIdToProfile(req.user.id))
 		.then(str => JSON.parse(str))
 		.then(profile => {
 			res.json(profile);
+		});
+	}
+);
+
+app.get('/auth/detail',
+	function(req, res){
+
+		console.log('Loading data for: ' + req.query.id);
+		redisGet(genUserNameToId(req.query.id))
+		.then(id => {
+
+			console.log('Found Id');
+			redisGet(genIdToProfile(id))
+			.then(str => JSON.parse(str))
+			.then(profile => {
+				res.json(profile);
+			});
 		});
 	}
 );
