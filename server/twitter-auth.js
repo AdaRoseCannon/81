@@ -1,19 +1,32 @@
 const passport = require('passport');
 const Strategy = require('passport-twitter').Strategy;
-const app = require('express')();
+const express = require('express');
+const app = express();
 const appSecret = process.env.APP_SECRET || 'oh dear oh dear';
+const REDIS = require('redis');
+const session = require('express-session');
+const RedisStore = require('connect-redis')(session);
+const denodeify = require('denodeify');
+const extend = require('util')._extend;
+const redis = (function () {
+	if (process.env.REDISTOGO_URL) {
+		const rtg = require('url').parse(process.env.REDISTOGO_URL);
+		const redis = REDIS.createClient(rtg.port, rtg.hostname);
 
-// use memory caching
-// const nodeCouchDB = require('node-couchdb');
-// const couch = new nodeCouchDB('localhost', 5984);
+		redis.auth(rtg.auth.split(':')[1]);
+		return redis;
+	} else {
+	 	return REDIS.createClient();
+	}
+}());
 
-// Configure the Twitter strategy for use by Passport.
-//
-// OAuth 1.0-based strategies require a `verify` function which receives the
-// credentials (`token` and `tokenSecret`) for accessing the Twitter API on the
-// user's behalf, along with the user's profile.	The function must invoke `cb`
-// with a user object, which will be set at `req.user` in route handlers after
-// authentication.
+const redisGet = denodeify(redis.get).bind(redis);
+const redisSet = denodeify(redis.set).bind(redis);
+
+function genId(profile) {
+	return 'v1.0_' + profile.id;
+}
+
 passport.use(new Strategy(
 	{
 		consumerKey: process.env.CONSUMER_KEY,
@@ -21,31 +34,46 @@ passport.use(new Strategy(
 		callbackURL: global.serverUrl + '/auth/twitter/return'
 	},
 	function(token, tokenSecret, profile, cb) {
-		// In this example, the user's Twitter profile is supplied as the user
-		// record.	In a production-quality application, the Twitter profile should
-		// be associated with a user record in the application's database, which
-		// allows for account linking and authentication with other identity
-		// providers.
-		return cb(null, profile);
+		const id = genId(profile);
+		const summary = {
+			id: profile.id,
+			username: profile.username,
+			displayName: profile.displayName,
+			photos: profile.photos[0]
+		};
+
+		redisGet(id)
+		.then(inProfile => {
+			if (inProfile) {
+				return JSON.parse(inProfile);
+			} else {
+				return summary;
+			}
+		})
+		.then(profile => {
+
+			// Update profile with new data from auth
+			extend(profile, summary);
+			return cb(null, profile);
+		});
 	}
 ));
 
-
-// Configure Passport authenticated session persistence.
-//
-// In order to restore authentication state across HTTP requests, Passport needs
-// to serialize users into and deserialize users out of the session.	In a
-// production-quality application, this would typically be as simple as
-// supplying the user ID when serializing, and querying the user record by ID
-// from the database when deserializing.	However, due to the fact that this
-// example does not have a database, the complete Twitter profile is serialized
-// and deserialized.
 passport.serializeUser(function(user, cb) {
-	cb(null, JSON.stringify(user));
+	const id = genId(user);
+	redisSet(id, JSON.stringify(user))
+	.catch(e => console.log(e))
+	.then(() => {
+		cb(null, id);
+	});
 });
 
 passport.deserializeUser(function(obj, cb) {
-	cb(null, JSON.parse(obj));
+	redisGet(obj)
+	.catch(e => console.log(e))
+	.then(user => {
+		cb(null, JSON.parse(user));
+	});
 });
 
 // Use application-level middleware for common functionality, including
@@ -53,7 +81,14 @@ passport.deserializeUser(function(obj, cb) {
 app.use(require('morgan')('combined'));
 app.use(require('cookie-parser')());
 app.use(require('body-parser').urlencoded({ extended: true }));
-app.use(require('express-session')({ secret: appSecret, resave: true, saveUninitialized: true }));
+app.use(require('express-session')({
+	secret: appSecret,
+	resave: true,
+	saveUninitialized: true,
+	store: new RedisStore({
+		client : redis
+	})
+}));
 
 // Initialize Passport and restore authentication state, if any, from the
 // session.

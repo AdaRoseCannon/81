@@ -26,6 +26,7 @@
     "body-parser": "^1.15.0",
     "connect-ensure-login": "^0.1.1",
     "cookie-parser": "^1.4.1",
+    "denodeify": "^1.2.1",
     "express": "^4.13.4",
     "express-handlebars": "^3.0.0",
     "express-session": "^1.13.0",
