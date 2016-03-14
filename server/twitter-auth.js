@@ -55,8 +55,7 @@ passport.use(new Strategy(
 
 				// Old User update profile with new Data
 				extend(inProfile, profile);
-				redisSet(genIdToProfile(profile), JSON.stringify(inProfile));
-				return JSON.parse(inProfile);
+				return inProfile;
 			} else {
 
 				//New user
@@ -64,13 +63,14 @@ passport.use(new Strategy(
 			}
 		})
 		.then(profile => {
+			return Promise.all([
+				redisSet(genIdToProfile(profile), JSON.stringify(profile)),
 
-			// Update map of user names to profile ids
-			redisSet(genUserNameToId(profile), profile.id);
-
-			// Update profile with new data from auth
-			return cb(null, profile);
-		});
+				// Update map of user names to profile ids
+				redisSet(genUserNameToId(profile), profile.id)
+			]);
+		})
+		.then(() => cb(null, profile));
 	}
 ));
 
