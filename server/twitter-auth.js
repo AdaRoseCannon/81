@@ -63,14 +63,17 @@ passport.use(new Strategy(
 			}
 		})
 		.then(profile => {
+
+
+
 			return Promise.all([
 				redisSet(genIdToProfile(profile), JSON.stringify(profile)),
 
 				// Update map of user names to profile ids
 				redisSet(genUserNameToId(profile), profile.id)
-			]);
+			]).then(() => profile);
 		})
-		.then(() => cb(null, profile));
+		.then(profile => cb(null, profile));
 	}
 ));
 
