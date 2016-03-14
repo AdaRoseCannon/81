@@ -23,8 +23,21 @@ const redis = (function () {
 const redisGet = denodeify(redis.get).bind(redis);
 const redisSet = denodeify(redis.set).bind(redis);
 
-function genId(profile) {
-	return 'v1.0_' + profile.id;
+function genIdToProfile(profile) {
+	return 'v1.0.1_profile_by_number_' + profile.id;
+}
+
+function genUserNameToId(profile) {
+	return 'v1.0.0_id_by_username_' + profile.username;
+}
+
+function getSummary(profile) {
+	return {
+		id: profile.id,
+		username: profile.username,
+		displayName: profile.displayName,
+		photos: profile.photos[0]
+	};
 }
 
 passport.use(new Strategy(
@@ -34,45 +47,43 @@ passport.use(new Strategy(
 		callbackURL: global.serverUrl + '/auth/twitter/return'
 	},
 	function(token, tokenSecret, profile, cb) {
-		const id = genId(profile);
-		const summary = {
-			id: profile.id,
-			username: profile.username,
-			displayName: profile.displayName,
-			photos: profile.photos[0]
-		};
 
-		redisGet(id)
+		redisGet(genIdToProfile(profile))
+		.then(data => JSON.parse(data))
 		.then(inProfile => {
 			if (inProfile) {
+
+				// Old User update profile with new Data
+				extend(inProfile, profile);
+				redisSet(genIdToProfile(profile), JSON.stringify(inProfile));
 				return JSON.parse(inProfile);
 			} else {
-				return summary;
+
+				//New user
+				return profile;
 			}
 		})
 		.then(profile => {
 
+			// Update map of user names to profile ids
+			redisSet(genUserNameToId(profile), profile.id);
+
 			// Update profile with new data from auth
-			extend(profile, summary);
 			return cb(null, profile);
 		});
 	}
 ));
 
 passport.serializeUser(function(user, cb) {
-	const id = genId(user);
-	redisSet(id, JSON.stringify(user))
-	.catch(e => console.log(e))
-	.then(() => {
-		cb(null, id);
-	});
+	cb(null, user.id);
 });
 
-passport.deserializeUser(function(obj, cb) {
-	redisGet(obj)
+passport.deserializeUser(function(id, cb) {
+	redisGet(genIdToProfile({id}))
+	.then(data => JSON.parse(data))
 	.catch(e => console.log(e))
 	.then(user => {
-		cb(null, JSON.parse(user));
+		cb(null, getSummary(user));
 	});
 });
 
