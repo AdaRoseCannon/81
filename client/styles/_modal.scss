@@ -1,0 +1,35 @@
+
+.modal {
+    display: block;
+    position: absolute;
+    margin: 10px;
+    z-index: 10;
+    background: inherit;
+    box-shadow: 0 0 1em 0.3em rgba(0,0,0,0.2);
+}
+
+.modal .heading {
+	margin: 0.2em 0;
+}
+
+.modal .content {
+	padding: 1em;
+	display: flex;
+	flex-direction: column;
+}
+
+.modal .content > :first-child + * {
+	margin-top: 1em;
+	display: block;
+}
+
+.modal .handle {
+	display: block;
+	background: rgba(0,0,0,0.1);
+	color: grey;
+	text-align: center;
+
+	&:before {
+		content: '● ● ●'
+	}
+}

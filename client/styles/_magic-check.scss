@@ -1,0 +1,42 @@
+
+.magic-checkbox {
+	display: none;
+}
+
+.magic-checkbox + div {
+	display: inline-flex;
+	align-items: center;
+	height: 1em;
+	width: 1.5em;
+	background: white;
+	border: 1px solid grey;
+	vertical-align: middle;
+	border-radius: 1em;
+	box-shadow: 0 0.1em 0.5em -0.3em black inset;
+	margin-left: 0.3em;
+	font-size: 1em;
+	padding: 0 0.03em;
+	box-sizing: border-box;
+	transition: background-color ease 0.3s;
+}
+
+.magic-checkbox + div:before {
+	content: '';
+	display: block;
+	height: 0.8em;
+	width: 0.8em;
+	background: white;
+	border: 1px solid grey;
+	border-radius: 1em;
+	box-shadow: 0 0.1em 0.5em -0.3em black;
+	box-sizing: border-box;
+	transition: transform ease 0.3s;
+}
+
+.magic-checkbox:checked + div {
+	background-color: #13BB23;
+}
+
+.magic-checkbox:checked + div:before {
+	transform: translateX(0.5em);
+}

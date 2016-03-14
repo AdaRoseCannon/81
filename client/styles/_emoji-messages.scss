@@ -1,0 +1,61 @@
+
+#emoji__messages {
+	position: absolute;
+    right: 0;
+    left: 0;
+	padding: 0;
+	margin: 0;
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: baseline;
+}
+
+#emoji__messages > li {
+	list-style: none;
+	margin: 0em 1em;
+	padding: 0.6em;
+	border-radius: 1em;
+	box-sizing: border-box;
+	position: relative;
+	clear: both;
+	margin-bottom: 1.5em;
+}
+
+#emoji__messages > li.sent + li.sent,
+#emoji__messages > li.received + li.received {
+	margin-bottom: 0.2em;
+}
+
+#emoji__messages > li:before {
+	content: '';
+    display: inline-block;
+    border: 0.5em solid;
+    position: absolute;
+    bottom: -0.3em;
+    left: 1em;
+    transform: translateY(50%) translateY(-0.1em) rotate(10deg);
+	border-color: #13BB23 transparent transparent #13BB23;
+}
+
+#emoji__messages > li.sent:before {
+    right: 1em;
+	left: auto;
+    transform: translateY(50%) translateY(-0.1em) rotate(-10deg) scaleX(-1);
+	border-color: #C5C5C5 transparent transparent #C5C5C5;
+}
+
+#emoji__messages > li.sent {
+	background: #C5C5C5;
+	margin-right: 0.4em;
+	align-self: flex-end;
+}
+
+#emoji__messages > li.received {
+	background: #13BB23;
+	margin-left: 0.4em;
+}
+
+#emoji__messages > li.sent + li.sent:before,
+#emoji__messages > li.received + li.received:before {
+	content: none;
+}

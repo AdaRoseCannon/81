@@ -1,0 +1,121 @@
+
+html, body {
+	font-family: 'Open Sans', sans-serif;
+	font-weight: 400;
+	color: #333;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	height: 100%;
+	width: 100vw;
+	background: #FFF0F5;
+	font-size: 24px;
+	position: absolute;
+}
+
+html {
+	background: #FFF0F5;
+}
+
+body {
+	max-width: 768px;
+	margin: auto;
+    left: 50%;
+    transform: translateX(-50%);
+	box-shadow: 0 0 1em;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-weight: 300;
+}
+
+h1, h2, h3 {
+	padding-left: 1em;
+	margin: 1em 0 1.5em 0;
+	border-bottom: 1px solid grey;
+	font-size: 1.2em;
+}
+
+a {
+	color: #336ACE;
+}
+
+h2 a {
+	text-decoration: none;
+}
+
+label {
+	display: block;
+}
+
+img.emoji {
+	max-height: 1em;
+	vertical-align: middle;
+	pointer-events: none;
+}
+
+@import 'fancy-button';
+@import 'magic-check';
+@import 'modal';
+@import 'emoji-messages';
+@import 'custom-ul-select';
+@import 'emoji-grid';
+
+#emoji__content {
+	position: relative;
+}
+
+#emoji__options {
+	transform: translateX(100vw);
+    z-index: 20;
+
+	#emoji__skin-tone-selector__wrapper ul {
+		font-size: 2em;
+		line-height: 1em;
+	}
+}
+
+#emoji__header {
+	display: flex;
+	border-bottom: 1px solid grey;
+	margin-bottom: 0.5em;
+	align-items: center;
+	font-size: 1em;
+
+	#emoji__recipient {
+		flex-grow: 1;
+	}
+}
+
+.text-input {
+	margin: 0.2em;
+	background: white;
+	border: 1px solid grey;
+	box-shadow: 0 0.1em 0.5em -0.3em black inset;
+	border-radius: 0.2em;
+	justify-content: center;
+	padding: 0.2em 0.5em;
+	width: 5em;
+	font-size: inherit;
+}
+
+#emoji__text-input {
+	letter-spacing: 0.3em;
+	display: flex;
+	flex-grow: 1;
+
+	img {
+		margin-left: 0.3em;
+	}
+}
+
+// Bottom bar with emoji input and send button
+#emoji__send {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	text-align: center;
+	font-size: 1.5em;
+	display: flex;
+}
