@@ -14,7 +14,15 @@ html, body {
 }
 
 html {
-	background: black;
+	background: #FFF0F5;
+}
+
+body {
+	max-width: 768px;
+	margin: auto;
+    left: 50%;
+    transform: translateX(-50%);
+	box-shadow: 0 0 1em;
 }
 
 h1, h2, h3, h4, h5, h6 {
