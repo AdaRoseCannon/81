@@ -64,7 +64,8 @@ passport.use(new Strategy(
 		})
 		.then(profile => {
 
-
+			console.log(profile);
+			console.log('STORING DATA FOR: ' + profile.id);
 
 			return Promise.all([
 				redisSet(genIdToProfile(profile), JSON.stringify(profile)),
