@@ -105,8 +105,10 @@ Promise.all([
 	}
 
 	const pushButton = $('#emoji__push');
-	pushButton.style.display = 'none';
-	pushButton.on('click', subscribe);
+	if (pushButton) {
+		pushButton.style.display = 'none';
+		pushButton.on('click', subscribe);
+	}
 	function subscribe() {
 		swPromise.then(serviceWorkerRegistration => {
 			serviceWorkerRegistration.pushManager.subscribe()
@@ -133,8 +135,10 @@ Promise.all([
 	.then(subscription => {
 		if (!subscription) {
 
-			// Not subscribed show subscribe button
-			pushButton.style.display = '';
+			if (pushButton) {
+				// Not subscribed: show subscribe button
+				pushButton.style.display = '';
+			}
 		} else {
 
 			// Update server with correct info.
