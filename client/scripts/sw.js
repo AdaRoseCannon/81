@@ -1,10 +1,10 @@
 importScripts('/sw-toolbox.js');
 
 // Try network but fallback to cache
-swToolbox.router.default = swToolbox.networkFirst;
+toolbox.router.default = toolbox.networkFirst;
 
 // Data should query the network first
-swToolbox.router.any('/api/*', swToolbox.networkOnly);
+toolbox.router.any('/api/*', toolbox.networkOnly);
 
 // Data should query the network first
-swToolbox.router.any('/auth/*', swToolbox.networkOnly);
+toolbox.router.any('/auth/*', toolbox.networkOnly);
