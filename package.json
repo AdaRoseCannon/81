@@ -6,7 +6,7 @@
     "build:main": "mkdir -p build/scripts && rollup -i ./client/scripts/main.js -o ./build/scripts/main.js -c -m && cd build/scripts && uglifyjs --source-map main.min.js.map -m --screw-ie8 main.js -o main.min.js && wc -c main.min.js",
     "build:sw": "mkdir -p build           && rollup -i ./client/scripts/sw.js     -o ./build/sw.js   -c -m       && cd build && uglifyjs --source-map sw.min.js.map   -m --screw-ie8 sw.js   -o sw.min.js   && wc -c sw.min.js",
     "build:js": "./parallel.sh \"npm run build:sw\" \"npm run build:main\"",
-    "build:other": "mkdir -p build && cp client/* build/ || true && cp -r client/images build/images",
+    "build:other": "mkdir -p build && cp client/* build/ || true && cp -r client/images build/images && cp ./node_modules/sw-toolbox/sw-toolbox.* ./build/",
     "watch": "./parallel.sh \"nodemon --watch ./client/scripts -e js --exec npm run build:js\" \"nodemon --watch ./client -e css,html,png,json --exec npm run build:other\" \"http-server build\"",
     "build": "npm run clean; ./parallel.sh \"npm run build:other\" \"npm run build:js\" \"npm run build:styles\"",
     "build:styles": "node-sass ./client/styles/main.scss -o ./build/styles/",

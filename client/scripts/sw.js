@@ -1,4 +1,4 @@
-import swToolbox from 'sw-toolbox';
+importScripts('/sw-toolbox.js');
 
 // Try network but fallback to cache
 swToolbox.router.default = swToolbox.networkFirst;
