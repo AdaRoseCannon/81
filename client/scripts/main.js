@@ -13,8 +13,7 @@ import swPromise from './lib/sw.js';
 
 Promise.all([
 	addScript('https://cdn.rawgit.com/AdaRoseEdwards/dirty-dom/v1.2.2/build/dirty-dom-lib.min.js').promise,
-	addScript('https://twemoji.maxcdn.com/2/twemoji.min.js').promise,
-	swPromise
+	addScript('https://twemoji.maxcdn.com/2/twemoji.min.js').promise
 ]).then(() => {
 
 	let cursorPos = 0;
@@ -92,8 +91,63 @@ Promise.all([
 
 	$('#emoji__grid').appendChild(mainGrid);
 	twemoji.parse(mainGrid);
+	twemoji.parse($('#emoji__options-button'));
 
 	// Add button interactions
 	touchInit();
+
+	function sendSubscriptionToServer(subscription) {
+
+		// make fetch request with cookies to get user id.
+		console.log(subscription);
+	}
+
+	const pushButton = $('#emoji__push');
+	pushButton.style.display = 'none';
+	pushButton.on('click', subscribe);
+	function subscribe() {
+		swPromise.then(serviceWorkerRegistration => {
+			serviceWorkerRegistration.pushManager.subscribe()
+			.then(function(subscription) {
+				pushButton.style.display = 'none';
+				return sendSubscriptionToServer(subscription);
+			})
+			.catch(function(e) {
+				if (Notification.permission === 'denied') {
+					pushButton.style.display = '';
+					console.warn('Permission for Notifications was denied');
+				} else {
+					// A problem occurred with the subscription; common reasons
+					// include network errors, and lacking gcm_sender_id and/or
+					// gcm_user_visible_only in the manifest.
+					console.error('Unable to subscribe to push.', e);
+				}
+			});
+		});
+	}
+
+	swPromise
+	.then(() => serviceWorkerRegistration.pushManager.getSubscription())
+	.then(subscription => {
+		if (!subscription) {
+
+			// Not subscribed show subscribe button
+			pushButton.style.display = '';
+		} else {
+
+			// Update server with correct info.
+			return sendSubscriptionToServer(subscription);
+		}
+	})
+	.catch(e => {
+
+		// Service workers not supported.
+		console.log('service workers/push notifications not supported.')
+		console.log(e);
+	});
 })
-.catch(e => console.log(e));
+.catch(e => {
+
+	// Script loading errors
+	console.log(e);
+});

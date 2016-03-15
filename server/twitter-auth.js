@@ -160,6 +160,11 @@ app.get('/auth/detail',
 	}
 );
 
+app.get('/api/subscribe', function (req, res) {
+	console.log(req.user);
+	console.log(req.query.sub);
+});
+
 app.get('/auth/logout', function (req, res) {
 	req.logout();
 	res.redirect('/');

@@ -7,6 +7,7 @@
 		<meta http-equiv="cleartype" content="on" />
 		<meta name="MobileOptimized" content="width" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<meta name="theme-color" content="#FFF0F5">
 		<meta name="HandheldFriendly" content="true" />
 		<meta name="twitter:card" content="summary" />
 		<meta name="twitter:site" content="@lady_ada_king" />
@@ -15,7 +16,8 @@
 		<meta name="twitter:url" content="https://gh.ada.is/81/" />
 		<!-- <meta name="twitter:image" content="https://gh.ada.is/81/images/screenshot.png"> -->
 		<title>81 Emoji</title>	</head>
-	<body>
+		<link rel="manifest" href="/manifest.json">
+	<body {{#if user}}class="user-logged-in"{{/if}}>
 		<div id="emoji__header">
 			<input class="text-input" type="text" id="emoji__recipient" placeholder="Recipient"></input>
 			<button id="emoji__options-button">⚙</button>
@@ -26,6 +28,7 @@
 				{{#if user}}
 				<a href="/auth/logout"><button class="emoji__register">Logout</button></a>
 				{{else}}
+				<a href="/auth/twitter"><button class="emoji__push">Enable Push Notifications</button></a>
 				<a href="/auth/twitter"><button class="emoji__register">Login With Twitter</button></a>
 				{{/if}}
 

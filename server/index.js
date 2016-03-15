@@ -17,9 +17,18 @@ app.set('view engine', 'html');
 app.get('*', express.static('build'));
 app.use(require('./twitter-auth'));
 
-app.use('/', (req, res) => res.render('index', {
+app.get('/', (req, res) => res.render('index', {
 	user: !!req.user
 }));
+
+app.use('*', (req,res) => {
+	res.status(404);
+	res.json({
+		error: 404,
+		message: 'Page not found',
+		haiku: 'You step in the stream, but the water has moved on. This page is not here.'
+	});
+});
 
 app.listen(port);
 console.log('listenting on: ' + port);
