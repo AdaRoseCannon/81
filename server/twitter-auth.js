@@ -80,13 +80,19 @@ passport.use(new Strategy(
 ));
 
 passport.serializeUser(function(user, cb) {
+	if (!user.id) {
+		return cb('error getting id');
+	}
 	cb(null, String(user.id));
 });
 
 passport.deserializeUser(function(id, cb) {
 	redisGet(genIdToProfile({id}))
 	.then(data => JSON.parse(data))
-	.catch(e => cb(e))
+	.catch(e => {
+		console.log(e.message);
+		cb(e);
+	})
 	.then(user => {
 		cb(null, getSummary(user));
 	});
