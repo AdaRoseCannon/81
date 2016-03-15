@@ -99,7 +99,9 @@ Promise.all([
 	function sendSubscriptionToServer(subscription) {
 
 		// make fetch request with cookies to get user id.
-		console.log(subscription);
+		fetch(`/api/subscribe?sub=${subscription}`, {
+		  credentials: 'same-origin'
+		}).then(e => console.log(e))
 	}
 
 	const pushButton = $('#emoji__push');

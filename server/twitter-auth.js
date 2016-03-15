@@ -163,6 +163,9 @@ app.get('/auth/detail',
 app.get('/api/subscribe', function (req, res) {
 	console.log(req.user);
 	console.log(req.query.sub);
+	res.json({
+		success: true
+	});
 });
 
 app.get('/auth/logout', function (req, res) {
