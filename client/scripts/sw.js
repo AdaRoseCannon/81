@@ -1,4 +1,4 @@
-import swToolbox from 'sw-swToolbox';
+import swToolbox from 'sw-toolbox';
 
 // Try network but fallback to cache
 swToolbox.router.default = swToolbox.networkFirst;
