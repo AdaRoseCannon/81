@@ -1,10 +1,10 @@
-import * as toolbox from 'sw-toolbox';
+import swToolbox from 'sw-swToolbox';
 
 // Try network but fallback to cache
-toolbox.router.default = toolbox.networkFirst;
+swToolbox.router.default = swToolbox.networkFirst;
 
 // Data should query the network first
-toolbox.router.any('/api/*', toolbox.networkOnly);
+swToolbox.router.any('/api/*', swToolbox.networkOnly);
 
 // Data should query the network first
-toolbox.router.any('/auth/*', toolbox.networkOnly);
+swToolbox.router.any('/auth/*', swToolbox.networkOnly);
