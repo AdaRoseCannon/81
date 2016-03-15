@@ -81,7 +81,7 @@ passport.use(new Strategy(
 
 passport.serializeUser(function(user, cb) {
 	if (!user.id) {
-		return cb('error getting id');
+		return cb(Error('error getting id'));
 	}
 	cb(null, String(user.id));
 });
