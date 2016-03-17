@@ -172,12 +172,18 @@ app.get('/api/subscribe', function (req, res) {
 	redisGet(id)
 	.then(data => JSON.parse(data))
 	.then(inProfile => {
-		inProfile.pushUrl = req.query.sub;
+		inProfile.pushUrl = JSON.parse(decodeURIComponent(req.query.sub));
 		return redisSet(id, JSON.stringify(inProfile));
 	})
 	.then(function () {
 		res.json({
 			success: true
+		});
+	})
+	.catch(e => {
+		res.status(500);
+		res.json({
+			error: e.message
 		});
 	});
 });
