@@ -131,7 +131,7 @@ Promise.all([
 	}
 
 	swPromise
-	.then(() => serviceWorkerRegistration.pushManager.getSubscription())
+	.then(serviceWorkerRegistration => serviceWorkerRegistration.pushManager.getSubscription())
 	.then(subscription => {
 		if (!subscription) {
 
