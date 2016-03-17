@@ -40,7 +40,8 @@ function getSummary(profile) {
 		id: profile.id,
 		username: profile.username,
 		displayName: profile.displayName,
-		photos: profile.photos[0]
+		photos: profile.photos[0],
+		pushUrl: 'NONE_SET'
 	};
 }
 
@@ -167,10 +168,17 @@ app.get('/auth/detail',
 );
 
 app.get('/api/subscribe', function (req, res) {
-	console.log(req.user);
-	console.log(req.query.sub);
-	res.json({
-		success: true
+	const id = genIdToProfile(req.user);
+	redisGet(id)
+	.then(data => JSON.parse(data))
+	.then(inProfile => {
+		inProfile.pushUrl = req.query.sub;
+		return redisSet(id, JSON.stringify(inProfile));
+	})
+	.then(function () {
+		res.json({
+			success: true
+		});
 	});
 });
 
