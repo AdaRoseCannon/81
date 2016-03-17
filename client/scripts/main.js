@@ -111,7 +111,7 @@ Promise.all([
 	}
 	function subscribe() {
 		swPromise.then(serviceWorkerRegistration => {
-			serviceWorkerRegistration.pushManager.subscribe()
+			serviceWorkerRegistration.pushManager.subscribe({userVisibleOnly: true})
 			.then(function(subscription) {
 				pushButton.style.display = 'none';
 				return sendSubscriptionToServer(subscription);
