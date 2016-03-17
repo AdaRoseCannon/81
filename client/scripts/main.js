@@ -99,7 +99,12 @@ Promise.all([
 	function sendSubscriptionToServer(subscription) {
 
 		// make fetch request with cookies to get user id.
-		fetch(`/api/subscribe?sub=${encodeURIComponent(subscription.toJSON())}`, {
+		fetch(`/api/subscribe?sub=${
+			encodeURIComponent(
+				JSON.stringify(
+					subscription.toJSON()
+				)
+			)}`, {
 		  credentials: 'same-origin'
 		}).then(e => console.log(e))
 	}
