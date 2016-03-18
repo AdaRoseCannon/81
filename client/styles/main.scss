@@ -60,6 +60,7 @@ img.emoji {
 @import 'emoji-messages';
 @import 'custom-ul-select';
 @import 'emoji-grid';
+@import 'text-input';
 
 #emoji__content {
 	position: relative;
@@ -84,28 +85,6 @@ img.emoji {
 
 	#emoji__recipient {
 		flex-grow: 1;
-	}
-}
-
-.text-input {
-	margin: 0.2em;
-	background: white;
-	border: 1px solid grey;
-	box-shadow: 0 0.1em 0.5em -0.3em black inset;
-	border-radius: 0.2em;
-	justify-content: center;
-	padding: 0.2em 0.5em;
-	width: 5em;
-	font-size: inherit;
-}
-
-#emoji__text-input {
-	letter-spacing: 0.3em;
-	display: flex;
-	flex-grow: 1;
-
-	img {
-		margin-left: 0.3em;
 	}
 }
 

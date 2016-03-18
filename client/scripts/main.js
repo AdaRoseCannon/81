@@ -12,7 +12,7 @@ import touchInit from './lib/touch';
 import swPromise from './lib/sw.js';
 
 Promise.all([
-	addScript('https://cdn.rawgit.com/AdaRoseEdwards/dirty-dom/v1.2.2/build/dirty-dom-lib.min.js').promise,
+	addScript('https://cdn.rawgit.com/AdaRoseEdwards/dirty-dom/v1.3.1/build/dirty-dom-lib.min.js').promise,
 	addScript('https://twemoji.maxcdn.com/2/twemoji.min.js').promise
 ]).then(() => {
 
@@ -20,11 +20,18 @@ Promise.all([
 	const textInput = $('#emoji__text-input');
 	const message = [];
 	function setChar(str) {
-		if (!str) return;
-		message[cursorPos] = str + skinToneSelector.dataset.value;
-		textInput.innerHTML = message.map(m => combineEmojis(m)).join('');
-		cursorPos = Math.min((cursorPos + 1), 2);
+		if (str) {
+			message[cursorPos] = str + skinToneSelector.dataset.value;
+			cursorPos = cursorPos + 1;
+		}
+		textInput.innerHTML = message.map(m => combineEmojis(m)).join('') + '<span class="End Spacer"></span>';
+		textInput.$$('img')[]
 	}
+	$('#emoji__text-input').on('backspace', () => {
+		cursorPos--;
+		message.splice(cursorPos, 1);
+		setChar();
+	});
 
 	const skinTone = ['', '🏼', '🏿', '🏽', '🏾', '🏻'];
 	const skinToneSelector = $('<ul id="skin-tone-selector">');
@@ -126,6 +133,7 @@ Promise.all([
 					pushButton.style.display = '';
 					console.warn('Permission for Notifications was denied');
 				} else {
+
 					// A problem occurred with the subscription; common reasons
 					// include network errors, and lacking gcm_sender_id and/or
 					// gcm_user_visible_only in the manifest.
@@ -141,6 +149,7 @@ Promise.all([
 		if (!subscription) {
 
 			if (pushButton) {
+
 				// Not subscribed: show subscribe button
 				pushButton.style.display = '';
 			}

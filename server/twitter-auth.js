@@ -45,40 +45,46 @@ function getSummary(profile) {
 	};
 }
 
-passport.use(new Strategy(
-	{
-		consumerKey: process.env.CONSUMER_KEY,
-		consumerSecret: process.env.CONSUMER_SECRET,
-		callbackURL: global.serverUrl + '/auth/twitter/return'
-	},
-	function(token, tokenSecret, profile, cb) {
+if (
+	process.env.CONSUMER_KEY &&
+	process.env.CONSUMER_SECRET &&
+	global.serverUrl
+) {
+	passport.use(new Strategy(
+		{
+			consumerKey: process.env.CONSUMER_KEY,
+			consumerSecret: process.env.CONSUMER_SECRET,
+			callbackURL: global.serverUrl + '/auth/twitter/return'
+		},
+		function(token, tokenSecret, profile, cb) {
 
-		redisGet(genIdToProfile(profile))
-		.then(data => JSON.parse(data))
-		.then(inProfile => {
-			if (inProfile) {
+			redisGet(genIdToProfile(profile))
+			.then(data => JSON.parse(data))
+			.then(inProfile => {
+				if (inProfile) {
 
-				// Old User update profile with new Data
-				extend(inProfile, profile);
-				return inProfile;
-			} else {
+					// Old User update profile with new Data
+					extend(inProfile, profile);
+					return inProfile;
+				} else {
 
-				//New user
-				return profile;
-			}
-		})
-		.then(profile => {
+					//New user
+					return profile;
+				}
+			})
+			.then(profile => {
 
-			return Promise.all([
-				redisSet(genIdToProfile(profile), JSON.stringify(profile)),
+				return Promise.all([
+					redisSet(genIdToProfile(profile), JSON.stringify(profile)),
 
-				// Update map of user names to profile ids
-				redisSet(genUserNameToId(profile), profile.id)
-			]).then(() => profile);
-		})
-		.then(profile => cb(null, profile));
-	}
-));
+					// Update map of user names to profile ids
+					redisSet(genUserNameToId(profile), profile.id)
+				]).then(() => profile);
+			})
+			.then(profile => cb(null, profile));
+		}
+	));
+}
 
 passport.serializeUser(function(user, cb) {
 	if (!user.id) {

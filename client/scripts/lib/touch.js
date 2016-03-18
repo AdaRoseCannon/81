@@ -23,8 +23,17 @@ export default function touchInit() {
 	$('#emoji__options-exit').on('click', () => options(false));
 	$('#emoji__text-input').on('click', e => {
 		e.stopPropagation();
+		$('#emoji__text-input-focsable').focus();
 		grid(true);
 	});
+	$('#emoji__text-input-focsable').on('keydown', e => {
+		const key = e.keyCode || e.charCode;
+		if( key == 8 || key == 46 ) {
+			$('#emoji__text-input').fire('backspace');
+			e.preventDefault();
+			return false;
+		}
+	})
 	document.body.on('click', () => {
 		grid(false);
 		options(false);

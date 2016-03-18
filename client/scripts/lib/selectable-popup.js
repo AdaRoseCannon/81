@@ -28,6 +28,9 @@ function clickUp () {
 export default function selectablePopup(subGrid) {
 
 	function triggerBox (e) {
+
+		$('#emoji__text-input-focsable').focus();
+
 		e.preventDefault();
 		e.stopPropagation();
 
