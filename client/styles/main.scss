@@ -64,6 +64,9 @@ img.emoji {
 
 #emoji__content {
 	position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 }
 
 #emoji__options {
