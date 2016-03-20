@@ -20,7 +20,6 @@ export default function touchInit() {
 		e.stopPropagation();
 		options(true);
 	});
-	$('#emoji__options-exit').on('click', () => options(false));
 	$('#emoji__text-input').on('click', e => {
 		e.stopPropagation();
 		$('#emoji__text-input-focsable').focus();
@@ -63,6 +62,14 @@ export default function touchInit() {
 	});
 	$('#emoji__grid').on('click', e => e.stopPropagation());
 
+	function addExitXtoHandle(el, fn) {
+		const x = el.$('.handle').$('<span class="handle_exit-x">×</span>');
+		x.on('click', fn);
+	}
+
+	addExitXtoHandle($('#emoji__grid'), () => grid(false));
+	addExitXtoHandle($('#emoji__options'), () => options(false));
+
 	const draggableGrid = Draggable.create('#emoji__grid', {
 		type:'y',
 		trigger:'#emoji__grid-handle',
@@ -71,7 +78,7 @@ export default function touchInit() {
 
 	const draggableOptions = Draggable.create('#emoji__options', {
 		type:'x',
-		trigger:'#emoji__options .heading',
+		trigger:'#emoji__options .heading, #emoji__options .handle',
 		onDragEnd: function () { options(this.x < 100) }
 	})[0];
 }

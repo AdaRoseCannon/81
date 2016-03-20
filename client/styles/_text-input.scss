@@ -1,33 +1,49 @@
+.text-input, .text-input__suffix, .text-input__prefix {
+	margin: 0.2em;
+	background: white;
+	border: 1px solid grey;
+	border-radius: 0.2em;
+	padding: 0.2em 0.5em;
+	font-size: inherit;
+	color: black;
+    height: 1.2em;
+    line-height: 1.2em;
+}
+
+.text-input__suffix {
+	border-left-width: 0;
+	border-top-left-radius: 0;
+	border-bottom-left-radius: 0;
+	margin-left: 0;
+}
+
+.text-input__prefix {
+	border-right-width: 0;
+	border-top-right-radius: 0;
+	border-bottom-right-radius: 0;
+	margin-right: 0;
+}
+
 .text-input {
 	box-shadow: 0 0.1em 0.5em -0.3em black inset;
-	width: 5em;
-
-	&, & + .text-input__suffix {
-		margin: 0.2em;
-		background: white;
-		border: 1px solid grey;
-		border-radius: 0.2em;
-		padding: 0.2em 0.5em;
-		font-size: inherit;
-		color: black;
-	}
-
-	& + .text-input__suffix {
-		border-top-left-radius: 0;
-		border-bottom-left-radius: 0;
-		margin-left: 0;
-	}
+	width: 3em;
 
 	&.emoji-input {
-		letter-spacing: 0.3em;
+		letter-spacing: 0.2em;
 		display: flex;
 		flex-grow: 1;
 		justify-content: flex-end;
+		font-size: 1em;
+		overflow: hidden;
 
 		img {
 			margin-left: 0.3em;
 			border-left: 2px solid transparent;
 			pointer-events: inherit;
+			width: 1em;
+			height:1em;
+			flex-shrink: 0;
+			flex-grow: 0;
 		}
 	}
 
@@ -35,6 +51,12 @@
 		border-top-right-radius: 0;
 		border-bottom-right-radius: 0;
 		margin-right: 0;
+	}
+
+	&.has-prefix {
+		border-top-left-radius: 0;
+		border-bottom-left-radius: 0;
+		margin-left: 0;
 	}
 
 	.spacer {
