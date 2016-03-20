@@ -1,21 +1,33 @@
 .text-input {
-	margin: 0.2em;
-	background: white;
-	border: 1px solid grey;
 	box-shadow: 0 0.1em 0.5em -0.3em black inset;
-	border-radius: 0.2em;
-	justify-content: center;
-	padding: 0.2em 0.5em;
 	width: 5em;
-	font-size: inherit;
+
+	&, & + .text-input__suffix {
+		margin: 0.2em;
+		background: white;
+		border: 1px solid grey;
+		border-radius: 0.2em;
+		padding: 0.2em 0.5em;
+		font-size: inherit;
+		color: black;
+	}
+
+	& + .text-input__suffix {
+		border-top-left-radius: 0;
+		border-bottom-left-radius: 0;
+		margin-left: 0;
+	}
 
 	&.emoji-input {
 		letter-spacing: 0.3em;
 		display: flex;
 		flex-grow: 1;
+		justify-content: flex-end;
 
 		img {
 			margin-left: 0.3em;
+			border-left: 2px solid transparent;
+			pointer-events: inherit;
 		}
 	}
 
@@ -25,11 +37,15 @@
 		margin-right: 0;
 	}
 
-	& + .text-input__suffix {
-		border-top-left-radius: 0;
-		border-bottom-left-radius: 0;
-		margin-left: 0;
+	.spacer {
+		padding-left: 1em;
+		flex-grow: 1;
 	}
+}
+
+.text-input_wrapper {
+	display: flex;
+	flex-grow: 1;
 }
 
 .hidden-input {
@@ -40,6 +56,18 @@
 	z-index: -1;
 }
 
-#emoji__text-input-focsable:focus + .text-input, .text-input:focus {
+@keyframes cursor {
+	from { border-left-color:blue; } to { border-left-color:transparent; }
+}
+
+#emoji__text-input-focsable:focus + .text-input, .text-input:focus,
+#emoji__text-input-focsable:active + .text-input, .text-input:active {
 	box-shadow: 0 0.1em 0.5em -0.3em black, inset 0 0 0.2em blue;
+
+	.cursor {
+		border-left: 2px solid blue;
+		border-color: blue transparent transparent transparent;
+		margin-left: 0.2em;
+		animation: 1s 0s infinite cursor steps(2, start);
+	}
 }

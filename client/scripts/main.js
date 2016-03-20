@@ -16,22 +16,38 @@ Promise.all([
 	addScript('https://twemoji.maxcdn.com/2/twemoji.min.js').promise
 ]).then(() => {
 
+	function tapOnChar(e) {
+		if (e.target !== e.currentTarget) cursorPos = e.target.prevAll().length;
+		setChar();
+	}
+
 	let cursorPos = 0;
 	const textInput = $('#emoji__text-input');
 	const message = [];
 	function setChar(str) {
+		if (cursorPos < 0) cursorPos = 0;
+		if (cursorPos > message.length) cursorPos = message.length;
 		if (str) {
-			message[cursorPos] = str + skinToneSelector.dataset.value;
+			message.splice(cursorPos, 0, str + skinToneSelector.dataset.value);
 			cursorPos = cursorPos + 1;
 		}
-		textInput.innerHTML = message.map(m => combineEmojis(m)).join('') + '<span class="End Spacer"></span>';
-		textInput.$$('img')[]
+		textInput.innerHTML = message.map(m => combineEmojis(m)).join('') + '<span class="spacer"></span>';
+		textInput.childNodes[cursorPos].classList.add('cursor');
 	}
 	$('#emoji__text-input').on('backspace', () => {
 		cursorPos--;
 		message.splice(cursorPos, 1);
 		setChar();
-	});
+	})
+	.on('back-cursor', () => {
+		cursorPos--;
+		setChar();
+	})
+	.on('forward-cursor', () => {
+		cursorPos++;
+		setChar();
+	})
+	.on('click', tapOnChar);
 
 	const skinTone = ['', '🏼', '🏿', '🏽', '🏾', '🏻'];
 	const skinToneSelector = $('<ul id="skin-tone-selector">');

@@ -28,12 +28,30 @@ export default function touchInit() {
 	});
 	$('#emoji__text-input-focsable').on('keydown', e => {
 		const key = e.keyCode || e.charCode;
-		if( key == 8 || key == 46 ) {
+		let preventDefault = false;
+		if ( key === 8 || key === 46 ){
+			preventDefault = true;
 			$('#emoji__text-input').fire('backspace');
+		}
+		if (key === 37) {
+			preventDefault = true;
+			$('#emoji__text-input').fire('back-cursor');
+		}
+		if (key === 39) {
+			preventDefault = true;
+			$('#emoji__text-input').fire('forward-cursor');
+		}
+		if (preventDefault) {
 			e.preventDefault();
 			return false;
 		}
 	})
+	$('#emoji__text-input-backspace').on('click', e => {
+		$('#emoji__text-input').fire('backspace');
+		e.preventDefault();
+		e.stopPropagation();
+		$('#emoji__text-input-focsable').focus();
+	});
 	document.body.on('click', () => {
 		grid(false);
 		options(false);
