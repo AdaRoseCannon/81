@@ -6,10 +6,10 @@ function genMessagesForId(profile) {
 	return 'v1.0.0_messages_for_' + profile.id;
 }
 
-function readMessages(user) {
+function readMessages(user, start = 0, amount = 10) {
 	return getProfileFromHandle(user)
 	.then(profile => genMessagesForId(profile))
-	.then(key => redis.redisLRange(key, -100, 0));
+	.then(key => redis.redisLRange(key, -(amount + start), -start));
 }
 
 function pushMessage(user, string) {

@@ -35,15 +35,31 @@ app.post('/send-message', function (req,res) {
 			error: 'No username param'
 		});
 	}
+
 	if (!req.body.message) {
 		res.status(500);
 		return res.json({
 			error: 'No message param'
 		});
 	}
-	require('./messages.js').pushMessage(req.body.username, req.body.message)
+
+	let user = 'Anonymous';
+	if (req.user && req.user.username) {
+		user = req.user.username;
+	}
+	require('./messages.js').pushMessage(req.body.username, JSON.stringify(
+		{
+			type: 'message',
+			message: req.body.message,
+			from: user,
+			timestamp: Date.now()
+		}
+	))
 	.then(m => {
-		res.json(m)
+		res.json({
+			success: true,
+			noOfMessages: m
+		});
 	})
 	.catch(e => errorResponse(res, e));
 });
@@ -57,9 +73,13 @@ app.all('/get-messages', require('connect-ensure-login').ensureLoggedIn('/auth/t
 		});
 	}
 	require('./messages.js')
-	.readMessages(req.user.username)
+	.readMessages(req.user.username, req.query.start, req.query.amount)
 	.then(m => {
-		res.json(m)
+		res.json(m.map(str => {
+			try {
+				JSON.parse(str);
+			} catch (e) {}
+		}));
 	})
 	.catch(e => errorResponse(res, e));
 });
