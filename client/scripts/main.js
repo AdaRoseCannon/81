@@ -129,7 +129,7 @@ Promise.all([
 				)
 			)}`, {
 		  credentials: 'same-origin'
-		}).then(e => console.log(e))
+	  }).catch(e => console.log(e))
 	}
 
 	const pushButton = $('#emoji__push');
