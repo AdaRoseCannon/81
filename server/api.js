@@ -1,3 +1,5 @@
+'use strict';
+
 const express = require('express');
 const app = express.Router();
 
@@ -26,8 +28,6 @@ app.get('/poke', function (req,res) {
 });
 
 app.post('/send-message', function (req,res) {
-
-	console.log(req.body);
 
 	if (!req.body.username) {
 		res.status(500);
