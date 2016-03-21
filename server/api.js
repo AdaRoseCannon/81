@@ -2,7 +2,8 @@
 
 const express = require('express');
 const app = express.Router();
-
+const messagesApi = require('./messages.js');
+const pushApi = require('./push.js');
 app.use(require('body-parser').json());
 
 function errorResponse(res, e) {
@@ -20,7 +21,7 @@ app.get('/poke', function (req,res) {
 			error: 'No username param'
 		});
 	}
-	require('./push.js')(req.query.username)
+	pushApi(req.query.username)
 	.then(() => {
 		res.json({success: true})
 	})
@@ -47,7 +48,7 @@ app.post('/send-message', function (req,res) {
 	if (req.user && req.user.username) {
 		user = req.user.username;
 	}
-	require('./messages.js').pushMessage(req.body.username, JSON.stringify(
+	messagesApi.pushMessage(req.body.username, JSON.stringify(
 		{
 			type: 'message',
 			message: req.body.message,
@@ -56,6 +57,7 @@ app.post('/send-message', function (req,res) {
 		}
 	))
 	.then(m => {
+		pushApi(req.body.username)
 		res.json({
 			success: true,
 			noOfMessages: m
@@ -72,7 +74,7 @@ app.all('/get-messages', require('connect-ensure-login').ensureLoggedIn('/auth/t
 			error: 'Not logged in'
 		});
 	}
-	require('./messages.js')
+	messagesApi
 	.readMessages(req.user.username, req.query.start, req.query.amount)
 	.then(m => {
 		res.json(m.map(str => {

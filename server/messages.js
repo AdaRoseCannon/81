@@ -6,7 +6,9 @@ function genMessagesForId(profile) {
 	return 'v1.0.0_messages_for_' + profile.id;
 }
 
-function readMessages(user, start = 0, amount = 10) {
+function readMessages(user, start, amount) {
+	amount = amount || 10;
+	start = start || 0;
 	return getProfileFromHandle(user)
 	.then(profile => genMessagesForId(profile))
 	.then(key => redis.redisLRange(key, -(amount + start), -start));
@@ -21,4 +23,4 @@ function pushMessage(user, string) {
 module.exports = {
 	readMessages,
 	pushMessage
-}
+};
