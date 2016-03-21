@@ -85,7 +85,7 @@ app.all('/get-messages', require('connect-ensure-login').ensureLoggedIn('/auth/t
 			}
 		}));
 	})
-	.then(m => m.filter(l => typeof l !== 'object'))
+	.then(m => m.filter(l => typeof l === 'object'))
 	.catch(e => errorResponse(res, e));
 });
 
