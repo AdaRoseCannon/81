@@ -1,3 +1,9 @@
+/* global Header */
+
+const jsonHeader = new Header({
+	'Content-Type': 'application/json'
+});
+
 function checkForErrors(r) {
 	if (!r.ok) {
 		return r.json().then(j => {
@@ -40,6 +46,7 @@ function sendMesage(username, message) {
 	return fetch('/api/send-message', {
 		method: 'POST',
 		credentials: 'same-origin',
+		header: jsonHeader,
 		body: JSON.stringify({username, message})
 	})
 	.then(checkForErrors);
