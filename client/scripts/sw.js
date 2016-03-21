@@ -20,6 +20,11 @@ self.addEventListener('push', function(event) {
 		return;
 	}
 
+	if (!('showNotification' in ServiceWorkerRegistration.prototype)) {
+		console.warn('Notifications aren\'t supported.');
+		return;
+    }
+
 	let data = {};
 	if (event.data) {
 		data = event.data.json();
@@ -28,15 +33,14 @@ self.addEventListener('push', function(event) {
 	const message = data.message || 'Here\'s something you might want to check out.';
 	const icon = data.icon || 'launcher-icon-4x.png';
 
-	const notification = new Notification(title, {
+	event.waitUntil(self.registration.showNotification(title, {
 		body: message,
-		tag: 'simple-push-demo-notification',
 		icon: icon
-	});
-
-	notification.addEventListener('click', function() {
-		if (clients.openWindow) {
-			clients.openWindow('https://81.ada.is/');
-		}
-	});
+	}).then(function ({notification}) {
+		notification.addEventListener('click', function() {
+			if (clients.openWindow) {
+				clients.openWindow('https://81.ada.is/');
+			}
+		});
+	}));
 });
