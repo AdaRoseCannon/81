@@ -8,7 +8,7 @@
     "build:js": "./parallel.sh \"npm run build:sw\" \"npm run build:main\"",
     "build:other": "mkdir -p build && cp client/* build/ || true && cp -r client/images build/images && cp ./node_modules/sw-toolbox/sw-toolbox.* ./build/",
     "watch": "./parallel.sh \"nodemon --watch ./client/scripts -e js --exec npm run build:js\" \"nodemon --watch ./client/styles -e scss --exec npm run build:styles\" \"nodemon --watch ./client -e css,html,png,json --exec npm run build:other\" \"npm run start\"",
-    "build": "npm run clean; ./parallel.sh \"npm run build:other\" \"npm run build:main\" \"npm run build:styles\"",
+    "build": "npm run clean; ./parallel.sh \"npm run build:other\" \"npm run build:js\" \"npm run build:styles\"",
     "build:styles": "node-sass ./client/styles/main.scss -o ./build/styles/",
     "deploy": "npm run build && git-directory-deploy --directory ./build",
     "clean": "rm -rf ./build",
