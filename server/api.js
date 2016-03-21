@@ -47,15 +47,16 @@ app.post('/send-message', function (req,res) {
 	});
 });
 
-app.all('/get-messages', function (req,res) {
+app.all('/get-messages', require('connect-ensure-login').ensureLoggedIn('/auth/twitter'), function (req,res) {
 
-	if (!req.query.username) {
+	if (!req.user) {
 		res.status(500);
 		return res.json({
-			error: 'No username param'
+			error: 'Not logged in'
 		});
 	}
-	require('./messages.js').readMessages(req.query.username)
+	require('./messages.js')
+	.readMessages(req.user.username)
 	.then(m => {
 		res.json(m)
 	})

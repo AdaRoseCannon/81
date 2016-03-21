@@ -7,13 +7,13 @@ function genMessagesForId(profile) {
 }
 
 function readMessages(user) {
-	getProfileFromHandle(user)
+	return getProfileFromHandle(user)
 	.then(profile => genMessagesForId(profile))
 	.then(key => redis.redisLRange(key, -100, 0));
 }
 
 function pushMessage(user, string) {
-	getProfileFromHandle(user)
+	return getProfileFromHandle(user)
 	.then(profile => genMessagesForId(profile))
 	.then(key => redis.redisLPUSH(key, string));
 }
