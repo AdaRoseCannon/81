@@ -77,6 +77,7 @@ app.all('/get-messages', require('connect-ensure-login').ensureLoggedIn('/auth/t
 	messagesApi
 	.readMessages(req.user.username, req.query.start, req.query.amount)
 	.then(m => {
+		console.log(m);
 		res.json(m.map(str => {
 			try {
 				return JSON.parse(str);
