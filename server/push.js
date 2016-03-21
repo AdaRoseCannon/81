@@ -12,7 +12,7 @@ module.exports = handle =>
 		if (!profile.pushUrl) {
 			throw ('No push url');
 		}
-		return profile.pushUrl.endPoint.split('/').pop();
+		return profile.pushUrl.endpoint.split('/').pop();
 	})
 	.then(id => fetch('https://android.googleapis.com/gcm/send', {
 		method: 'POST',
