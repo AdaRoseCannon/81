@@ -85,7 +85,7 @@ app.all('/get-messages', require('connect-ensure-login').ensureLoggedIn('/auth/t
 			}
 		}));
 	})
-	.filter(m => m !== undefined)
+	.then(m => m.filter(m => m !== undefined))
 	.catch(e => errorResponse(res, e));
 });
 
