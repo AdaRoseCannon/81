@@ -9,7 +9,7 @@
     flex-direction: column-reverse;
     align-items: baseline;
 	height: 100%;
-	overflow: scroll;
+    overflow: auto;
 }
 
 #emoji__messages > li {
