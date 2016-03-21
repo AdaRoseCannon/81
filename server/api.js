@@ -79,10 +79,13 @@ app.all('/get-messages', require('connect-ensure-login').ensureLoggedIn('/auth/t
 	.then(m => {
 		res.json(m.map(str => {
 			try {
-				JSON.parse(str);
-			} catch (e) {}
+				return JSON.parse(str);
+			} catch (e) {
+				return undefined;
+			}
 		}));
 	})
+	.filter(m => m !== undefined)
 	.catch(e => errorResponse(res, e));
 });
 
