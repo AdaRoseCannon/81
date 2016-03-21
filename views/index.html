@@ -48,7 +48,6 @@
 		<div id="emoji__content">
 			<ul id="emoji__messages">
 				{{#if user}}
-				<li class="received" timestamp="0" data-from="System">Your recieved messages go here</li>
 				{{else}}
 				<script>document.write(`
 					<li class="received" timestamp="${Date.now()}">You currently cannot recieve messages, as you are not logged in with Twitter. <div><a href="/auth/twitter"><button class="emoji__register">Login With Twitter</button></a></div></li>

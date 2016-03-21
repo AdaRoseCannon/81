@@ -10,6 +10,9 @@ import addScript from './lib/add-script';
 import * as settings from './lib/settings';
 import touchInit from './lib/touch';
 import swPromise from './lib/sw.js';
+import {
+	sendSubscriptionToServer
+} from './lib/api';
 
 Promise.all([
 	addScript('https://cdn.rawgit.com/AdaRoseEdwards/dirty-dom/v1.3.1/build/dirty-dom-lib.min.js').promise,
@@ -118,19 +121,6 @@ Promise.all([
 
 	// Add button interactions
 	touchInit();
-
-	function sendSubscriptionToServer(subscription) {
-
-		// make fetch request with cookies to get user id.
-		fetch(`/api/subscribe?sub=${
-			encodeURIComponent(
-				JSON.stringify(
-					subscription.toJSON()
-				)
-			)}`, {
-		  credentials: 'same-origin'
-	  }).catch(e => console.log(e))
-	}
 
 	const pushButton = $('#emoji__push');
 	if (pushButton) {

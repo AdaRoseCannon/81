@@ -7,10 +7,16 @@ import * as localforage from 'localforage';
 console.log(localforage);
 
 // Try network but fallback to cache
-toolbox.router.default = toolbox.networkFirst;
+toolbox.router.default = toolbox.fastest;
 
 // Data should query the network first
-toolbox.router.any('/api/*', toolbox.networkOnly);
+toolbox.router.any('/api/*', function (request) {
+	if ( (new URL(request.url)).search.split('&').indexOf('sw-cache') !== -1 ) {
+		return toolbox.fastest(request);
+	} else {
+		return toolbox.networkFirst(request);
+	}
+});
 
 // Data should query the network first
 toolbox.router.any('/auth/*', toolbox.networkOnly);
