@@ -15,8 +15,7 @@ const redis = (function () {
 }());
 const redisStore = new RedisStore({
 	client : redis
-})
-
+});
 
 module.exports = {
 	redisStore,
