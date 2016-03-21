@@ -25,13 +25,15 @@
 			<input class="text-input has-prefix" type="text" id="emoji__recipient" placeholder="Recipient"></input>
 			<button id="emoji__options-button">⚙</button>
 		</div>
+		{{#if user}}
+		<div id="emoji__push" class="banner" style="display: none;">Enable Push Notifications</div>
+		{{/if}}
 		<div id="emoji__options" class="modal">
 			<div id="emoji__options-handle" class="handle"></div>
 			<h1 class="heading">Settings</h1>
 			<div class="content">
 				{{#if user}}
 				<a href="/auth/logout"><button class="emoji__register">Logout</button></a>
-				<button id="emoji__push">Enable Push Notifications</button>
 				{{else}}
 				<a href="/auth/twitter"><button class="emoji__register">Login With Twitter</button></a>
 				{{/if}}

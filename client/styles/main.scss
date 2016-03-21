@@ -72,8 +72,10 @@ img.emoji {
 	position: relative;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    overflow: auto;
+	box-shadow: 0 0.1em 0.5em -0.3em black inset;
 	flex-grow: 1;
+	background: white;
 }
 
 #emoji__options {
@@ -84,6 +86,17 @@ img.emoji {
 		font-size: 2em;
 		line-height: 1em;
 	}
+}
+
+.banner {
+	margin-bottom: -1.5em;
+	height: 1.5em;
+	z-index: 100;
+	box-shadow: 0 0.2em 0.5em -0.3em black;
+	background: wheat;
+	padding: 0 1em;
+	text-decoration: underline;
+	cursor: pointer;
 }
 
 #emoji__header {
