@@ -1,6 +1,6 @@
 /* global Header */
 
-const jsonHeader = new Header({
+const jsonHeader = new Headers({
 	'Content-Type': 'application/json'
 });
 
