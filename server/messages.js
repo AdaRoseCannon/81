@@ -15,7 +15,7 @@ function readMessages(user) {
 function pushMessage(user, string) {
 	return getProfileFromHandle(user)
 	.then(profile => genMessagesForId(profile))
-	.then(key => redis.redisLPUSH(key, string));
+	.then(key => redis.redisLPush(key, string));
 }
 
 module.exports = {
