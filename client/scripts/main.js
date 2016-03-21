@@ -11,13 +11,19 @@ import * as settings from './lib/settings';
 import touchInit from './lib/touch';
 import swPromise from './lib/sw.js';
 import {
-	sendSubscriptionToServer
+	sendSubscriptionToServer,
+	sendMesage,
+	getMessages
 } from './lib/api';
 
 Promise.all([
 	addScript('https://cdn.rawgit.com/AdaRoseEdwards/dirty-dom/v1.3.1/build/dirty-dom-lib.min.js').promise,
 	addScript('https://twemoji.maxcdn.com/2/twemoji.min.js').promise
 ]).then(() => {
+
+	function warn(...message) {
+		console.warn(message.join(', '));
+	}
 
 	function tapOnChar(e) {
 		if (e.target !== e.currentTarget) cursorPos = e.target.prevAll().length;
@@ -37,7 +43,8 @@ Promise.all([
 		textInput.innerHTML = message.map(m => combineEmojis(m)).join('') + '<span class="spacer"></span>';
 		textInput.childNodes[cursorPos].classList.add('cursor');
 	}
-	$('#emoji__text-input').on('backspace', () => {
+	$('#emoji__text-input')
+	.on('backspace', () => {
 		cursorPos--;
 		message.splice(cursorPos, 1);
 		setChar();
@@ -51,6 +58,20 @@ Promise.all([
 		setChar();
 	})
 	.on('click', tapOnChar);
+
+	$('#emoji__submit')
+	.on('click', function () {
+		const username = $('#emoji__recipient').value;
+		if (username === '') {
+			return warn('No User');
+		}
+		sendMesage(username, message.join(''))
+		.catch(e => warn(e));
+	})
+
+	getMessages.then(m => {
+		m.forEach(message => $('#emoji__messages').$(`<li class="received" timestamp=${message.timestamp} data-sender="${message.from}">message.message</li>`));
+	});
 
 	const skinTone = ['', '🏼', '🏿', '🏽', '🏾', '🏻'];
 	const skinToneSelector = $('<ul id="skin-tone-selector">');
