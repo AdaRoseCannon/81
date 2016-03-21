@@ -25,7 +25,7 @@ function sendSubscriptionToServer(subscription) {
 }
 
 // get messages from the server
-function getMessages({start, amount, cache}) {
+function getMessages({start, amount, cache} = {}) {
 	return fetch(`/api/get-messages?start=${start || 0}&amount=${amount || 10}${cache ? '&cache' : ''}`)
 	.then(checkForErrors)
 	.then(r => r.json())
