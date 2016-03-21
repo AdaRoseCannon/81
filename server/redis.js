@@ -12,7 +12,15 @@ const redis = (function () {
 	}
 }());
 
+
+const session = require('express-session');
+const RedisStore = require('connect-redis')(session);
+const redisStore = new RedisStore({
+	client : redis
+})
+
 module.exports = {
+	redisStore,
 	redisGet: denodeify(redis.get).bind(redis),
 	redisSet: denodeify(redis.set).bind(redis)
 };

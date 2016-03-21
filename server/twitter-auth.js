@@ -3,12 +3,11 @@ const Strategy = require('passport-twitter').Strategy;
 const express = require('express');
 const app = express();
 const appSecret = process.env.APP_SECRET || 'oh dear oh dear';
-const session = require('express-session');
-const RedisStore = require('connect-redis')(session);
 const extend = require('util')._extend;
 const redis = require('redis');
 const redisGet = redis.redisGet;
 const redisSet = redis.redisSet;
+const redisStore = redis.redisStore;
 
 function genIdToProfile(profile) {
 	return 'v1.0.1_profile_by_number_' + profile.id;
@@ -101,9 +100,7 @@ app.use(require('express-session')({
 	secret: appSecret,
 	resave: true,
 	saveUninitialized: true,
-	store: new RedisStore({
-		client : redis
-	})
+	store: redisStore
 }));
 
 // Initialize Passport and restore authentication state, if any, from the
