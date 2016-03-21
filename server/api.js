@@ -4,7 +4,7 @@ const express = require('express');
 const app = express.Router();
 const messagesApi = require('./messages.js');
 const pushApi = require('./push.js');
-app.use(require('body-parser').json());
+const bp = require('body-parser');
 
 function errorResponse(res, e) {
    res.status(500);
@@ -12,6 +12,8 @@ function errorResponse(res, e) {
 	   error: e.message
    });
 }
+
+app.use(bp.json());
 
 app.get('/poke', function (req,res) {
 
@@ -29,8 +31,6 @@ app.get('/poke', function (req,res) {
 });
 
 app.post('/send-message', function (req,res) {
-
-	console.log(req.body);
 
 	if (!req.body.username) {
 		res.status(500);
