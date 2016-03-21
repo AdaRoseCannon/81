@@ -171,7 +171,7 @@ function getProfileFromHandle(username) {
 	.then(id => {
 
 		if (!id) {
-			throw Error('No user by that username');
+			throw Error('No user by that username: ' + username);
 		}
 
 		return redisGet(genIdToProfile({id}));
