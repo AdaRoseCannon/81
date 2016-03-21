@@ -21,24 +21,7 @@ app.get('/', (req, res) => res.render('index', {
 	user: !!req.user
 }));
 
-app.get('/api/poke', function (req,res) {
-
-	if (!req.query.username) {
-		return res.json({
-			error: 'No username param'
-		});
-	}
-	require('./push.js')(req.query.username)
-	.then(() => {
-		res.json({success: true})
-	})
-	.catch(e => {
-		res.status(500);
-		res.json({
-			error: e.message
-		});
-	});
-});
+app.use('/api', require('./api'));
 
 app.use('*', (req,res) => {
 	res.status(404);

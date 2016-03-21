@@ -20,5 +20,7 @@ const redisStore = new RedisStore({
 module.exports = {
 	redisStore,
 	redisGet: denodeify(redis.get).bind(redis),
-	redisSet: denodeify(redis.set).bind(redis)
+	redisSet: denodeify(redis.set).bind(redis),
+	redisLPush: denodeify(redis.lpush).bind(redis),
+	redisLRange: denodeify(redis.lrange).bind(redis)
 };
