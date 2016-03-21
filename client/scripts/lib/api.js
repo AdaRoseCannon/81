@@ -46,7 +46,7 @@ function sendMesage(username, message) {
 	return fetch('/api/send-message', {
 		method: 'POST',
 		credentials: 'same-origin',
-		header: jsonHeader,
+		headers: jsonHeader,
 		body: JSON.stringify({username, message})
 	})
 	.then(checkForErrors);
