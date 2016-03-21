@@ -1,5 +1,7 @@
 const REDIS = require('redis');
 const denodeify = require('denodeify');
+const session = require('express-session');
+const RedisStore = require('connect-redis')(session);
 const redis = (function () {
 	if (process.env.REDISTOGO_URL) {
 		const rtg = require('url').parse(process.env.REDISTOGO_URL);
@@ -11,13 +13,10 @@ const redis = (function () {
 	 	return REDIS.createClient();
 	}
 }());
-
-
-const session = require('express-session');
-const RedisStore = require('connect-redis')(session);
 const redisStore = new RedisStore({
 	client : redis
 })
+
 
 module.exports = {
 	redisStore,
