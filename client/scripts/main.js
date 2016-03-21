@@ -69,7 +69,7 @@ Promise.all([
 		.catch(e => warn(e));
 	})
 
-	getMessages.then(m => {
+	getMessages().then(m => {
 		m.forEach(message => $('#emoji__messages').$(`<li class="received" timestamp=${message.timestamp} data-sender="${message.from}">message.message</li>`));
 	});
 
