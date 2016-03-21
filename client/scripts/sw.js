@@ -16,7 +16,7 @@ toolbox.router.any('/api/*', toolbox.networkOnly);
 toolbox.router.any('/auth/*', toolbox.networkOnly);
 
 self.addEventListener('push', function(event) {
-	if (!(self.Notification && self.notification.permission === 'granted')) {
+	if (!(self.Notification && self.Notification.permission === 'granted')) {
 		return;
 	}
 
