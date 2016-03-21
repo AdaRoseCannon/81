@@ -70,7 +70,7 @@ Promise.all([
 	})
 
 	getMessages().then(m => {
-		m.forEach(message => $('#emoji__messages').$(`<li class="received" timestamp=${message.timestamp} data-sender="${message.from}">message.message</li>`));
+		m.forEach(message => $('#emoji__messages').$(`<li class="received" timestamp=${message.timestamp} data-sender="${message.from}">${message.message}</li>`));
 	});
 
 	const skinTone = ['', '🏼', '🏿', '🏽', '🏾', '🏻'];

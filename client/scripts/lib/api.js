@@ -32,7 +32,7 @@ function getMessages({start, amount, cache} = {}) {
 	.then(json => {
 
 		// store in idb then return
-		return json;
+		return json.filter(m => typeof m === 'object');
 	});
 }
 
