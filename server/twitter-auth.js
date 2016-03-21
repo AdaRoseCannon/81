@@ -3,25 +3,12 @@ const Strategy = require('passport-twitter').Strategy;
 const express = require('express');
 const app = express();
 const appSecret = process.env.APP_SECRET || 'oh dear oh dear';
-const REDIS = require('redis');
 const session = require('express-session');
 const RedisStore = require('connect-redis')(session);
-const denodeify = require('denodeify');
 const extend = require('util')._extend;
-const redis = (function () {
-	if (process.env.REDISTOGO_URL) {
-		const rtg = require('url').parse(process.env.REDISTOGO_URL);
-		const redis = REDIS.createClient(rtg.port, rtg.hostname);
-
-		redis.auth(rtg.auth.split(':')[1]);
-		return redis;
-	} else {
-	 	return REDIS.createClient();
-	}
-}());
-
-const redisGet = denodeify(redis.get).bind(redis);
-const redisSet = denodeify(redis.set).bind(redis);
+const redis = require('redis');
+const redisGet = redis.redisGet;
+const redisSet = redis.redisSet;
 
 function genIdToProfile(profile) {
 	return 'v1.0.1_profile_by_number_' + profile.id;
@@ -149,23 +136,9 @@ app.get('/auth/detail',
 			});
 		}
 
-		redisGet(genUserNameToId({username: req.query.username}))
-		.then(id => {
-
-			if (!id) {
-				return res.json({
-					error: 'No user by that username'
-				});
-			}
-
-			redisGet(genIdToProfile({id}))
-			.then(str => JSON.parse(str))
-			.then(profile => {
-				res.json(getSummary(profile));
-			})
-			.catch(e => res.json({
-				error: e.message
-			}));
+		getProfileFromHandle(req.query.username)
+		.then(profile => {
+			res.json(getSummary(profile));
 		})
 		.catch(e => res.json({
 			error: e.message
@@ -199,4 +172,19 @@ app.get('/auth/logout', function (req, res) {
 	res.redirect('/');
 });
 
+function getProfileFromHandle(username) {
+
+	return redisGet(genUserNameToId({username}))
+	.then(id => {
+
+		if (!id) {
+			throw Error('No user by that username');
+		}
+
+		return redisGet(genIdToProfile({id}));
+	})
+	.then(str => JSON.parse(str));
+}
+
 module.exports = app;
+module.exports.getProfileFromHandle = getProfileFromHandle;
