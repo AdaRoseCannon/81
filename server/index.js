@@ -1,7 +1,7 @@
 /**
  * Do some push notifications and twitter auth
  */
-
+require('dotenv').config();
 global.serverUrl = process.env.SERVER_URL || 'http://localhost:3000';
 const port = process.env.PORT || 3000;
 
@@ -33,4 +33,4 @@ app.use('*', (req,res) => {
 });
 
 app.listen(port);
-console.log('listenting on: ' + port);
+console.log('listening on: ' + port);

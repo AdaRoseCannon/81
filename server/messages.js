@@ -8,10 +8,10 @@ function genMessagesForId(profile) {
 
 function readMessages(user, start, amount) {
 	amount = amount || 10;
-	start = start || 0;
+	start = start || 1;
 	return getProfileFromHandle(user)
 	.then(profile => genMessagesForId(profile))
-	.then(key => redis.redisLRange(key, -(amount + start), -start));
+	.then(key => redis.redisLRange(key, -((amount - 1) + start), -start));
 }
 
 function pushMessage(user, string) {

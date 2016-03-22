@@ -1,5 +1,7 @@
 /* global Header */
 
+import * as localforage from 'localforage';
+
 const jsonHeader = new Headers({
 	'Content-Type': 'application/json'
 });
@@ -32,7 +34,7 @@ function sendSubscriptionToServer(subscription) {
 
 // get messages from the server
 function getMessages({start, amount, cache} = {}) {
-	return fetch(`/api/get-messages?start=${start || 0}&amount=${amount || 10}${cache ? '&cache' : ''}`)
+	return fetch(`/api/get-messages?start=${start || 1}&amount=${amount || 10}${cache ? '&cache' : ''}`)
 	.then(checkForErrors)
 	.then(r => r.json())
 	.then(json => {

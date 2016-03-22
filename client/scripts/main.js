@@ -65,16 +65,8 @@ Promise.all([
 		if (username === '') {
 			return warn('No User');
 		}
-		sendMesage(username, message.join(''))
+		sendMesage(username, message)
 		.catch(e => warn(e));
-	})
-
-	getMessages().then(m => {
-		m.forEach(message => {
-			const li = $(`<li class="received" timestamp=${message.timestamp} data-sender="${message.from}">${message.message}</li>`);
-			twemoji(li);
-			$('#emoji__messages').prependChild(li);
-		});
 	});
 
 	const skinTone = ['', '🏼', '🏿', '🏽', '🏾', '🏻'];
@@ -149,6 +141,14 @@ Promise.all([
 
 	// Set up push notification service
 	pushNotifications();
+
+	getMessages().then(m => {
+		m.forEach(message => {
+			if (message.message.constructor !== Array) return;
+			const li = $(`<li class="received" timestamp=${message.timestamp} data-sender="${message.from}">${message.message.map(m => combineEmojis(m)).join('')}</li>`);
+			$('#emoji__messages').appendChild(li);
+		});
+	});
 })
 .catch(e => {
 
