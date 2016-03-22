@@ -9,9 +9,8 @@ import selectablePopup from './lib/selectable-popup';
 import addScript from './lib/add-script';
 import * as settings from './lib/settings';
 import touchInit from './lib/touch';
-import swPromise from './lib/sw.js';
+import pushNotifications from './lib/push-notifications';
 import {
-	sendSubscriptionToServer,
 	sendMesage,
 	getMessages
 } from './lib/api';
@@ -71,7 +70,8 @@ Promise.all([
 	})
 
 	getMessages().then(m => {
-		m.forEach(message => $('#emoji__messages').$(`<li class="received" timestamp=${message.timestamp} data-sender="${message.from}">${message.message}</li>`));
+		const li = m.forEach(message => $('#emoji__messages').$(`<li class="received" timestamp=${message.timestamp} data-sender="${message.from}">${message.message}</li>`));
+		twemoji(li);
 	});
 
 	const skinTone = ['', '🏼', '🏿', '🏽', '🏾', '🏻'];
@@ -144,55 +144,8 @@ Promise.all([
 	// Add button interactions
 	touchInit();
 
-	const pushButton = $('#emoji__push');
-	if (pushButton) {
-		pushButton.style.display = 'none';
-		pushButton.on('click', subscribe);
-	}
-	function subscribe() {
-		swPromise.then(serviceWorkerRegistration => {
-			serviceWorkerRegistration.pushManager.subscribe({userVisibleOnly: true})
-			.then(function(subscription) {
-				pushButton.style.display = 'none';
-				return sendSubscriptionToServer(subscription);
-			})
-			.catch(function(e) {
-				if (Notification.permission === 'denied') {
-					pushButton.style.display = '';
-					console.warn('Permission for Notifications was denied');
-				} else {
-
-					// A problem occurred with the subscription; common reasons
-					// include network errors, and lacking gcm_sender_id and/or
-					// gcm_user_visible_only in the manifest.
-					console.error('Unable to subscribe to push.', e);
-				}
-			});
-		});
-	}
-
-	swPromise
-	.then(serviceWorkerRegistration => serviceWorkerRegistration.pushManager.getSubscription())
-	.then(subscription => {
-		if (!subscription) {
-
-			if (pushButton) {
-
-				// Not subscribed: show subscribe button
-				pushButton.style.display = '';
-			}
-		} else {
-
-			// Update server with correct info.
-			return sendSubscriptionToServer(subscription);
-		}
-	})
-	.catch(e => {
-
-		// Service workers not supported.
-		console.log('service workers/push notifications not supported.')
-		console.log(e);
-	});
+	// Set up push notification service
+	pushNotifications();
 })
 .catch(e => {
 
