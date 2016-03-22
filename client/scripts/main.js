@@ -70,8 +70,11 @@ Promise.all([
 	})
 
 	getMessages().then(m => {
-		const li = m.forEach(message => $('#emoji__messages').$(`<li class="received" timestamp=${message.timestamp} data-sender="${message.from}">${message.message}</li>`));
-		twemoji(li);
+		m.forEach(message => {
+			const li = $(`<li class="received" timestamp=${message.timestamp} data-sender="${message.from}">${message.message}</li>`);
+			twemoji(li);
+			$('#emoji__messages').prependChild(li);
+		});
 	});
 
 	const skinTone = ['', '🏼', '🏿', '🏽', '🏾', '🏻'];
