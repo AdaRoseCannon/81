@@ -15,6 +15,9 @@ export default function touchInit() {
 	window.on('resize', () => {
 		grid();
 		options();
+		draggableOptions.update();
+		draggableMessage.update();
+		draggableGrid.update();
 	});
 
 	$('#emoji__options-button').on('click', e => {
@@ -84,7 +87,7 @@ export default function touchInit() {
 	})[0];
 
 	const messagesEl = $('#emoji__messages');
-	const messageDraggable = Draggable.create(messagesEl, {
+	const draggableMessage = Draggable.create(messagesEl, {
 		type:'y',
 		bounds: messagesEl.parentNode,
 		edgeResistance:0.65,
@@ -95,12 +98,11 @@ export default function touchInit() {
 			this.target.style.transition = '';
 		}
 	})[0];
-	window.messageDraggable = messageDraggable;
 
-	let messageDraggableTimeout;
+	let draggableMessageTimeout;
 	messagesEl.on('mousewheel', function (e) {
-		TweenLite.to(messageDraggable.target, 0.45, {ease: Back.easeOut, y: messageDraggable.y + e.wheelDelta});
-		clearTimeout(messageDraggableTimeout);
-		messageDraggableTimeout = setTimeout(() => messageDraggable.applyBounds(), 300);
+		TweenLite.to(draggableMessage.target, 0.45, {ease: Back.easeOut, y: draggableMessage.y + e.wheelDelta});
+		clearTimeout(draggableMessageTimeout);
+		draggableMessageTimeout = setTimeout(() => draggableMessage.applyBounds(), 300);
 	});
 }
