@@ -68,7 +68,7 @@ app.post('/send-message', function (req,res) {
 	.catch(e => errorResponse(res, e));
 });
 
-app.all('/get-messages', require('connect-ensure-login').ensureLoggedIn('/auth/twitter'), function (req,res) {
+app.all('/get-messages', function (req,res) {
 
 	if (!req.user) {
 		res.status(500);

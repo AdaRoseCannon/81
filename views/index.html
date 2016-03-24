@@ -20,6 +20,7 @@
 		<link href="https://81.ada.is/launcher-icon-4x.png" rel="icon" sizes="192x192" />
 	</head>
 	<body {{#if user}}class="user-logged-in"{{/if}}>
+		<ul id="emoji__notifications"></ul>
 		<div id="emoji__header">
 			<span class="text-input__prefix">@</span>
 			<input class="text-input has-prefix" type="text" id="emoji__recipient" placeholder="Recipient"></input>
@@ -54,13 +55,13 @@
 				`);</script>
 				{{/if}}
 			</ul>
-			<div class="gradient-hr"></div>
 		</div>
+		<div class="gradient-hr"></div>
 		<div id="emoji__send">
 			<span class="text-input_wrapper">
 				<button id="emoji__text-input-focsable" class="hidden-input"></button>
 				<span id="emoji__text-input" class="text-input emoji-input has-suffix"><span class="spacer cursor"></span></span>
-				<button id="emoji__text-input-backspace" class="text-input__suffix" style="height: auto;"><</button>
+				<button id="emoji__text-input-backspace" class="text-input__suffix"><</button>
 			</span>
 			<button id="emoji__submit">Send</button></div>
 		</div>

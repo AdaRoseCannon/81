@@ -70,11 +70,15 @@ img.emoji {
 
 #emoji__content {
 	position: relative;
-    display: flex;
-    flex-direction: column;
-	box-shadow: 0 0.1em 0.5em -0.3em black inset;
-	flex-grow: 1;
-	background: white;
+    box-shadow: 0 0.1em 0.5em -0.3em black inset;
+    flex-grow: 1;
+    background: white;
+	padding-top: 1em;
+
+	& > div {
+		transition: transform 1s ease;
+		transition-delay: 0.1s;
+	}
 }
 
 #emoji__options {
@@ -100,10 +104,9 @@ img.emoji {
 
 #emoji__header {
 	display: flex;
-	border-bottom: 1px solid grey;
-	margin-bottom: 0.5em;
-	align-items: center;
-	font-size: 1em;
+    align-items: center;
+    font-size: 1em;
+    flex-basis: 2.5em;
 
 	#emoji__recipient {
 		flex-grow: 1;
@@ -115,4 +118,33 @@ img.emoji {
 	text-align: center;
 	font-size: 36px;
 	display: flex;
+	flex-basis: 1.5;
+}
+
+#emoji__notifications {
+	pointer-events: none;
+	opacity: 1;
+	background: rgba(1, 1, 1, 0.6);
+	border-radius: 1em;
+	position: absolute;
+	left: 50%;
+	top: 30vh;
+	transform: translateX(-50%);
+	transition: opacity 0.3s ease;
+	z-index: 100;
+	padding: 1em;
+	list-style: none;
+	color: white;
+	min-width: 5em;
+	max-width: 100vw;
+
+	&:empty {
+		opacity: 0;
+	}
+	& .warn {
+		color: yellow;
+	}
+	& .error {
+		color: red;
+	}
 }

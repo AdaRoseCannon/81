@@ -81,4 +81,16 @@ export default function touchInit() {
 		trigger:'#emoji__options .heading, #emoji__options .handle',
 		onDragEnd: function () { options(this.x < 100) }
 	})[0];
+
+	Draggable.create('#emoji__content', {
+		type: 'scrollTop',
+		edgeResistance: 0.5,
+		throwProps: true,
+		onDragStart: function () {
+			this.target.firstChild.style.transition = 'initial';
+		},
+		onRelease: function () {
+			this.target.firstChild.style.transition = '';
+		},
+	});
 }

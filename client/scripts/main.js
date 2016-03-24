@@ -21,19 +21,31 @@ Promise.all([
 	addScript('https://cdn.polyfill.io/v2/polyfill.min.js?features=fetch,default').promise
 ]).then(() => {
 
-	function warn(...message) {
-		console.warn(message.join(', '));
+	function notify(str, timeout = 3000) {
+		const li = $('#emoji__notifications').$('<li>' + str + '</li>');
+		if (timeout) setTimeout(function () {
+			return li.remove();
+		}, timeout);
+		return li;
+	}
+
+	function warn(message, timeout) {
+		notify(message, timeout).classList.add('warn');
+	}
+
+	function error(message, timeout) {
+		notify(message, timeout).classList.add('error');
 	}
 
 	function tapOnChar(e) {
 		if (e.target !== e.currentTarget) cursorPos = e.target.prevAll().length;
-		setChar();
+		updateMessageTextInput();
 	}
 
 	let cursorPos = 0;
 	const textInput = $('#emoji__text-input');
 	const message = [];
-	function setChar(str) {
+	function updateMessageTextInput(str) {
 		if (cursorPos < 0) cursorPos = 0;
 		if (cursorPos > message.length) cursorPos = message.length;
 		if (str) {
@@ -47,15 +59,15 @@ Promise.all([
 	.on('backspace', () => {
 		cursorPos--;
 		message.splice(cursorPos, 1);
-		setChar();
+		updateMessageTextInput();
 	})
 	.on('back-cursor', () => {
 		cursorPos--;
-		setChar();
+		updateMessageTextInput();
 	})
 	.on('forward-cursor', () => {
 		cursorPos++;
-		setChar();
+		updateMessageTextInput();
 	})
 	.on('click', tapOnChar);
 
@@ -67,6 +79,9 @@ Promise.all([
 		}
 		sendMesage(username, message)
 		.catch(e => warn(e));
+
+		message.splice(0);
+		updateMessageTextInput();
 	});
 
 	const skinTone = ['', '🏼', '🏿', '🏽', '🏾', '🏻'];
@@ -126,7 +141,7 @@ Promise.all([
 
 		const subGrid = makeGrid(subEmojis[i]);
 		subGrid.dataset.emoji = subEmojis[i][4];
-		subGrid.on('emojiSelect', e => setChar(e.detail.emoji));
+		subGrid.on('emojiSelect', e => updateMessageTextInput(e.detail.emoji));
 		item.appendChild(subGrid);
 		return subGrid;
 	})
@@ -136,19 +151,37 @@ Promise.all([
 	twemoji.parse(mainGrid);
 	twemoji.parse($('#emoji__options-button'));
 
+	function fetchNewMessages() {
+
+		let lastMessage;
+
+		const noti = notify('Loading Messages', false);
+		getMessages().then(function (m) {
+			m.forEach(function (message) {
+				if (message.message.constructor !== Array) return;
+				const li = $('<li class="received" timestamp=' + message.timestamp + ' data-sender="' + message.from + '">' + message.message.map(function (m) {
+					return combineEmojis(m);
+				}).join('') + '</li>');
+				$('#emoji__messages').appendChild(li);
+				lastMessage = li;
+			});
+		}).catch(function (e) {
+			return error(e.message);
+		}).then(function () {
+			return noti.remove();
+		});
+
+		if (lastMessage) lastMessage.scrollIntoView();
+	}
+
 	// Add button interactions
 	touchInit();
 
 	// Set up push notification service
 	pushNotifications();
 
-	getMessages().then(m => {
-		m.forEach(message => {
-			if (message.message.constructor !== Array) return;
-			const li = $(`<li class="received" timestamp=${message.timestamp} data-sender="${message.from}">${message.message.map(m => combineEmojis(m)).join('')}</li>`);
-			$('#emoji__messages').appendChild(li);
-		});
-	});
+	// load new messages
+	fetchNewMessages();
 })
 .catch(e => {
 

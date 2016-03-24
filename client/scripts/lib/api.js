@@ -1,7 +1,5 @@
 /* global Header */
 
-import * as localforage from 'localforage';
-
 const jsonHeader = new Headers({
 	'Content-Type': 'application/json'
 });
@@ -9,7 +7,7 @@ const jsonHeader = new Headers({
 function checkForErrors(r) {
 	if (!r.ok) {
 		return r.json().then(j => {
-			throw (j.error);
+			throw Error(j.error);
 		});
 	} else {
 		return r;

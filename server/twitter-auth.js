@@ -69,6 +69,7 @@ if (
 }
 
 passport.serializeUser(function(user, cb) {
+	console.log('serialise: '  + user.id);
 	if (!user.id) {
 		return cb(Error('error getting id'));
 	}
@@ -76,6 +77,7 @@ passport.serializeUser(function(user, cb) {
 });
 
 passport.deserializeUser(function(id, cb) {
+	console.log('deserialise: '  + id);
 	redisGet(genIdToProfile({id}))
 	.then(data => JSON.parse(data))
 	.catch(e => {
