@@ -96,6 +96,7 @@ img.emoji {
 	padding: 0 1em;
 	text-decoration: underline;
 	cursor: pointer;
+	flex-shrink: 0;
 }
 
 #emoji__header {
@@ -103,6 +104,7 @@ img.emoji {
     align-items: center;
     font-size: 1em;
     flex-basis: 2.5em;
+	flex-shrink: 0;
 
 	#emoji__recipient {
 		flex-grow: 1;
@@ -115,6 +117,7 @@ img.emoji {
 	font-size: 36px;
 	display: flex;
 	flex-basis: 1.5;
+	flex-shrink: 0;
 }
 
 #emoji__notifications {
