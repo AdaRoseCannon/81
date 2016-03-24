@@ -10,6 +10,8 @@ import addScript from './lib/add-script';
 import * as settings from './lib/settings';
 import touchInit from './lib/touch';
 import pushNotifications from './lib/push-notifications';
+import tinycam from './lib/tinycam';
+
 import {
 	sendMesage,
 	getMessages
@@ -18,7 +20,8 @@ import {
 Promise.all([
 	addScript('https://cdn.rawgit.com/AdaRoseEdwards/dirty-dom/v1.3.1/build/dirty-dom-lib.min.js').promise,
 	addScript('https://twemoji.maxcdn.com/2/twemoji.min.js').promise,
-	addScript('https://cdn.polyfill.io/v2/polyfill.min.js?features=fetch,default').promise
+	addScript('https://cdn.polyfill.io/v2/polyfill.min.js?features=fetch,default').promise,
+	addScript('/scripts/color-thief.js').promise
 ]).then(() => {
 
 	function notify(str, timeout = 3000) {
@@ -182,6 +185,9 @@ Promise.all([
 
 	// load new messages
 	fetchNewMessages();
+
+	// Push notification camera.
+	tinycam();
 })
 .catch(e => {
 

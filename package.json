@@ -4,15 +4,25 @@
   "description": "Send Emoji",
   "scripts": {
     "build:main": "mkdir -p build/scripts && rollup -i ./client/scripts/main.js -o ./build/scripts/main.js -c -m && cd build/scripts && uglifyjs --source-map main.min.js.map -m --screw-ie8 main.js -o main.min.js && wc -c main.min.js",
+
     "build:sw": "mkdir -p build           && rollup -i ./client/scripts/sw.js     -o ./build/sw.js   -c -m       && cd build && uglifyjs --source-map sw.min.js.map   -m --screw-ie8 sw.js   -o sw.min.js   && wc -c sw.min.js",
+
     "build:js": "bash ./parallel.sh \"npm run build:sw\" \"npm run build:main\"",
-    "build:other": "mkdir -p build && cp client/* build/ || true && cp -r client/images build/images && cp ./node_modules/sw-toolbox/sw-toolbox.* ./build/",
+
+    "build:other": "mkdir -p build/scripts && cp client/* build/ || true && cp -r client/images build/images && cp ./node_modules/sw-toolbox/sw-toolbox.* ./build/ && cp ./node_modules/color-thief/src/color-thief.js ./build/scripts/",
+
     "watch": "bash ./parallel.sh \"nodemon --watch ./client/scripts -e js --exec npm run build:js\" \"nodemon --watch ./client/styles -e scss --exec npm run build:styles\" \"nodemon --watch ./client -e css,html,png,json --exec npm run build:other\" \"npm run start\"",
+
     "build": "npm run clean; bash ./parallel.sh \"npm run build:other\" \"npm run build:js\" \"npm run build:styles\"",
+
     "build:styles": "node-sass ./client/styles/main.scss -o ./build/styles/",
+
     "deploy": "npm run build && git-directory-deploy --directory ./build",
+
     "clean": "rm -rf ./build",
+
     "install": "npm run build",
+
     "start": "node server/"
   },
   "repository": "https://github.com/AdaRoseEdwards/81",
@@ -25,6 +35,7 @@
   "dependencies": {
     "babel-preset-es2015-rollup": "^1.1.1",
     "body-parser": "^1.15.0",
+    "color-thief": "github:lokesh/color-thief",
     "connect-ensure-login": "^0.1.1",
     "connect-redis": "^3.0.2",
     "cookie-parser": "^1.4.1",
