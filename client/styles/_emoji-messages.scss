@@ -7,6 +7,8 @@
     align-items: baseline;
 	height: 100%;
     overflow: auto;
+	transition: transform 0.5s ease;
+	transition-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1.275);
 }
 
 #emoji__messages > li {
@@ -70,9 +72,15 @@
 
 .gradient-hr {
 	pointer-events: none;
-	background: linear-gradient(to bottom, rgba(246, 233, 216, 0) 0%, lavenderblush 100%);
-	width: 100%;
+    background: linear-gradient(to bottom, rgba(246, 233, 216, 0) 0%, lavenderblush 100%);
+    width: 100%;
 	height: 1em;
-	margin-top: -0.9em;
-	z-index: 100;
+    margin: 0;
+    margin-top: calc(-1em + 1px);
+    z-index: 100;
+    padding: 0;
+    overflow: hidden;
+    flex-basis: 1em;
+    flex-grow: 0;
+    flex-shrink: 0;
 }

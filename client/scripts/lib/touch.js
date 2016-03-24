@@ -1,6 +1,7 @@
 /* global $, $$, TweenLite, Back, Draggable */
 
 export default function touchInit() {
+	'use strict';
 
 	const grid = d => {
 		if (d === undefined) d = draggableGrid.update().y < 100;
@@ -82,15 +83,24 @@ export default function touchInit() {
 		onDragEnd: function () { options(this.x < 100) }
 	})[0];
 
-	Draggable.create('#emoji__content', {
-		type: 'scrollTop',
-		edgeResistance: 0.5,
-		throwProps: true,
+	const messagesEl = $('#emoji__messages');
+	const messageDraggable = Draggable.create(messagesEl, {
+		type:'y',
+		bounds: messagesEl.parentNode,
+		edgeResistance:0.65,
 		onDragStart: function () {
-			this.target.firstChild.style.transition = 'initial';
+			this.target.style.transition = 'initial';
 		},
-		onRelease: function () {
-			this.target.firstChild.style.transition = '';
-		},
+		onDragEnd: function () {
+			this.target.style.transition = '';
+		}
+	})[0];
+	window.messageDraggable = messageDraggable;
+
+	let messageDraggableTimeout;
+	messagesEl.on('mousewheel', function (e) {
+		TweenLite.to(messageDraggable.target, 0.45, {ease: Back.easeOut, y: messageDraggable.y + e.wheelDelta});
+		clearTimeout(messageDraggableTimeout);
+		messageDraggableTimeout = setTimeout(() => messageDraggable.applyBounds(), 300);
 	});
 }

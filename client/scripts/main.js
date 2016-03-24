@@ -186,5 +186,5 @@ Promise.all([
 .catch(e => {
 
 	// Script loading errors
-	console.log(e);
+	console.error(e);
 });
