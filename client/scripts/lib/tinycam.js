@@ -1,20 +1,71 @@
-/* global ColorThief, Draggable, $ */
+/* global ColorThief, Draggable, $, twemoji */
 import color from 'tinycolor2';
 
 navigator.getUserMedia = navigator.getUserMedia || navigator.mozGetUserMedia || navigator.webkitGetUserMedia;
 export default () => {
-	const photoModal = $('<div class="modal tinycam collapsed"><div class="handle"></div></div>');
+
+	let palette = false;
+	let toggleFunc = start;
+	let stopFunc;
+	let currentFilter = 0;
+	const filters = [
+		false
+	];
+
+	const photoModal = $('<div class="modal tinycam"><div class="handle"><span class="handle_icon">📷</span><span class="handle_exit-x">×</span></div></div>');
 	document.body.prependChild(photoModal);
 	const colorThief = new ColorThief();
 	const video = document.createElement('video');
 	const canvas = document.createElement('canvas');
 	const buffer = document.createElement('img');
+	buffer.onload = function () {
+		const paletteArr = colorThief.getPalette(buffer, 16);
+		if (paletteArr) palette = processPalette(paletteArr);
+	}
 	buffer.width = buffer.height = canvas.width = canvas.height = 64;
 	const context = canvas.getContext('2d');
 	context.imageSmoothingEnabled = false;
 	photoModal.appendChild(canvas);
 
-	Draggable.create(photoModal, {
+	const buttonArea = document.createElement('div');
+	photoModal.appendChild(buttonArea);
+	buttonArea.classList.add('button-area');
+	buttonArea.classList.add('take-photo');
+	const buttonPhoto = buttonArea.$('<button>📷</button>');
+	buttonPhoto.on('click', function () {
+		stopFunc();
+		photoModal.classList.add('confirm');
+	});
+	const buttonFilter = buttonArea.$('<button class="small">🖼</button>');
+	buttonFilter.on('click', function () {
+		// toggle filters
+		currentFilter = (currentFilter + 1) % filters.length;
+	});
+
+	const buttonArea2 = document.createElement('div');
+	photoModal.appendChild(buttonArea2);
+	buttonArea2.classList.add('button-area');
+	buttonArea2.classList.add('approval');
+	const buttonApprove = buttonArea2.$('<button>✔️</button>');
+	buttonApprove.on('click', function () {
+		if (stopFunc) stopFunc();
+		photoModal.classList.add('collapsed');
+		photoModal.classList.remove('confirm');
+	});
+	const buttonCancel = buttonArea2.$('<button class="small">❌</button>');
+	buttonCancel.on('click', function () {
+
+		photoModal.classList.remove('confirm');
+
+		// already running
+		if (stopFunc) return;
+		start();
+	});
+
+
+	twemoji.parse(photoModal);
+
+	const draggable = Draggable.create(photoModal, {
 		trigger: photoModal.$('.handle'),
 		type:'xy',
 		bounds: document.body,
@@ -26,9 +77,10 @@ export default () => {
 			this.target.style.transition = '';
 		},
 		onClick: toggle
-	});
+	})[0];
 
-	let palette = false;
+	photoModal.style.height = photoModal.clientHeight + 'px';
+	photoModal.classList.add('collapsed');
 
 	// sort the array into rgb objects
 	function processPalette(p) {
@@ -47,7 +99,7 @@ export default () => {
 		return dx*dx + dy*dy + dz*dz;
 	}
 
-	function render() {
+	function render(updatePalette) {
 		const h = video.videoHeight;
 		const w = video.videoWidth;
 		const smallestSide = Math.min(h, w);
@@ -55,6 +107,9 @@ export default () => {
 		const height = 64 * h/smallestSide;
 		if (isNaN(width) || isNaN(height)) return;
 		context.drawImage(video, (64 - width)/2, (64 - height)/2, width, height);
+		if (!palette || updatePalette) {
+			buffer.src = canvas.toDataURL();
+		}
 		if (palette) {
 			const data = context.getImageData(0,0,64,64);
 			const imageIndex = [];
@@ -64,41 +119,38 @@ export default () => {
 				const b = data.data[i+2];
 				const arr = [r,g,b];
 				const closestColor = palette.sort((a,b) => distance(a.vector,arr) - distance(b.vector,arr))[0];
-				imageIndex[i/4] = palette.indexOf(closestColor).toString(16);
-				data.data[i] = closestColor.vector[0];
-				data.data[i+1] = closestColor.vector[1];
-				data.data[i+2] = closestColor.vector[2];
+				const index = palette.indexOf(closestColor).toString(16);
+				imageIndex[i/4] = index;
+				const usePalette = currentFilter ? filters[currentFilter] : palette;
+				data.data[i] = usePalette[index].vector[0];
+				data.data[i+1] = usePalette[index].vector[1];
+				data.data[i+2] = usePalette[index].vector[2];
 			}
 			context.putImageData(data, 0, 0);
 		}
-	}
-
-	function getPalette() {
-		buffer.src = canvas.toDataURL();
-		const paletteArr = colorThief.getPalette(buffer, 16);
-		if (!paletteArr) return;
-		palette = processPalette(paletteArr);
-		// palette.forEach(c => {
-		// 	console.log('%c' + c.toHex(), 'background: #' + c.toHex() + ';' );
-		// });
-		render();
 	}
 
 	function start() {
 
 		navigator.getUserMedia({ 'video': true }, function (stream) {
 
-			const interval1 = setInterval(render, 60/24);
-			const interval2 = setInterval(getPalette, 500);
+			// 6 fps camera
+			const interval1 = setInterval(render, 60/6);
+
+			// update palette every 2 seconds
+			const interval2 = setInterval(() => render(true), 2000);
 			photoModal.classList.remove('collapsed');
+			setTimeout(() => {
+				draggable.applyBounds();
+			}, 300);
 
 			function stop() {
+
 				video.pause();
 				video.src = '';
 				stream.getTracks()[0].stop();
 				toggleFunc = start
-
-				photoModal.classList.add('collapsed');
+				stopFunc = undefined;
 
 				clearInterval(interval1);
 				clearInterval(interval2);
@@ -107,14 +159,16 @@ export default () => {
 			video.src = window.URL.createObjectURL(stream);
 			video.play();
 
-			toggleFunc = stop;
+			toggleFunc = function () {
+				photoModal.classList.add('collapsed');
+				stop();
+			};
+			stopFunc = stop;
 
 		}, e => {
 			console.error(e);
 		});
 	}
-
-	let toggleFunc = start;
 	function toggle() {
 		toggleFunc();
 	}

@@ -2,11 +2,16 @@
 
 	transition: transform 0.5s ease, border-radius 0.5s ease, width 0.5s ease, height 0.5s ease;
     overflow: hidden;
+	display: flex;
+	flex-direction: column;
+	margin: 1em;
+	bottom: 3em;
+	right: 1em;
 
 	&.collapsed {
     	border-radius: 100%;
 	    width: 3em;
-	    height: 3em;
+	    height: 3em !important;
 	}
 
 	canvas {
@@ -19,5 +24,58 @@
 		display: block;
 		width: 192px;
 		height: 192px;
+	}
+
+	button {
+		align-self: baseline;
+		border-radius: 3em;
+		font-size: 2em;
+		padding: 0.2em;
+		line-height: 1em;
+
+		&.small {
+			font-size: 1.2em;
+		}
+	}
+
+	.handle_icon {
+	    position: absolute;
+	    top: 0;
+	    left: 0.25em;
+	    background: inherit;
+		transition-property: top, left, transform;
+		transition-duration: 0.5s;
+		transition-timing-function: ease;
+		z-index: 2;
+	}
+
+	&.collapsed .handle_icon {
+		left: 50%;
+		top: 50%;
+		transform: translate(-50%, -50%) scale(2);
+		padding: 0.5em;
+	}
+}
+
+.button-area {
+	display: flex;
+	justify-content: center;
+	transform-origin: 0 1.75em 1.75em;
+	transition: transform 0.4s ease;
+
+	&.take-photo {
+		margin-bottom: -3.5em;
+		transform: rotateX(0);
+		z-index: 2;
+		.confirm & {
+			transform: rotateX(-90deg);
+		}
+	}
+
+	&.approval {
+		transform: rotateX(90deg);
+		.confirm & {
+			transform: rotateX(0);
+		}
 	}
 }

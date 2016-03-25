@@ -25,18 +25,22 @@
 
 .modal .handle {
 	display: block;
-	background: rgba(0,0,0,0.1);
+	background: #E6D9DD;
 	color: grey;
 	text-align: center;
 
 	.handle_exit-x {
 	    color: red;
-	    padding: 0 0.5em;
+	    padding: 0 0.25em;
 	    position: absolute;
 	    right: 0;
 	    font-size: 1.5em;
 	    line-height: 1em;
 	    margin-top: -0.1em;
+	}
+
+	.handle_icon {
+		float: left;
 	}
 
 	&:before {
