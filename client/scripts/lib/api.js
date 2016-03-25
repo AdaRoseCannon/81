@@ -1,8 +1,14 @@
-/* global Header */
+/* global Headers */
 
 const jsonHeader = new Headers({
-	'Content-Type': 'application/json'
+	'Content-Type': 'application/json',
+	'Accept': 'application/json'
 });
+
+const sentMessages = new Map();
+const receivedMessages = new Map();
+sentMessages.upToDate = false;
+receivedMessages.upToDate = false;
 
 function checkForErrors(r) {
 	if (!r.ok) {
@@ -31,18 +37,37 @@ function sendSubscriptionToServer(subscription) {
 }
 
 // get messages from the server
-function getMessages({start, amount, cache} = {}) {
-	return fetch(`/api/get-messages?start=${start || 1}&amount=${amount || 10}${cache ? '&cache' : ''}`, {
+function getMessages({start, amount, cache, sent} = {}) {
+	const map = sent ? sentMessages : receivedMessages;
+	return fetch(`/api/get${sent ? '-sent' : ''}-messages?start=${start || 1}&amount=${amount || 10}${cache ? '&cache' : ''}`, {
 		method: 'POST',
-		credentials: 'same-origin'
+		credentials: 'same-origin',
+		headers: jsonHeader
 	})
 	.then(checkForErrors)
 	.then(r => r.json())
 	.then(json => {
 
+		// need to maintain two of these one for sent and one for recieved
+		map.upToDate = false;
+		json.forEach(m => {
+			if (map.has(m.messageId)) {
+				map.upToDate = true;
+			}
+			console.log(m.messageId);
+			map.set(m.messageId, m);
+		});
+
 		// store in idb then return
 		return json.filter(m => typeof m === 'object');
 	});
+}
+
+/*
+* Fetch messages.
+*/
+function getAllMessages() {
+	return getMessages();
 }
 
 function sendMesage(username, message) {
@@ -57,6 +82,7 @@ function sendMesage(username, message) {
 
 export {
 	sendSubscriptionToServer,
+	getAllMessages,
 	getMessages,
 	sendMesage
 };
