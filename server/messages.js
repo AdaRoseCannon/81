@@ -36,11 +36,15 @@ function readOutgoingMessages(user, start, amount) {
 	return readMessages(user, start, amount, genMessagesSentFromId);
 }
 
-function pushMessage(toUser, fromUser, string) {
+function pushMessage(toUser, fromUser, messageObject) {
 	fromUser = fromUser || '@AnonymousUser';
 	const messageId = fromUser + '_'+ Date.now();
 
-	if (string === undefined) return Promise.reject(Error('No Message'));
+	if (messageObject === undefined) return Promise.reject(Error('No Message'));
+	if (typeof messageObject !== 'object') return Promise.reject(Error('Server Error - Message needs to be an object'));
+
+	messageObject.messageId = messageId;
+
 	return Promise.all([getProfileFromHandle(fromUser), getProfileFromHandle(toUser)])
 	.then(details => ({
 		messageHashTableKey: genMessagesHashKey(),
@@ -48,7 +52,7 @@ function pushMessage(toUser, fromUser, string) {
 		toUser: genMessagesSentToId(details[1])
 	}))
 	.then(keys => {
-		return redis.redisHSet(keys.messageHashTableKey, messageId, string)
+		return redis.redisHSet(keys.messageHashTableKey, messageId, JSON.stringify(messageObject))
 		.then(() => Promise.all([
 			redis.redisLPush(keys.fromUser, messageId),
 			redis.redisLPush(keys.toUser, messageId)

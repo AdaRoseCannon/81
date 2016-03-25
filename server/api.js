@@ -41,15 +41,13 @@ app.post('/send-message', function (req,res) {
 	if (req.user && req.user.username) {
 		user = req.user.username;
 	}
-	messagesApi.pushMessage(req.body.username, user, JSON.stringify(
-		{
-			to: req.body.username,
-			type: 'message',
-			message: req.body.message,
-			from: user,
-			timestamp: Date.now()
-		}
-	))
+	messagesApi.pushMessage(req.body.username, user, {
+		to: req.body.username,
+		type: 'message',
+		message: req.body.message,
+		from: user,
+		timestamp: Date.now()
+	})
 	.then(m => {
 		pushApi(req.body.username);
 		res.json({

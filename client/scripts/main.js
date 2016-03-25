@@ -8,11 +8,11 @@ import customSelect from './lib/custom-select';
 import selectablePopup from './lib/selectable-popup';
 import addScript from './lib/add-script';
 import * as settings from './lib/settings';
-import touchInit from './lib/touch';
 import pushNotifications from './lib/push-notifications';
 import tinycam from './lib/tinycam';
-import {updateMessageTextInput, combineEmojis} from './lib/emoji-text-input';
+import {updateMessageTextInput, combineEmojis, init as initTextInput} from './lib/emoji-text-input';
 import {init as messages} from './lib/messages';
+import {init as touchInit} from './lib/touch';
 
 Promise.all([
 	addScript('https://cdn.rawgit.com/AdaRoseEdwards/dirty-dom/v1.3.1/build/dirty-dom-lib.min.js').promise,
@@ -99,6 +99,9 @@ Promise.all([
 
 	// Push notification camera.
 	tinycam();
+
+	// Set up the text input
+	initTextInput();
 })
 .catch(e => {
 
