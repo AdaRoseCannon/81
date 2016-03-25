@@ -34,9 +34,11 @@ export default () => {
 		context.drawImage(video, (64 - width)/2, (64 - height)/2, width, height);
 	}
 
-	function takePhoto() {
+	function getPalette() {
 		buffer.src = canvas.toDataURL();
-		palette = processPalette(colorThief.getPalette(buffer, 16));
+		const paletteArr = colorThief.getPalette(buffer, 16);
+		if (!paletteArr) return;
+		palette = processPalette(paletteArr);
 		palette.forEach(c => {
 			console.log('%c' + c.toHex(), 'background: #' + c.toHex() + ';' );
 		});
@@ -55,10 +57,8 @@ export default () => {
 		video.play();
 
 		setInterval(render, 60/24);
+		setInterval(getPalette, 500);
 
-		setTimeout(function () {
-			takePhoto();
-		}, 4000);
 	}, e => {
 		console.error(e);
 	});
