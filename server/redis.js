@@ -22,5 +22,7 @@ module.exports = {
 	redisGet: denodeify(redis.get).bind(redis),
 	redisSet: denodeify(redis.set).bind(redis),
 	redisLPush: denodeify(redis.lpush).bind(redis),
-	redisLRange: denodeify(redis.lrange).bind(redis)
+	redisLRange: denodeify(redis.lrange).bind(redis),
+	redisHGet: denodeify(redis.hget).bind(redis),
+	redisHSet: denodeify(redis.hset).bind(redis)
 };

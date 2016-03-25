@@ -7,7 +7,7 @@
     "build:sw": "mkdir -p build           && rollup -i ./client/scripts/sw.js     -o ./build/sw.js   -c -m       && cd build && uglifyjs --source-map sw.min.js.map   -m --screw-ie8 sw.js   -o sw.min.js   && wc -c sw.min.js",
     "build:js": "bash ./parallel.sh \"npm run build:sw\" \"npm run build:main\"",
     "build:other": "mkdir -p build/scripts && cp client/* build/ || true && cp -r client/images build/images && cp ./node_modules/sw-toolbox/sw-toolbox.* ./build/ && cp ./node_modules/color-thief/src/color-thief.js ./build/scripts/",
-    "watch": "bash ./parallel.sh \"nodemon --watch ./client/scripts -e js --exec npm run build:js\" \"nodemon --watch ./client/styles -e scss --exec npm run build:styles\" \"nodemon --watch ./client -e css,html,png,json --exec npm run build:other\" \"npm run start\"",
+    "watch": "bash ./parallel.sh \"nodemon --watch ./client/scripts -e js --exec npm run build:js\" \"nodemon --watch ./client/styles -e scss --exec npm run build:styles\" \"nodemon --watch ./client -e css,html,png,json --exec npm run build:other\" \"nodemon --watch ./server -e js --exec npm run start\"",
     "build": "npm run clean; bash ./parallel.sh \"npm run build:other\" \"npm run build:js\" \"npm run build:styles\"",
     "build:styles": "node-sass ./client/styles/main.scss -o ./build/styles/",
     "deploy": "npm run build && git-directory-deploy --directory ./build",

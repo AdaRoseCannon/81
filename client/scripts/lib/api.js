@@ -32,7 +32,10 @@ function sendSubscriptionToServer(subscription) {
 
 // get messages from the server
 function getMessages({start, amount, cache} = {}) {
-	return fetch(`/api/get-messages?start=${start || 1}&amount=${amount || 10}${cache ? '&cache' : ''}`)
+	return fetch(`/api/get-messages?start=${start || 1}&amount=${amount || 10}${cache ? '&cache' : ''}`, {
+		method: 'POST',
+		credentials: 'same-origin'
+	})
 	.then(checkForErrors)
 	.then(r => r.json())
 	.then(json => {

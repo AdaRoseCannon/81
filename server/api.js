@@ -17,11 +17,8 @@ app.use(bp.json());
 
 app.get('/poke', function (req,res) {
 
-	if (!req.query.username) {
-		res.status(500);
-		return res.json({
-			error: 'No username param'
-		});
+	if (!req.body.username) {
+		return errorResponse(res, Error('No username param'));
 	}
 	pushApi(req.query.username)
 	.then(() => {
@@ -33,25 +30,20 @@ app.get('/poke', function (req,res) {
 app.post('/send-message', function (req,res) {
 
 	if (!req.body.username) {
-		res.status(500);
-		return res.json({
-			error: 'No username param'
-		});
+		return errorResponse(res, Error('No username param'));
 	}
 
 	if (!req.body.message) {
-		res.status(500);
-		return res.json({
-			error: 'No message param'
-		});
+		return errorResponse(res, Error('No message param'));
 	}
 
-	let user = 'Anonymous';
+	let user;
 	if (req.user && req.user.username) {
 		user = req.user.username;
 	}
-	messagesApi.pushMessage(req.body.username, JSON.stringify(
+	messagesApi.pushMessage(req.body.username, user, JSON.stringify(
 		{
+			to: req.body.username,
 			type: 'message',
 			message: req.body.message,
 			from: user,
@@ -59,7 +51,7 @@ app.post('/send-message', function (req,res) {
 		}
 	))
 	.then(m => {
-		pushApi(req.body.username)
+		pushApi(req.body.username);
 		res.json({
 			success: true,
 			noOfMessages: m
@@ -70,14 +62,32 @@ app.post('/send-message', function (req,res) {
 
 app.all('/get-messages', function (req,res) {
 
-	if (!req.user) {
-		res.status(500);
-		return res.json({
-			error: 'Not logged in'
-		});
+	if (!req.user || !req.user.username) {
+		return errorResponse(res, Error('No username param'));
 	}
 	messagesApi
-	.readMessages(req.user.username, req.query.start, req.query.amount)
+	.readIncomingMessages(req.user.username, req.query.start, req.query.amount)
+	.then(m => {
+		res.json(m.map(str => {
+			try {
+				return JSON.parse(str);
+			} catch (e) {
+				return false;
+			}
+		}));
+	})
+	.then(m => m.filter(l => typeof l === 'object'))
+	.catch(e => errorResponse(res, e));
+});
+
+app.all('/get-sent-messages', function (req,res) {
+
+	if (!req.user || !req.user.username) {
+		return errorResponse(res, Error('No username param'));
+	}
+
+	messagesApi
+	.readOutgoingMessages(req.user.username, req.query.start, req.query.amount)
 	.then(m => {
 		res.json(m.map(str => {
 			try {

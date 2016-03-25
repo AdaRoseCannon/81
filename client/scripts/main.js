@@ -1,4 +1,4 @@
-/* global $, MAKE, twemoji, $$ */
+/* global $, twemoji, $$ */
 
 import 'gsap/src/uncompressed/utils/Draggable';
 import 'gsap/src/uncompressed/TweenLite';
@@ -11,11 +11,8 @@ import * as settings from './lib/settings';
 import touchInit from './lib/touch';
 import pushNotifications from './lib/push-notifications';
 import tinycam from './lib/tinycam';
-
-import {
-	sendMesage,
-	getMessages
-} from './lib/api';
+import {updateMessageTextInput, combineEmojis} from './lib/emoji-text-input';
+import {init as messages} from './lib/messages';
 
 Promise.all([
 	addScript('https://cdn.rawgit.com/AdaRoseEdwards/dirty-dom/v1.3.1/build/dirty-dom-lib.min.js').promise,
@@ -24,69 +21,9 @@ Promise.all([
 	addScript('/scripts/color-thief.js').promise
 ]).then(() => {
 
-	function notify(str, timeout = 3000) {
-		const li = $('#emoji__notifications').$('<li>' + str + '</li>');
-		if (timeout) setTimeout(function () {
-			return li.remove();
-		}, timeout);
-		return li;
-	}
-
-	function warn(message, timeout) {
-		notify(message, timeout).classList.add('warn');
-	}
-
-	function error(message, timeout) {
-		notify(message, timeout).classList.add('error');
-	}
-
-	function tapOnChar(e) {
-		if (e.target !== e.currentTarget) cursorPos = e.target.prevAll().length;
-		updateMessageTextInput();
-	}
-
-	let cursorPos = 0;
-	const textInput = $('#emoji__text-input');
-	const message = [];
-	function updateMessageTextInput(str) {
-		if (cursorPos < 0) cursorPos = 0;
-		if (cursorPos > message.length) cursorPos = message.length;
-		if (str) {
-			message.splice(cursorPos, 0, str + skinToneSelector.dataset.value);
-			cursorPos = cursorPos + 1;
-		}
-		textInput.innerHTML = message.map(m => combineEmojis(m)).join('') + '<span class="spacer"></span>';
-		textInput.childNodes[cursorPos].classList.add('cursor');
-	}
-	$('#emoji__text-input')
-	.on('backspace', () => {
-		cursorPos--;
-		message.splice(cursorPos, 1);
-		updateMessageTextInput();
-	})
-	.on('back-cursor', () => {
-		cursorPos--;
-		updateMessageTextInput();
-	})
-	.on('forward-cursor', () => {
-		cursorPos++;
-		updateMessageTextInput();
-	})
-	.on('click', tapOnChar);
-
-	$('#emoji__submit')
-	.on('click', function () {
-		const username = $('#emoji__recipient').value;
-		if (username === '') {
-			return warn('No User');
-		}
-		sendMesage(username, message)
-		.catch(e => warn(e));
-
-		message.splice(0);
-		updateMessageTextInput();
-	});
-
+	/*
+	* Generate the skintone emoji selector in the options page
+	*/
 	const skinTone = ['', '🏼', '🏿', '🏽', '🏾', '🏻'];
 	const skinToneSelector = $('<ul id="skin-tone-selector">');
 	for (const s of skinTone) {
@@ -105,12 +42,9 @@ Promise.all([
 		});
 	});
 
-	function combineEmojis(emoji, skinTone='') {
-		const div = MAKE.div();
-		div.appendChild(MAKE.html(twemoji.parse(emoji + skinTone)).firstChild);
-		return div.innerHTML;
-	}
-
+	/*
+	* Set up the emoji Grid
+	*/
 	const subEmojis = [
 		['😋', '😎', '😍', '😘', '😗', '😙', '😚', '☺', '😇'],
 		['✍', '✋', '✌️', '👐', '👌', '👊', '👏', '👋', '🙋'],
@@ -144,7 +78,7 @@ Promise.all([
 
 		const subGrid = makeGrid(subEmojis[i]);
 		subGrid.dataset.emoji = subEmojis[i][4];
-		subGrid.on('emojiSelect', e => updateMessageTextInput(e.detail.emoji));
+		subGrid.on('emojiSelect', e => updateMessageTextInput(e.detail.emoji + skinToneSelector.dataset.value));
 		item.appendChild(subGrid);
 		return subGrid;
 	})
@@ -154,29 +88,6 @@ Promise.all([
 	twemoji.parse(mainGrid);
 	twemoji.parse($('#emoji__options-button'));
 
-	function fetchNewMessages() {
-
-		let lastMessage;
-
-		const noti = notify('Loading Messages', false);
-		getMessages().then(function (m) {
-			m.forEach(function (message) {
-				if (message.message.constructor !== Array) return;
-				const li = $('<li class="received" timestamp=' + message.timestamp + ' data-sender="' + message.from + '">' + message.message.map(function (m) {
-					return combineEmojis(m);
-				}).join('') + '</li>');
-				$('#emoji__messages').appendChild(li);
-				lastMessage = li;
-			});
-		}).catch(function (e) {
-			return error(e.message);
-		}).then(function () {
-			return noti.remove();
-		});
-
-		if (lastMessage) lastMessage.scrollIntoView();
-	}
-
 	// Add button interactions
 	touchInit();
 
@@ -184,7 +95,7 @@ Promise.all([
 	pushNotifications();
 
 	// load new messages
-	fetchNewMessages();
+	messages();
 
 	// Push notification camera.
 	tinycam();
