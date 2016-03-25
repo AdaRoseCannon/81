@@ -1,7 +1,6 @@
 .tinycam {
 
-	transition: transform 0.5s ease, border-radius 0.5s ease, width 0.5s, height 0.5s;
-	transition-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1.275), ease, ease, ease;
+	transition: transform 0.5s ease, border-radius 0.5s ease, width 0.5s ease, height 0.5s ease;
     overflow: hidden;
 
 	&.collapsed {
