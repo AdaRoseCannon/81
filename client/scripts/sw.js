@@ -1,7 +1,11 @@
 /* eslint-env worker */
-/* global toolbox, clients */
+/* global toolbox, clients, twemoji */
 
 importScripts('/sw-toolbox.js');
+importScripts('https://twemoji.maxcdn.com/2/twemoji.min.js');
+
+import {decompress} from 'ftdatasquasher';
+import {getMessages} from './lib/api';
 
 // Try network but fallback to cache
 toolbox.router.default = toolbox.fastest;
@@ -11,7 +15,7 @@ toolbox.router.any('/api/*', function (request) {
 	if ( (new URL(request.url)).search.split('&').indexOf('sw-cache') !== -1 ) {
 		return toolbox.fastest(request);
 	} else {
-		return toolbox.networkFirst(request);
+		return toolbox.networkOnly(request);
 	}
 });
 
@@ -27,8 +31,41 @@ function getMessage(event) {
 	if (event.data) {
 		data = event.data.json();
 	} else {
-		// fetch data frome server
+		data = getMessages({amount: 1})
+		.then(messages => messages[0])
+		.then(message => {
+			if (message.type === 'message') {
+				let iconUrl;
+				try {
+					iconUrl = twemoji.parse(message.message[0]).match(/http[^"]+\.png/);
+				} catch (e) {
+					console.log(e);
+				}
+				return {
+					title: `${message.from} says: ${message.message.join('')}`,
+					icon: iconUrl[0] || 'launcher-icon-4x.png'
+				}
+			} else if (message.type === 'photo') {
+				const icon = decompress(message.message);
+				const title = `${message.from} sent a photo`;
+				return {
+					title,
+					icon
+				}
+			}
+		});
 	}
+
+	event.currentTarget.clients.matchAll({type: 'window'})
+	.then(function (windows) {
+		windows.forEach(function (w) {
+			w.postMessage({
+				action: 'new-message',
+				data: data
+			});
+		});
+	});
+
 	return Promise.resolve(data);
 }
 

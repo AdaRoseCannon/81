@@ -1,5 +1,6 @@
 /* global ColorThief, Draggable, $, twemoji */
 import color from 'tinycolor2';
+import {compress} from 'ftdatasquasher';
 
 navigator.getUserMedia = navigator.getUserMedia || navigator.mozGetUserMedia || navigator.webkitGetUserMedia;
 export default () => {
@@ -51,6 +52,9 @@ export default () => {
 		if (stopFunc) stopFunc();
 		photoModal.classList.add('collapsed');
 		photoModal.classList.remove('confirm');
+
+		render();
+		photoModal.fire('photo', compress(canvas.toDataURL()));
 	});
 	const buttonCancel = buttonArea2.$('<button class="small">❌</button>');
 	buttonCancel.on('click', function () {
@@ -112,7 +116,7 @@ export default () => {
 		}
 		if (palette) {
 			const data = context.getImageData(0,0,64,64);
-			const imageIndex = [];
+			// const imageIndex = [];
     		for (let i = 0, l = data.data.length; i < l; i += 4) {
 				const r = data.data[i];
 				const g = data.data[i+1];
@@ -120,7 +124,7 @@ export default () => {
 				const arr = [r,g,b];
 				const closestColor = palette.sort((a,b) => distance(a.vector,arr) - distance(b.vector,arr))[0];
 				const index = palette.indexOf(closestColor).toString(16);
-				imageIndex[i/4] = index;
+				// imageIndex[i/4] = index;
 				const usePalette = currentFilter ? filters[currentFilter] : palette;
 				data.data[i] = usePalette[index].vector[0];
 				data.data[i+1] = usePalette[index].vector[1];
@@ -142,7 +146,7 @@ export default () => {
 			photoModal.classList.remove('collapsed');
 			setTimeout(() => {
 				draggable.applyBounds();
-			}, 300);
+			}, 600);
 
 			function stop() {
 
@@ -174,6 +178,7 @@ export default () => {
 	}
 
 	return {
-		toggle
+		toggle,
+		photoModal
 	}
 };

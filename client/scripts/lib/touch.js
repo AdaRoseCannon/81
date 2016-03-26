@@ -2,25 +2,32 @@
 
 let draggableGrid;
 let draggableOptions;
+let draggableMessage;
 
 const showGrid = d => {
-	if (!draggableGrid) {
-		return;
-	}
+	if (!draggableGrid) return;
 	if (d === undefined) d = draggableGrid.update().y < 100;
-	TweenLite.to($('#emoji__grid'), 0.45, {ease: Back.easeOut, y: d ? 0 : document.body.clientHeight});
+	TweenLite.to(draggableGrid.target, 0.45, {ease: Back.easeOut, y: d ? 0 : document.body.clientHeight});
+	draggableGrid.update();
+	draggableGrid.applyBounds();
 };
 
 const showOptions = d => {
-	if (!draggableOptions) {
-		return;
-	}
+	if (!draggableOptions) return;
 	if (d === undefined) d = draggableOptions.update().x < 100;
-	TweenLite.to($('#emoji__options'), 0.45, {ease: Back.easeOut, x: d ? 0 : document.body.clientWidth});
+	TweenLite.to(draggableOptions.target, 0.45, {ease: Back.easeOut, x: d ? 0 : document.body.clientWidth});
+	draggableOptions.update();
+	draggableOptions.applyBounds();
 };
 
+const scrollMessagesToBottom = () => {
+	if (!draggableMessage) return;
+	TweenLite.to(draggableMessage.target, 0.45, {ease: Back.easeOut, y: 0});
+	draggableMessage.update();
+	draggableMessage.applyBounds();
+}
+
 function init() {
-	'use strict';
 
 	window.on('resize', () => {
 		showGrid();
@@ -66,7 +73,7 @@ function init() {
 	})[0];
 
 	const messagesEl = $('#emoji__messages');
-	const draggableMessage = Draggable.create(messagesEl, {
+	draggableMessage = Draggable.create(messagesEl, {
 		type:'y',
 		bounds: messagesEl.parentNode,
 		edgeResistance:0.65,
@@ -80,14 +87,18 @@ function init() {
 
 	let draggableMessageTimeout;
 	messagesEl.on('mousewheel', function (e) {
-		TweenLite.to(draggableMessage.target, 0.45, {ease: Back.easeOut, y: draggableMessage.y + e.wheelDelta});
+		draggableMessage.update();
+		TweenLite.set(draggableMessage.target, {y: draggableMessage.y + e.wheelDelta});
 		clearTimeout(draggableMessageTimeout);
-		draggableMessageTimeout = setTimeout(() => draggableMessage.applyBounds(), 300);
+		draggableMessageTimeout = setTimeout(() => {
+			draggableMessage.applyBounds();
+		}, 500);
 	});
 }
 
 export {
 	init,
 	showGrid,
-	showOptions
+	showOptions,
+	scrollMessagesToBottom
 }

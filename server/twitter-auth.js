@@ -14,7 +14,7 @@ function genIdToProfile(profile) {
 }
 
 function genUserNameToId(profile) {
-	return 'v1.0.0_id_by_username_' + profile.username;
+	return 'v1.0.0_id_by_username_' + profile.username.toLowerCase();
 }
 
 function getSummary(profile) {

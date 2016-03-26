@@ -19,11 +19,11 @@ function genMessagesHashKey() {
 
 function readMessages(user, start, amount, keyFunc) {
 	keyFunc = keyFunc || genMessagesSentToId;
-	amount = amount || 10;
-	start = start || 1;
+	amount = Number(amount || 10);
+	start = Number(start || 0);
 	return getProfileFromHandle(user)
 	.then(profile => keyFunc(profile))
-	.then(key => redis.redisLRange(key, -((amount - 1) + start), -start))
+	.then(key => redis.redisLRange(key, start, start + amount - 1))
 	.then(arr => Promise.all(arr.map(key => redis.redisHGet(genMessagesHashKey(), key))))
 	.then(arr => arr.filter(a => a!==null));
 }

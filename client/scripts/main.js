@@ -10,9 +10,11 @@ import addScript from './lib/add-script';
 import * as settings from './lib/settings';
 import pushNotifications from './lib/push-notifications';
 import tinycam from './lib/tinycam';
-import {updateMessageTextInput, combineEmojis, init as initTextInput} from './lib/emoji-text-input';
+import {updateMessageTextInput, combineEmojis, isCombinableEmojis, init as initTextInput} from './lib/emoji-text-input';
 import {init as messages} from './lib/messages';
 import {init as touchInit} from './lib/touch';
+import {warn} from './lib/notify';
+import {sendPhoto} from './lib/api';
 
 Promise.all([
 	addScript('https://cdn.rawgit.com/AdaRoseEdwards/dirty-dom/v1.3.1/build/dirty-dom-lib.min.js').promise,
@@ -78,7 +80,15 @@ Promise.all([
 
 		const subGrid = makeGrid(subEmojis[i]);
 		subGrid.dataset.emoji = subEmojis[i][4];
-		subGrid.on('emojiSelect', e => updateMessageTextInput(e.detail.emoji + skinToneSelector.dataset.value));
+		subGrid.on('emojiSelect', e => {
+
+			if (isCombinableEmojis(e.detail.emoji, skinToneSelector.dataset.value)) {
+				updateMessageTextInput(e.detail.emoji + skinToneSelector.dataset.value);
+			} else {
+				updateMessageTextInput(e.detail.emoji);
+			}
+
+		});
 		item.appendChild(subGrid);
 		return subGrid;
 	})
@@ -98,7 +108,14 @@ Promise.all([
 	messages();
 
 	// Push notification camera.
-	tinycam();
+	const {photoModal} = tinycam();
+	photoModal.on('photo', e => {
+		const username = $('#emoji__recipient').value;
+		if (username === '') {
+			return warn('No User');
+		}
+		sendPhoto(username, e.detail);
+	});
 
 	// Set up the text input
 	initTextInput();
