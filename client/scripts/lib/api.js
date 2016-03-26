@@ -5,6 +5,7 @@
 */
 
 import { getItem, setItem } from 'localforage';
+import { fetchNewMessages } from './messages';
 
 const jsonHeader = new Headers({
 	'Content-Type': 'application/json',
@@ -132,7 +133,8 @@ function sendMesage(username, message) {
 		headers: jsonHeader,
 		body: JSON.stringify({username, message})
 	})
-	.then(checkForErrors);
+	.then(checkForErrors)
+	.then(fetchNewMessages);
 }
 
 function sendPhoto(username, photo) {
@@ -143,7 +145,8 @@ function sendPhoto(username, photo) {
 		headers: jsonHeader,
 		body: JSON.stringify({username, message: photo, type: 'photo'})
 	})
-	.then(checkForErrors);
+	.then(checkForErrors)
+	.then(fetchNewMessages);
 }
 
 export {

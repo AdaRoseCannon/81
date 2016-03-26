@@ -98,7 +98,7 @@ Promise.all([
 	twemoji.parse(mainGrid);
 	twemoji.parse($('#emoji__options-button'));
 
-	// Set up local storage caching 
+	// Set up local storage caching
 	apiInit();
 
 	// Add button interactions

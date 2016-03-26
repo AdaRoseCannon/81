@@ -4,7 +4,7 @@ import json from 'rollup-plugin-json';
 import babel from 'rollup-plugin-babel';
 
 export default {
-	intro: '(function () {\nvar define = false;\n',
+	intro: '(function () {\'use strict\';\nvar define = false;\nvar window = window || self',
 	outro: '}());',
 	plugins: [
 		nodeResolve({
