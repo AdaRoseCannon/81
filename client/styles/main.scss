@@ -101,6 +101,11 @@ img.emoji {
 	flex-shrink: 0;
 }
 
+#emoji__push.working {
+	opacity: 0.5;
+	pointer-events: none;
+}
+
 #emoji__header {
 	display: flex;
     align-items: center;
