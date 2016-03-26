@@ -13,7 +13,7 @@ export default (function () {
 		} else {
 
 			// Return the instantiation promise
-			return navigator.serviceWorker.register('/sw.min.js')
+			return navigator.serviceWorker.register('/sw.js')
 			.then(() => navigator.serviceWorker.ready);
 		}
 	}

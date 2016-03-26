@@ -11,7 +11,10 @@ export default {
 			jsnext: true
 		}),
 		commonjs({
-			include: 'node_modules/**'
+			include: 'node_modules/**',
+			namedExports: {
+				'node_modules/localforage/dist/localforage.js': [ 'getItem', 'setItem' ]
+			}
 		}),
 		json(),
 		babel({

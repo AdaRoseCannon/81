@@ -51,7 +51,7 @@
 				{{#if user}}
 				{{else}}
 				<script>document.write(`
-					<li class="received" timestamp="${Date.now()}">You currently cannot recieve messages, as you are not logged in with Twitter. <div><a href="/auth/twitter"><button class="emoji__register">Login With Twitter</button></a></div></li>
+					<li class="received" timestamp="${Date.now()}"><div><a href="/auth/twitter"><button class="emoji__register">Login With Twitter</button></a></div></li>
 				`);</script>
 				{{/if}}
 			</ul>

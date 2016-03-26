@@ -49,7 +49,6 @@ function postMessage(e) {
 
 function init() {
 	fetchNewMessages();
-
 	window.addEventListener('message', postMessage, false);
 }
 

@@ -22,6 +22,10 @@ toolbox.router.any('/api/*', function (request) {
 // Data should query the network first
 toolbox.router.any('/auth/*', toolbox.networkOnly);
 
+setInterval(function () {
+
+}, 3000);
+
 function getMessage(event) {
 	let data = {
 		title: 'Something Has Happened',
@@ -56,7 +60,7 @@ function getMessage(event) {
 		});
 	}
 
-	event.currentTarget.clients.matchAll({type: 'window'})
+	clients.matchAll({})
 	.then(function (windows) {
 		windows.forEach(function (w) {
 			w.postMessage({

@@ -14,7 +14,7 @@ import {updateMessageTextInput, combineEmojis, isCombinableEmojis, init as initT
 import {init as messages} from './lib/messages';
 import {init as touchInit} from './lib/touch';
 import {warn} from './lib/notify';
-import {sendPhoto} from './lib/api';
+import {sendPhoto, init as apiInit} from './lib/api';
 
 Promise.all([
 	addScript('https://cdn.rawgit.com/AdaRoseEdwards/dirty-dom/v1.3.1/build/dirty-dom-lib.min.js').promise,
@@ -97,6 +97,9 @@ Promise.all([
 	$('#emoji__grid').appendChild(mainGrid);
 	twemoji.parse(mainGrid);
 	twemoji.parse($('#emoji__options-button'));
+
+	// Set up local storage caching 
+	apiInit();
 
 	// Add button interactions
 	touchInit();

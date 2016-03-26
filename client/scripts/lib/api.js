@@ -1,4 +1,10 @@
-/* global Headers */
+/* global Headers, $ */
+
+/*
+* This is used by the service worker and the browser script.
+*/
+
+import { getItem, setItem } from 'localforage';
 
 const jsonHeader = new Headers({
 	'Content-Type': 'application/json',
@@ -7,8 +13,47 @@ const jsonHeader = new Headers({
 
 const sentMessages = new Map();
 const receivedMessages = new Map();
+const correspondents = new Set();
+
 sentMessages.upToDate = false;
 receivedMessages.upToDate = false;
+
+function save() {
+	return Promise.all([
+		setItem('sent-messages', JSON.stringify(Array.from(sentMessages.entries))),
+		setItem('recieved-messages', JSON.stringify(Array.from(receivedMessages.entries))),
+		setItem('correspondents', JSON.stringify(Array.from(correspondents.values)))
+	]);
+}
+
+function init() {
+
+	window.addEventListener('unload', save);
+
+	getItem('sent-messages')
+	.then(value => JSON.parse(value))
+	.then(arr => arr.forEach(
+		pair => sentMessages.set(pair[0], pair[1])
+	))
+	.catch(e => console.log(e));
+
+	getItem('recieved-messages')
+	.then(value => JSON.parse(value))
+	.then(arr => arr.forEach(
+		pair => receivedMessages.set(pair[0], pair[1])
+	))
+	.catch(e => console.log(e));
+
+	getItem('correspondents')
+	.then(value => JSON.parse(value))
+	.then(arr => arr.forEach(
+		correspondent => correspondents.add(correspondent)
+	))
+	.catch(e => console.log(e));
+
+	getItem('last-correspondent')
+	.then(value => $('#emoji__recipient').value = value);
+}
 
 function checkForErrors(r) {
 	if (!r.ok) {
@@ -55,6 +100,7 @@ function getMessages({start, amount, cache, sent} = {}) {
 			if (map.has(m.messageId)) {
 				map.upToDate = true;
 			}
+			correspondents.add(m.from);
 			map.set(m.messageId, m);
 		});
 
@@ -79,6 +125,7 @@ function getAllMessages(cached) {
 }
 
 function sendMesage(username, message) {
+	setItem('last-correspondent', username);
 	return fetch('/api/send-message', {
 		method: 'POST',
 		credentials: 'same-origin',
@@ -89,6 +136,7 @@ function sendMesage(username, message) {
 }
 
 function sendPhoto(username, photo) {
+	setItem('last-correspondent', username);
 	return fetch('/api/send-message', {
 		method: 'POST',
 		credentials: 'same-origin',
@@ -103,5 +151,6 @@ export {
 	getAllMessages,
 	getMessages,
 	sendMesage,
-	sendPhoto
+	sendPhoto,
+	init
 };
