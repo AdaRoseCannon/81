@@ -1,15 +1,18 @@
+/*global $, $$*/
+
 function handleClick (e, duration, fn, subGrid) {
 
 	if (duration < 200) {
 		subGrid.fire('emojiSelect', {emoji: subGrid.dataset.emoji});
 	} else {
-		if (event.changedTouches) {
-			const changedTouch = event.changedTouches[0];
-			const elem = document.elementFromPoint(changedTouch.clientX, changedTouch.clientY);
-			subGrid.fire('emojiSelect', {emoji: elem.dataset.emoji});
+		let event;
+		if (e.changedTouches) {
+			event = event.changedTouches[0];
 		} else {
-			subGrid.fire('emojiSelect', {emoji: e.target.dataset.emoji});
+			event = e;
 		}
+		const elem = document.elementFromPoint(event.clientX, event.clientY);
+		if (elem.dataset.emoji) subGrid.fire('emojiSelect', {emoji: elem.dataset.emoji});
 	};
 
 	e.currentTarget.off('mouseup', fn);

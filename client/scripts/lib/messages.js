@@ -37,19 +37,17 @@ function fetchNewMessages() {
 		return error(e.message);
 	}).then(function () {
 		return noti.remove();
-		scrollMessagesToBottom();
 	});
-}
-
-function postMessage(e) {
-	if (e.data.action === 'new-message') {
-		fetchNewMessages();
-	}
 }
 
 function init() {
 	fetchNewMessages();
-	window.addEventListener('message', postMessage, false);
+	window.addEventListener('hashchange', function () {
+		if (window.location.hash === '#refresh') {
+			location.hash = '';
+			fetchNewMessages();
+		}
+	});
 }
 
 export {

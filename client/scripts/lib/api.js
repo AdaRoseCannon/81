@@ -21,9 +21,9 @@ receivedMessages.upToDate = false;
 
 function save() {
 	return Promise.all([
-		setItem('sent-messages', JSON.stringify(Array.from(sentMessages.entries))),
-		setItem('recieved-messages', JSON.stringify(Array.from(receivedMessages.entries))),
-		setItem('correspondents', JSON.stringify(Array.from(correspondents.values)))
+		setItem('v1.0-sent-messages', Array.from(sentMessages.entries())),
+		setItem('v1.0-recieved-messages', Array.from(receivedMessages.entries())),
+		setItem('v1.0-correspondents', Array.from(correspondents.values()))
 	]);
 }
 
@@ -31,22 +31,22 @@ function init() {
 
 	window.addEventListener('unload', save);
 
-	getItem('sent-messages')
-	.then(value => JSON.parse(value))
+	getItem('v1.0-sent-messages')
+	.then(r => r === null ? [] : r)
 	.then(arr => arr.forEach(
 		pair => sentMessages.set(pair[0], pair[1])
 	))
 	.catch(e => console.log(e));
 
-	getItem('recieved-messages')
-	.then(value => JSON.parse(value))
+	getItem('v1.0-recieved-messages')
+	.then(r => r === null ? [] : r)
 	.then(arr => arr.forEach(
 		pair => receivedMessages.set(pair[0], pair[1])
 	))
 	.catch(e => console.log(e));
 
-	getItem('correspondents')
-	.then(value => JSON.parse(value))
+	getItem('v1.0-correspondents')
+	.then(r => r === null ? [] : r)
 	.then(arr => arr.forEach(
 		correspondent => correspondents.add(correspondent)
 	))
@@ -119,6 +119,7 @@ function getAllMessages(cached) {
 		(cached ? Promise.resolve([]) : getMessages({sent: true})),
 	]).
 	then(() => {
+		save();
 		const sent = Array.from(sentMessages.values());
 		const received = Array.from(receivedMessages.values());
 		return sent.concat(received).sort((a,b) => b.timestamp - a.timestamp);

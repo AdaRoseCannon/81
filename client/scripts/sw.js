@@ -39,15 +39,18 @@ function getMessage(event) {
 		.then(messages => messages[0])
 		.then(message => {
 			if (message.type === 'message') {
+
+				// Get the url for the twemoji image for the first emoji in the message.
 				let iconUrl;
 				try {
 					iconUrl = twemoji.parse(message.message[0]).match(/http[^"]+\.png/);
+					iconUrl = iconUrl[0];
 				} catch (e) {
-					console.log(e);
+					// An error happened with twemoji, ignore it and carry on.
 				}
 				return {
 					title: `${message.from} says: ${message.message.join('')}`,
-					icon: iconUrl[0] || 'launcher-icon-4x.png'
+					icon: iconUrl || 'launcher-icon-4x.png'
 				}
 			} else if (message.type === 'photo') {
 				const icon = decompress(message.message);
@@ -63,10 +66,7 @@ function getMessage(event) {
 	clients.matchAll({})
 	.then(function (windows) {
 		windows.forEach(function (w) {
-			w.postMessage({
-				action: 'new-message',
-				data: data
-			});
+			w.navigate('/#refresh');
 		});
 	});
 

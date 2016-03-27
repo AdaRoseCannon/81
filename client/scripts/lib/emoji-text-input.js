@@ -8,9 +8,10 @@ let cursorPos = 0;
 const message = [];
 
 function combineEmojis(emoji, skinTone='') {
-	const div = MAKE.div();
-	div.appendChild(MAKE.html(twemoji.parse(emoji + skinTone)).firstChild);
-	return div.innerHTML;
+	const imgString = twemoji.parse(emoji + skinTone);
+	const foundImg = imgString.match(/<img[^>]+>/gi);
+	if (!foundImg) return emoji;
+	return foundImg[0];
 }
 
 function isCombinableEmojis(emoji, skinTone='') {
