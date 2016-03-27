@@ -1,10 +1,30 @@
-/* global $ */
+/* global $, Draggable, TweenLite */
 
 import {error, notify} from './notify';
 import {getAllMessages} from './api';
 import {combineEmojis} from './emoji-text-input';
-import {scrollMessagesToBottom} from './touch';
 import {decompress} from 'ftdatasquasher';
+
+
+// decompress and blow up the image.
+function rebuildImage(str, callback) {
+	const dataUri = decompress(str);
+	const canvas = document.createElement('canvas');
+	canvas.classList.add('photo');
+	canvas.width = canvas.height = 192;
+	const context = canvas.getContext('2d');
+	context.mozImageSmoothingEnabled = false;
+	context.webkitImageSmoothingEnabled = false;
+	context.msImageSmoothingEnabled = false;
+	context.imageSmoothingEnabled = false;
+	const img = document.createElement('img');
+	img.src = dataUri;
+	img.once('load', function () {
+		context.drawImage(img, 0, 0, 64, 64, 0, 0, 192, 192);
+		img.src = canvas.toDataURL();
+		callback(img);
+	});
+}
 
 function fetchNewMessages() {
 
@@ -26,10 +46,9 @@ function fetchNewMessages() {
 				messageTarget.appendChild(li);
 			}
 			if (message.type === 'photo') {
-				const img = document.createElement('img');
-				img.src = decompress(message.message);
-				img.classList.add('photo');
-				li.appendChild(img);
+				rebuildImage(message.message, function (img) {
+					li.appendChild(img);
+				});
 				messageTarget.appendChild(li);
 			}
 		});
@@ -41,6 +60,51 @@ function fetchNewMessages() {
 }
 
 function init() {
+
+	const messagesEl = $('#emoji__messages');
+	const draggableMessage = Draggable.create(messagesEl, {
+		type:'y',
+		bounds: messagesEl.parentNode,
+		edgeResistance:0.65,
+		onDragStart: function () {
+			this.target.style.transition = 'initial';
+		},
+		onDrag: dragMove,
+		onDragEnd: function () {
+			dragEnd();
+			this.target.style.transition = '';
+		}
+	})[0];
+
+	function dragMove() {
+		// if (draggableMessage.y >= draggableMessage.maxY) {
+		// 	messagesEl.classList.add('restart-prompt');
+		// } else {
+		// 	messagesEl.classList.remove('restart-prompt');
+		// }
+	}
+
+	function dragEnd() {
+		// messagesEl.classList.remove('restart-prompt');
+		draggableMessage.update();
+	}
+
+	window.on('resize', () => {
+		draggableMessage.update();
+	});
+
+	let draggableMessageTimeout;
+	messagesEl.on('mousewheel', function (e) {
+		draggableMessage.update();
+		dragMove();
+		TweenLite.set(draggableMessage.target, {y: draggableMessage.y + e.wheelDelta});
+		clearTimeout(draggableMessageTimeout);
+		draggableMessageTimeout = setTimeout(() => {
+			dragEnd();
+			draggableMessage.applyBounds();
+		}, 500);
+	});
+
 	fetchNewMessages();
 	window.addEventListener('hashchange', function () {
 		if (window.location.hash === '#refresh') {

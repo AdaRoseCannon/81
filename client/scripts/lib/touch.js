@@ -2,7 +2,6 @@
 
 let draggableGrid;
 let draggableOptions;
-let draggableMessage;
 
 const showGrid = d => {
 	if (!draggableGrid) return;
@@ -20,20 +19,12 @@ const showOptions = d => {
 	draggableOptions.applyBounds();
 };
 
-const scrollMessagesToBottom = () => {
-	if (!draggableMessage) return;
-	TweenLite.to(draggableMessage.target, 0.45, {ease: Back.easeOut, y: 0});
-	draggableMessage.update();
-	draggableMessage.applyBounds();
-}
-
 function init() {
 
 	window.on('resize', () => {
 		showGrid();
 		showOptions();
 		draggableOptions.update();
-		draggableMessage.update();
 		draggableGrid.update();
 	});
 
@@ -71,34 +62,10 @@ function init() {
 		trigger:'#emoji__options .heading, #emoji__options .handle',
 		onDragEnd: function () { showOptions(this.x < 100) }
 	})[0];
-
-	const messagesEl = $('#emoji__messages');
-	draggableMessage = Draggable.create(messagesEl, {
-		type:'y',
-		bounds: messagesEl.parentNode,
-		edgeResistance:0.65,
-		onDragStart: function () {
-			this.target.style.transition = 'initial';
-		},
-		onDragEnd: function () {
-			this.target.style.transition = '';
-		}
-	})[0];
-
-	let draggableMessageTimeout;
-	messagesEl.on('mousewheel', function (e) {
-		draggableMessage.update();
-		TweenLite.set(draggableMessage.target, {y: draggableMessage.y + e.wheelDelta});
-		clearTimeout(draggableMessageTimeout);
-		draggableMessageTimeout = setTimeout(() => {
-			draggableMessage.applyBounds();
-		}, 500);
-	});
 }
 
 export {
 	init,
 	showGrid,
-	showOptions,
-	scrollMessagesToBottom
+	showOptions
 }

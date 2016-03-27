@@ -11,6 +11,26 @@
     align-items: baseline;
 	transition: transform 0.5s ease;
 	transition-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1.275);
+	background: white;
+
+	&:after {
+		content: 'Load More Content';
+	    display: block;
+	    background: rgba(0, 0, 0, 0.5);
+	    color: white;
+	    padding: 0.5em;
+	    margin-bottom: 0.5em;
+	    transition: transform 0.5s ease;
+	    transform-origin: 0 1.75em 1.75em;
+	    transform: rotateX(-90deg);
+	    align-self: stretch;
+	    text-align: center;
+		transition-delay: 0.2s;
+	}
+
+	&.restart-prompt:after {
+		transform: rotateX(0);
+	}
 }
 
 #emoji__messages > li {
