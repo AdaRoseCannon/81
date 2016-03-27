@@ -26,6 +26,19 @@ function rebuildImage(str, callback) {
 	});
 }
 
+function populateToField(e) {
+	let otherParty;
+	if (e.currentTarget.classList.contains('sent')) {
+		otherParty = e.currentTarget.dataset.recipient;
+	}
+	if (e.currentTarget.classList.contains('received')) {
+		otherParty = e.currentTarget.dataset.sender;
+	}
+	if (otherParty) {
+		$('#emoji__recipient').value = otherParty;
+	}
+}
+
 function fetchNewMessages() {
 
 	const noti = notify('Loading Messages', false);
@@ -37,6 +50,9 @@ function fetchNewMessages() {
 			li.classList.add(message.sent ? 'sent' : 'received');
 			li.dataset.timestamp = message.timestamp;
 			li.dataset.sender = message.from;
+			li.dataset.recipient = message.to;
+
+			li.on('click', populateToField);
 
 			if (message.type === 'message') {
 				if (message.message.constructor !== Array) return;
