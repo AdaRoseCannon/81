@@ -42,11 +42,11 @@ function populateToField(e) {
 function fetchNewMessages({
 	silent,
 	cached = false
-}) {
+} = {}) {
 
 	let noti;
 	if (silent !== true) {
-		noti = notify('Loading Messages', false);
+		noti = notify('Checking for new Messages', false);
 	}
 	const messageTarget = $('#emoji__messages');
 	return getAllMessages(cached)
@@ -89,6 +89,7 @@ function fetchNewMessages({
 function init() {
 
 	const messagesEl = $('#emoji__messages');
+	let lastY = 0;
 	const draggableMessage = Draggable.create(messagesEl, {
 		type:'y',
 		bounds: messagesEl.parentNode,
@@ -96,33 +97,40 @@ function init() {
 		onDragStart: function () {
 			this.target.style.transition = 'initial';
 		},
+		onDrag: function () {
+			if (this.dragging) {
+				lastY = this.y;
+			}
+		},
 		onDragEnd: function () {
-			dragEnd();
 			this.target.style.transition = '';
+			dragEnd();
 		}
 	})[0];
 
 	function dragEnd() {
-		// messagesEl.classList.remove('restart-prompt');
-		draggableMessage.update();
-		if (draggableMessage.y <= draggableMessage.minY - 20) {
-			fetchNewMessages('Checking for Updates.');
+		if (lastY <= draggableMessage.minY - 20) {
+			fetchNewMessages();
 		}
 	}
 
-	window.on('resize', () => {
-		draggableMessage.update();
-	});
-
 	let draggableMessageTimeout;
 	messagesEl.on('mousewheel', function (e) {
+		draggableMessage.target.style.transition = 'initial';
 		draggableMessage.update();
 		TweenLite.set(draggableMessage.target, {y: draggableMessage.y + e.wheelDelta});
+		lastY = draggableMessage.y;
 		clearTimeout(draggableMessageTimeout);
 		draggableMessageTimeout = setTimeout(() => {
+			draggableMessage.target.style.transition = '';
+			draggableMessage.update();
 			dragEnd();
 			draggableMessage.applyBounds();
 		}, 500);
+	});
+
+	window.on('resize', () => {
+		draggableMessage.update();
 	});
 
 	fetchNewMessages({
