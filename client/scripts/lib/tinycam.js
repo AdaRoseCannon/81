@@ -134,7 +134,7 @@ export default () => {
 			this.target.style.transition = '';
 		},
 		onClick: toggle,
-		minimumMovement: 6 * (window.devicePixelRatio || 1)
+		minimumMovement: 3 * (window.devicePixelRatio || 1)
 	})[0];
 
 	photoModal.style.height = photoModal.clientHeight + 'px';

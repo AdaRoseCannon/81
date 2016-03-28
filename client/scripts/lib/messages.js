@@ -98,7 +98,7 @@ function init() {
 			this.target.style.transition = 'initial';
 		},
 		onDrag: function () {
-			if (this.dragging) {
+			if (this.isDragging) {
 				lastY = this.y;
 			}
 		},
@@ -115,11 +115,11 @@ function init() {
 	}
 
 	let draggableMessageTimeout;
-	messagesEl.on('mousewheel', function (e) {
+	messagesEl.parentNode.on('mousewheel', function (e) {
 		draggableMessage.target.style.transition = 'initial';
 		draggableMessage.update();
-		TweenLite.set(draggableMessage.target, {y: draggableMessage.y + e.wheelDelta});
-		lastY = draggableMessage.y;
+		TweenLite.set(draggableMessage.target, {y: draggableMessage.y + e.wheelDelta/2});
+		lastY = draggableMessage.y + e.wheelDelta/2;
 		clearTimeout(draggableMessageTimeout);
 		draggableMessageTimeout = setTimeout(() => {
 			draggableMessage.target.style.transition = '';
