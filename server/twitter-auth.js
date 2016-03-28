@@ -140,27 +140,6 @@ app.get('/auth/detail',
 	}
 );
 
-app.get('/api/subscribe', function (req, res) {
-	const id = genIdToProfile(req.user);
-	redisGet(id)
-	.then(data => JSON.parse(data))
-	.then(inProfile => {
-		inProfile.pushUrl = JSON.parse(decodeURIComponent(req.query.sub));
-		return redisSet(id, JSON.stringify(inProfile));
-	})
-	.then(function () {
-		res.json({
-			success: true
-		});
-	})
-	.catch(e => {
-		res.status(500);
-		res.json({
-			error: e.message
-		});
-	});
-});
-
 app.get('/auth/logout', function (req, res) {
 	req.logout();
 	res.redirect('/');
@@ -188,5 +167,19 @@ function getProfileFromHandle(username) {
 	.then(str => JSON.parse(str));
 }
 
+function updateProfileFromHandle(username, data) {
+
+	return redisGet(genUserNameToId({username}))
+	.then(id => {
+
+		if (!id) {
+			throw Error('No user by that username: ' + username);
+		}
+
+		return redisSet(genIdToProfile({id}), JSON.stringify(data));
+	});
+}
+
 module.exports = app;
 module.exports.getProfileFromHandle = getProfileFromHandle;
+module.exports.updateProfileFromHandle = updateProfileFromHandle;

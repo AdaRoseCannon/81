@@ -53,6 +53,9 @@ function fetchNewMessages({
 	.then(function (m) {
 		messageTarget.empty();
 		m.forEach(function (message) {
+
+			if (message.hidden) return;
+
 			const li = document.createElement('li');
 			li.classList.add(message.sent ? 'sent' : 'received');
 			li.dataset.timestamp = message.timestamp;

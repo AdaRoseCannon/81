@@ -5,6 +5,7 @@ const app = express.Router();
 const messagesApi = require('./messages.js');
 const pushApi = require('./push.js');
 const bp = require('body-parser');
+const authApi = require('./twitter-auth');
 
 function errorResponse(res, e, status) {
    res.status(status || 500);
@@ -17,7 +18,7 @@ app.use(bp.json());
 
 app.get('/poke', function (req,res) {
 
-	if (!req.body.username) {
+	if (!req.query.username) {
 		return errorResponse(res, Error('No username param'), 403);
 	}
 	pushApi(req.query.username)
@@ -25,6 +26,33 @@ app.get('/poke', function (req,res) {
 		res.json({success: true})
 	})
 	.catch(e => errorResponse(res, e));
+});
+
+app.get('/subscribe', function (req, res) {
+
+	if (!req.user || !req.user.username) {
+		return errorResponse(res, Error('No username param'), 403);
+	}
+
+	authApi.getProfileFromHandle(req.user.username)
+	.then(inProfile => {
+
+		const newDetails = JSON.parse(decodeURIComponent(req.query.sub));
+
+		inProfile.pushUrl = newDetails;
+		authApi.updateProfileFromHandle(req.user.username, inProfile);
+	})
+	.then(function () {
+		res.json({
+			success: true
+		});
+	})
+	.catch(e => {
+		res.status(500);
+		res.json({
+			error: e.message
+		});
+	});
 });
 
 app.post('/send-message', function (req,res) {
