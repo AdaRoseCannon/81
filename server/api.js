@@ -57,7 +57,6 @@ app.post('/send-message', function (req,res) {
 		});
 	})
 	.catch(e => {
-		console.log(e);
 		errorResponse(res, e)
 	});
 });
