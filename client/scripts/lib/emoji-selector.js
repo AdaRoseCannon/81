@@ -7,7 +7,7 @@ function handleClick (e, duration, fn, subGrid) {
 	} else {
 		let event;
 		if (e.changedTouches) {
-			event = event.changedTouches[0];
+			event = e.changedTouches[0];
 		} else {
 			event = e;
 		}
