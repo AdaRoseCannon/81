@@ -6,8 +6,8 @@ const messagesApi = require('./messages.js');
 const pushApi = require('./push.js');
 const bp = require('body-parser');
 
-function errorResponse(res, e) {
-   res.status(500);
+function errorResponse(res, e, status) {
+   res.status(status);
    res.json({
 	   error: e.message
    });
@@ -18,7 +18,7 @@ app.use(bp.json());
 app.get('/poke', function (req,res) {
 
 	if (!req.body.username) {
-		return errorResponse(res, Error('No username param'));
+		return errorResponse(res, Error('No username param'), 403);
 	}
 	pushApi(req.query.username)
 	.then(() => {
@@ -30,11 +30,11 @@ app.get('/poke', function (req,res) {
 app.post('/send-message', function (req,res) {
 
 	if (!req.body.username) {
-		return errorResponse(res, Error('No username param'));
+		return errorResponse(res, Error('No username param'), 403);
 	}
 
 	if (!req.body.message) {
-		return errorResponse(res, Error('No message param'));
+		return errorResponse(res, Error('No message param'), 403);
 	}
 
 	let user;
@@ -62,7 +62,7 @@ app.post('/send-message', function (req,res) {
 app.all('/get-messages', function (req,res) {
 
 	if (!req.user || !req.user.username) {
-		return errorResponse(res, Error('No username param'));
+		return errorResponse(res, Error('No username param'), 403);
 	}
 	messagesApi
 	.readIncomingMessages(req.user.username, req.query.start, req.query.amount)
@@ -82,7 +82,7 @@ app.all('/get-messages', function (req,res) {
 app.all('/get-sent-messages', function (req,res) {
 
 	if (!req.user || !req.user.username) {
-		return errorResponse(res, Error('No username param'));
+		return errorResponse(res, Error('No username param'), 403);
 	}
 
 	messagesApi

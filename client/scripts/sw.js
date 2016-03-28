@@ -22,6 +22,9 @@ toolbox.router.any('/api/*', function (request) {
 // Data should query the network first
 toolbox.router.any('/auth/*', toolbox.networkOnly);
 
+// The index page should be got from the network first in case of login/logout
+toolbox.router.any(/\/(index\.html)?/i , toolbox.networkFirst);
+
 setInterval(function () {
 
 }, 3000);

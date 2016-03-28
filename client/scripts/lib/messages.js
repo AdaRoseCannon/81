@@ -39,11 +39,18 @@ function populateToField(e) {
 	}
 }
 
-function fetchNewMessages() {
+function fetchNewMessages({
+	silent,
+	cached = false
+}) {
 
-	const noti = notify('Loading Messages', false);
+	let noti;
+	if (silent !== true) {
+		noti = notify('Loading Messages', false);
+	}
 	const messageTarget = $('#emoji__messages');
-	getAllMessages().then(function (m) {
+	return getAllMessages(cached)
+	.then(function (m) {
 		messageTarget.empty();
 		m.forEach(function (message) {
 			const li = document.createElement('li');
@@ -69,9 +76,13 @@ function fetchNewMessages() {
 			}
 		});
 	}).catch(function (e) {
-		return error(e.message);
+		if (e.message) {
+			return error(e.message);
+		}
 	}).then(function () {
-		return noti.remove();
+		if (noti) {
+			return noti.remove();
+		}
 	});
 }
 
@@ -85,24 +96,18 @@ function init() {
 		onDragStart: function () {
 			this.target.style.transition = 'initial';
 		},
-		onDrag: dragMove,
 		onDragEnd: function () {
 			dragEnd();
 			this.target.style.transition = '';
 		}
 	})[0];
 
-	function dragMove() {
-		// if (draggableMessage.y >= draggableMessage.maxY) {
-		// 	messagesEl.classList.add('restart-prompt');
-		// } else {
-		// 	messagesEl.classList.remove('restart-prompt');
-		// }
-	}
-
 	function dragEnd() {
 		// messagesEl.classList.remove('restart-prompt');
 		draggableMessage.update();
+		if (draggableMessage.y <= draggableMessage.minY - 20) {
+			fetchNewMessages('Checking for Updates.');
+		}
 	}
 
 	window.on('resize', () => {
@@ -112,7 +117,6 @@ function init() {
 	let draggableMessageTimeout;
 	messagesEl.on('mousewheel', function (e) {
 		draggableMessage.update();
-		dragMove();
 		TweenLite.set(draggableMessage.target, {y: draggableMessage.y + e.wheelDelta});
 		clearTimeout(draggableMessageTimeout);
 		draggableMessageTimeout = setTimeout(() => {
@@ -121,7 +125,13 @@ function init() {
 		}, 500);
 	});
 
-	fetchNewMessages();
+	fetchNewMessages({
+		silent: true
+	})
+	.then(() => fetchNewMessages({
+		silent: true,
+		cached: true
+	}));
 	window.addEventListener('hashchange', function () {
 		if (window.location.hash === '#refresh') {
 			location.hash = '';

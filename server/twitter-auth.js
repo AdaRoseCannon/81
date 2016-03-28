@@ -124,6 +124,7 @@ app.get('/auth/detail',
 	function(req, res){
 
 		if (!req.query.username) {
+			res.status(403);
 			return res.json({
 				error: 'No username param'
 			});

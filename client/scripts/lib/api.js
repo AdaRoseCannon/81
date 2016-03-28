@@ -59,7 +59,22 @@ function init() {
 function checkForErrors(r) {
 	if (!r.ok) {
 		return r.json().then(j => {
-			throw Error(j.error);
+
+			// if error in the server
+			if (
+				window && window.location &&
+				j.error === 'No username param'
+			) {
+				document.body.classList.remove('user-logged-in');
+				throw false;
+			} else {
+				throw Error(j.error);
+			}
+		}, e => {
+
+			// Error fetching or parsing JSON.
+			console.error(e);
+			throw Error(e.message);
 		});
 	} else {
 		return r;
@@ -135,7 +150,7 @@ function sendMesage(username, message) {
 		body: JSON.stringify({username, message})
 	})
 	.then(checkForErrors)
-	.then(fetchNewMessages);
+	.then(() => fetchNewMessages());
 }
 
 function sendPhoto(username, photo) {
@@ -147,7 +162,7 @@ function sendPhoto(username, photo) {
 		body: JSON.stringify({username, message: photo, type: 'photo'})
 	})
 	.then(checkForErrors)
-	.then(fetchNewMessages);
+	.then(() => fetchNewMessages());
 }
 
 export {

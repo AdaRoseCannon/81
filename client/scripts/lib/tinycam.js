@@ -133,7 +133,8 @@ export default () => {
 		onDragEnd: function () {
 			this.target.style.transition = '';
 		},
-		onClick: toggle
+		onClick: toggle,
+		minimumMovement: 6 * (window.devicePixelRatio || 1)
 	})[0];
 
 	photoModal.style.height = photoModal.clientHeight + 'px';

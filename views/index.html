@@ -29,6 +29,7 @@
 		{{#if user}}
 		<div id="emoji__push" class="banner" style="display: none;">Enable Push Notifications</div>
 		{{/if}}
+		<a href="/auth/twitter" id="emoji__login-banner" class="banner"><b>Login</b> to receive messages.</a>
 		<div id="emoji__options" class="modal">
 			<div id="emoji__options-handle" class="handle"></div>
 			<h1 class="heading">Settings</h1>
@@ -48,12 +49,6 @@
 		</div>
 		<div id="emoji__content">
 			<ul id="emoji__messages">
-				{{#if user}}
-				{{else}}
-				<script>document.write(`
-					<li class="received" timestamp="${Date.now()}"><div><a href="/auth/twitter"><button class="emoji__register">Login With Twitter</button></a></div></li>
-				`);</script>
-				{{/if}}
 			</ul>
 		</div>
 		<div class="gradient-hr"></div>
