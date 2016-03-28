@@ -94,7 +94,7 @@
 	background: #13BB23;
 	margin-left: 0.4em;
 
-	&:after {
+	&[data-sender]:after {
 		content: '@' attr(data-sender);
 		font-size: small;
 		color: white;

@@ -56,10 +56,12 @@ function fetchNewMessages({
 			const li = document.createElement('li');
 			li.classList.add(message.sent ? 'sent' : 'received');
 			li.dataset.timestamp = message.timestamp;
-			li.dataset.sender = message.from;
-			li.dataset.recipient = message.to;
 
-			li.on('click', populateToField);
+			if (message.from && message.from !== '@AnonymousUser') {
+				li.dataset.sender = message.from;
+				li.on('click', populateToField);
+			}
+			li.dataset.recipient = message.to;
 
 			if (message.type === 'message') {
 				if (message.message.constructor !== Array) return;

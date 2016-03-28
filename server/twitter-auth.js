@@ -172,7 +172,7 @@ function getProfileFromHandle(username) {
 		return Promise.resolve({
 			username,
 			id: -1,
-			displayName: username
+			displayName: 'Anonymous User'
 		});
 	}
 
