@@ -7,7 +7,7 @@ const pushApi = require('./push.js');
 const bp = require('body-parser');
 
 function errorResponse(res, e, status) {
-   res.status(status);
+   res.status(status || 500);
    res.json({
 	   error: e.message
    });
@@ -56,7 +56,10 @@ app.post('/send-message', function (req,res) {
 			noOfMessages: m
 		});
 	})
-	.catch(e => errorResponse(res, e));
+	.catch(e => {
+		console.log(e);
+		errorResponse(res, e)
+	});
 });
 
 app.all('/get-messages', function (req,res) {

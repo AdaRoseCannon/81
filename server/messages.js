@@ -1,7 +1,6 @@
 const redis = require('./redis');
 const getProfileFromHandle = require('./twitter-auth').getProfileFromHandle;
 
-
 // A list of message hashes sent to the user
 function genMessagesSentFromId(profile) {
 	return 'v1.2.0_messages_from_' + profile.id;
