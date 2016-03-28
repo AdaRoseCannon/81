@@ -109,7 +109,7 @@ function init() {
 	})[0];
 
 	function dragEnd() {
-		if (lastY <= draggableMessage.minY - 20) {
+		if (lastY <= draggableMessage.minY - 200) {
 			fetchNewMessages();
 		}
 	}
