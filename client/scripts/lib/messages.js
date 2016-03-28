@@ -101,6 +101,7 @@ function init() {
 			if (this.isDragging) {
 				lastY = this.y;
 			}
+			this.target.classList.toggle('restart-prompt', lastY <= draggableMessage.minY - 100);
 		},
 		onDragEnd: function () {
 			this.target.style.transition = '';
@@ -109,9 +110,10 @@ function init() {
 	})[0];
 
 	function dragEnd() {
-		if (lastY <= draggableMessage.minY - 200) {
+		if (lastY <= draggableMessage.minY - 100) {
 			fetchNewMessages();
 		}
+		draggableMessage.target.classList.remove('restart-prompt');
 	}
 
 	let draggableMessageTimeout;
@@ -126,6 +128,7 @@ function init() {
 			draggableMessage.update();
 			dragEnd();
 			draggableMessage.applyBounds();
+			draggableMessage.target.classList.remove('restart-prompt');
 		}, 500);
 	});
 

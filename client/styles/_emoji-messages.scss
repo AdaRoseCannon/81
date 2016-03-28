@@ -14,23 +14,25 @@
 	background: white;
 	min-height: 100%;
 
-	&:after {
+	&:before {
 		content: 'Load More Content';
 	    display: block;
 	    background: rgba(0, 0, 0, 0.5);
 	    color: white;
 	    padding: 0.5em;
-	    margin-bottom: 0.5em;
+	    margin-bottom: -3em;
+		height: 3em;
 	    transition: transform 0.5s ease;
 	    transform-origin: 0 1.75em 1.75em;
 	    transform: rotateX(-90deg);
 	    align-self: stretch;
 	    text-align: center;
-		transition-delay: 0.2s;
+		transition-delay: 0.1s;
 	}
 
-	&.restart-prompt:after {
+	&.restart-prompt:before {
 		transform: rotateX(0);
+		transition-delay: 0s;
 	}
 }
 
