@@ -26,12 +26,6 @@
 		transform: scaleX(-1);
 	}
 
-	&.confirm {
-		canvas {
-			transform: scaleX(1);
-		}
-	}
-
 	.filter-label {
 		height: 1.5em;
 		line-height: 1.5em;
