@@ -1,6 +1,8 @@
 /* global ColorThief, Draggable, $, twemoji */
 import color from 'tinycolor2';
 import {compress} from 'ftdatasquasher';
+import {sendPhoto} from './api';
+import {warn} from './notify';
 
 function vectorToColor([r,g,b]) {
 	const col = color({r,g,b});
@@ -103,11 +105,21 @@ export default () => {
 	const buttonApprove = buttonArea2.$('<button>✔️</button>');
 	buttonApprove.on('click', function () {
 		if (stopFunc) stopFunc();
-		photoModal.classList.add('collapsed');
-		photoModal.classList.remove('confirm');
+
+		const username = $('#emoji__recipient').value;
+		if (username === '') {
+			return warn('No User');
+		}
 
 		render();
-		photoModal.fire('photo', compress(canvas.toDataURL()));
+
+		sendPhoto(username, compress(canvas.toDataURL()))
+		.then(function () {
+			photoModal.classList.add('collapsed');
+			photoModal.classList.remove('confirm');
+		})
+		.catch(e => warn(e.message));
+
 	});
 	const buttonCancel = buttonArea2.$('<button class="small">❌</button>');
 	buttonCancel.on('click', function () {

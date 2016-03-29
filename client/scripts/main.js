@@ -111,14 +111,7 @@ Promise.all([
 	messages();
 
 	// Push notification camera.
-	const {photoModal} = tinycam();
-	photoModal.on('photo', e => {
-		const username = $('#emoji__recipient').value;
-		if (username === '') {
-			return warn('No User');
-		}
-		sendPhoto(username, e.detail);
-	});
+	tinycam();
 
 	// Set up the text input
 	initTextInput();
