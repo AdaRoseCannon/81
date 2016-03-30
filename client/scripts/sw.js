@@ -4,7 +4,7 @@
 importScripts('/sw-toolbox.js');
 importScripts('https://twemoji.maxcdn.com/2/twemoji.min.js');
 
-import {decompress} from 'ftdatasquasher';
+// import {decompress} from 'ftdatasquasher';
 import {getMessages} from './lib/api';
 
 // Try network but fallback to cache
@@ -56,7 +56,8 @@ function getMessage(event) {
 					icon: iconUrl || 'launcher-icon-4x.png'
 				}
 			} else if (message.type === 'photo') {
-				const icon = decompress(message.message);
+				// const icon = decompress(message.message);
+				const icon = 'https://81.ada.is/api/get-image?postid=' + message.messageId;
 				const title = `${message.from} sent a photo`;
 				return {
 					title,

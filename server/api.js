@@ -6,11 +6,15 @@ const messagesApi = require('./messages.js');
 const pushApi = require('./push.js');
 const bp = require('body-parser');
 const authApi = require('./twitter-auth');
+const dataUriToBuffer = require('data-uri-to-buffer');
+const ftDataSquasher = require('ftdatasquasher');
+const lwip = require('lwip');
 
 function errorResponse(res, e, status) {
    res.status(status || 500);
    res.json({
-	   error: e.message
+	   error: e.message,
+	   stack: e.stack
    });
 }
 
@@ -106,6 +110,43 @@ app.all('/get-messages', function (req,res) {
 		}));
 	})
 	.then(m => m.filter(l => typeof l === 'object'))
+	.catch(e => errorResponse(res, e));
+});
+
+app.all('/get-image', function (req, res) {
+	if (!req.query.postid) {
+		return errorResponse(res, Error('No postid param'));
+	}
+
+	messagesApi
+	.readSingleMessage(req.query.postid)
+	.then(m => {
+		if (m.type !== 'photo') {
+			throw Error('Message is not a photo');
+		}
+		const buffer = dataUriToBuffer(ftDataSquasher.decompress(m.message));
+		return new Promise((resolve, reject) => {
+			lwip.open(buffer, 'png', function (err, image) {
+				if (err) return reject(err);
+				return resolve(image);
+			});
+		})
+	})
+	.then(image => {
+		return new Promise((resolve, reject) => {
+			image.resize(192, 192, 'nearest-neighbor', function (err, image) {
+				if (err) return reject(err);
+				image.toBuffer('png', {}, function (err, buffer) {
+					if (err) return reject(err);
+					resolve(buffer);
+				})
+			});
+		});
+	})
+	.then(buffer => {
+	    res.set('Content-Type', 'image/png');
+		res.send(buffer);
+	})
 	.catch(e => errorResponse(res, e));
 });
 

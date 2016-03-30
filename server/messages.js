@@ -27,6 +27,11 @@ function readMessages(user, start, amount, keyFunc) {
 	.then(arr => arr.filter(a => a!==null));
 }
 
+function readSingleMessage(key) {
+	return redis.redisHGet(genMessagesHashKey(), key)
+	.then(response => JSON.parse(response));
+}
+
 function readIncomingMessages(user, start, amount) {
 	return readMessages(user, start, amount, genMessagesSentToId);
 }
@@ -66,5 +71,6 @@ function pushMessage(toUser, fromUser, messageObject) {
 module.exports = {
 	readIncomingMessages,
 	readOutgoingMessages,
-	pushMessage
+	pushMessage,
+	readSingleMessage
 };
