@@ -1,8 +1,11 @@
 # Build instructions
 
 Clone the repository
+
+```
 npm install
 npm run watch
+```
 
 # Environment Varaibles
 
