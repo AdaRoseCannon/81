@@ -2,6 +2,7 @@
 
 const express = require('express');
 const app = express.Router();
+const denodeify = require('denodeify');
 const messagesApi = require('./messages.js');
 const pushApi = require('./push.js');
 const bp = require('body-parser');
@@ -9,6 +10,7 @@ const authApi = require('./twitter-auth');
 const dataUriToBuffer = require('data-uri-to-buffer');
 const ftDataSquasher = require('ftdatasquasher');
 const lwip = require('lwip');
+const co = require('co');
 
 function errorResponse(res, e, status) {
    res.status(status || 500);
@@ -113,36 +115,70 @@ app.all('/get-messages', function (req,res) {
 	.catch(e => errorResponse(res, e));
 });
 
+function loadImageFromMessage(postid) {
+
+	return messagesApi
+	.readSingleMessage(postid)
+	.then(m => {
+		if (m.type !== 'photo') {
+			throw Error('Message is not a photo: ' + postid);
+		}
+		const buffer = dataUriToBuffer(ftDataSquasher.decompress(m.message));
+		return denodeify(lwip.open)(buffer, 'png')
+		.then(image => denodeify(image.resize.bind(image))(192, 192, 'nearest-neighbor'));
+	});
+}
+
 app.all('/get-image', function (req, res) {
 	if (!req.query.postid) {
 		return errorResponse(res, Error('No postid param'));
 	}
 
-	messagesApi
-	.readSingleMessage(req.query.postid)
-	.then(m => {
-		if (m.type !== 'photo') {
-			throw Error('Message is not a photo');
-		}
-		const buffer = dataUriToBuffer(ftDataSquasher.decompress(m.message));
-		return new Promise((resolve, reject) => {
-			lwip.open(buffer, 'png', function (err, image) {
-				if (err) return reject(err);
-				return resolve(image);
-			});
-		})
+	loadImageFromMessage(req.query.postid)
+	.then(image => denodeify(image.toBuffer.bind(image))('png', {}))
+	.then(buffer => {
+	    res.set('Content-Type', 'image/png');
+		res.send(buffer);
 	})
-	.then(image => {
-		return new Promise((resolve, reject) => {
-			image.resize(192, 192, 'nearest-neighbor', function (err, image) {
-				if (err) return reject(err);
-				image.toBuffer('png', {}, function (err, buffer) {
-					if (err) return reject(err);
-					resolve(buffer);
-				})
+	.catch(e => errorResponse(res, e));
+});
+
+app.all('/get-collage', function (req, res) {
+	if (!req.query.postids) {
+		return errorResponse(res, Error('No postids param'));
+	}
+
+	const postids = req.query.postids.split(',');
+
+	if (postids.length === 1) {
+		return errorResponse(res, Error('Needs more than one id, comma seperated.'));
+	}
+
+	Promise.all(postids.map(postid => loadImageFromMessage(postid)))
+	.then(images => {
+		const padding = 8;
+		const columns = 2;
+		const rows = Math.ceil(images.length/columns);
+		return denodeify(lwip.create)(
+			(192+padding) * columns + padding,
+			(192+padding) * rows + padding,
+			[255, 240, 245]
+		)
+		.then(canvas => {
+			return co(function *() {
+				for (let i=0; i<images.length; i++) {
+					const image = images[i];
+					const x = (i % 2);
+					const y = Math.floor(i/columns);
+					const posX = x * (192+padding) + padding;
+					const posY = y * (192+padding) + padding;
+					yield denodeify(canvas.paste.bind(canvas))(posX, posY, image);
+				}
+				return canvas
 			});
 		});
 	})
+	.then(image => denodeify(image.toBuffer.bind(image))('png', {}))
 	.then(buffer => {
 	    res.set('Content-Type', 'image/png');
 		res.send(buffer);
