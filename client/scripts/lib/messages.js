@@ -144,14 +144,16 @@ function init() {
 	fetchNewMessages({
 		silent: true
 	})
-	.then(() => fetchNewMessages({
+	.catch(() => fetchNewMessages({
 		silent: true,
 		cached: true
 	}));
 	window.addEventListener('hashchange', function () {
 		if (window.location.hash === '#refresh') {
 			location.hash = '';
-			fetchNewMessages();
+			fetchNewMessages({
+				silent: true
+			});
 		}
 	});
 }

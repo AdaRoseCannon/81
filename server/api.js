@@ -12,6 +12,9 @@ const ftDataSquasher = require('ftdatasquasher');
 const lwip = require('lwip');
 const co = require('co');
 
+// maintain a global color promise because lwip can't run in paralel
+lwip.colorPromise = Promise.resolve();
+
 function errorResponse(res, e, status) {
    res.status(status || 500);
    res.json({
@@ -134,7 +137,8 @@ app.all('/get-image', function (req, res) {
 		return errorResponse(res, Error('No postid param'));
 	}
 
-	loadImageFromMessage(req.query.postid)
+	lwip.colorPromise = lwip.colorPromise
+	.then(() => loadImageFromMessage(req.query.postid))
 	.then(image => denodeify(image.toBuffer.bind(image))('png', {}))
 	.then(buffer => {
 	    res.set('Content-Type', 'image/png');
@@ -154,7 +158,8 @@ app.all('/get-collage', function (req, res) {
 		return errorResponse(res, Error('Needs more than one id, comma seperated.'));
 	}
 
-	Promise.all(postids.map(postid => loadImageFromMessage(postid)))
+	lwip.colorPromise = lwip.colorPromise
+	.then(() => Promise.all(postids.map(postid => loadImageFromMessage(postid))))
 	.then(images => {
 		const padding = 8;
 		const columns = 2;

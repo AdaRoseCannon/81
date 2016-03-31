@@ -25,10 +25,6 @@ toolbox.router.any('/auth/*', toolbox.networkOnly);
 // The index page should be got from the network first in case of login/logout
 toolbox.router.any(/\/(index\.html)?$/i , toolbox.networkFirst);
 
-setInterval(function () {
-
-}, 3000);
-
 function getMessage(event) {
 	let data = {
 		title: 'Something Has Happened',
@@ -36,7 +32,7 @@ function getMessage(event) {
 		icon: 'launcher-icon-4x.png'
 	};
 	if (event.data) {
-		data = event.data.json();
+		data = Promise.resolve(event.data.json());
 	} else {
 		data = getMessages({amount: 1})
 		.then(messages => messages[0])
@@ -67,20 +63,34 @@ function getMessage(event) {
 		});
 	}
 
-	clients.matchAll({})
+	const reload = clients.matchAll({
+		type: 'window'
+	})
 	.then(function (windows) {
 		windows.forEach(function (w) {
 			w.navigate('/#refresh');
 		});
 	});
 
-	return Promise.resolve(data);
+	return Promise.all([data, reload]).then(() => data);
 }
 
-self.addEventListener('notificationclick', function () {
-	if (clients.openWindow) {
-		clients.openWindow('https://81.ada.is/');
-	}
+self.addEventListener('notificationclick', function(event) {
+	event.notification.close();
+
+	// This looks to see if the current is already open and
+	// focuses if it is
+	event.waitUntil(clients.matchAll({
+		type: 'window'
+	}).then(function(clientList) {
+		for (let i = 0; i < clientList.length; i++) {
+			const client = clientList[i];
+			if ('focus' in client) {
+				return client.focus();
+			}
+		}
+		if (clients.openWindow) return clients.openWindow('/');
+	}));
 });
 
 self.addEventListener('push', function(event) {
@@ -91,7 +101,7 @@ self.addEventListener('push', function(event) {
 	if (!('showNotification' in ServiceWorkerRegistration.prototype)) {
 		console.warn('Notifications aren\'t supported.');
 		return;
-    }
+		}
 
 	const noti = getMessage(event)
 	.then(message => self.registration.showNotification(message.title, message));
