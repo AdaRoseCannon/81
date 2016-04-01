@@ -118,6 +118,13 @@ app.get('/auth/twitter', function (req, res, next) {
 }, passport.authenticate('twitter'));
 
 app.get('/auth/twitter/return',
+	function (req, res, next) {
+		if (req.user) {
+			res.redirect('/');
+		} else {
+			next();
+		}
+	},
 	passport.authenticate('twitter', { failureRedirect: '/' }),
 	function(req, res) {
 		res.redirect('/');
