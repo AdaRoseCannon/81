@@ -109,7 +109,13 @@ app.use(require('express-session')({
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.get('/auth/twitter', passport.authenticate('twitter'));
+app.get('/auth/twitter', function (req, res, next) {
+	if (req.user) {
+		res.redirect('/');
+	} else {
+		next();
+	}
+}, passport.authenticate('twitter'));
 
 app.get('/auth/twitter/return',
 	passport.authenticate('twitter', { failureRedirect: '/' }),
