@@ -30,9 +30,11 @@ module.exports = function quote(req, res) {
 		const emojiMessages = [];
 		for (const o of messages) {
 			o.sent = o.from.toLowerCase() === req.query.by.toLowerCase();
-			if (o.type === 'photo' && photoMessages.length < 4) {
+			if (o.type === 'photo') {
 				o.message = `<img src="/images/get-image?postid=${o.messageId}" />`;
-				photoMessages.push(o);
+				if (photoMessages.length < 4) {
+					photoMessages.push(o);
+				}
 			}
 			if (o.type === 'message') {
 				o.message = o.message.join('');
