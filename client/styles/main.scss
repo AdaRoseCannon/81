@@ -22,7 +22,6 @@ body {
 	margin: auto;
     left: 50%;
     transform: translateX(-50%);
-	box-shadow: 0 0 1em;
 	display: flex;
 	flex-direction: column;
 }
@@ -89,13 +88,17 @@ img.emoji {
 }
 
 #emoji__share-wrapper {
-	height: 5em;
+	height: 10em;
     flex-shrink: 0;
     flex-grow: 0;
-    margin-bottom: -5em;
+    margin-bottom: -10em;
 	overflow: hidden;
     z-index: 10;
 	pointer-events: none;
+
+	button: {
+		padding: 0.2em 0.4em;
+	}
 
 	#emoji__share {
 		pointer-events: all;
@@ -107,9 +110,23 @@ img.emoji {
 	    align-items: center;
 	    justify-content: space-around;
 	    flex-wrap: wrap;
-		padding: 0 0.5em;
+		padding: 0.5em;
 		transition: transform 0.5s ease;
 		transform: translateY(-200%);
+
+		#emoji__share-twitter {
+			margin: 0.2em 0.5em;
+			border-radius: 0.5em;
+			background: white;
+			padding: 0.5em;
+			display: flex;
+		    justify-content: center;
+		    align-items: center;
+
+			span {
+				margin-right: 0.3em;
+			}
+		}
 
 		body.post-select & {
 			transform: translateY(0);

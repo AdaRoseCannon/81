@@ -11,15 +11,9 @@ module.exports = function quote(req, res) {
 			return errorResponse(res, Error('No postids param'));
 		}
 
-		if (!req.query.by) {
-			return errorResponse(res, Error('No by param'));
-		}
+		req.query.by = req.query.by || 'an anonymous user.';
 
 		const postids = req.query.postids.split(',');
-
-		if (postids.length === 1) {
-			return errorResponse(res, Error('Needs more than one id, comma seperated.'));
-		}
 
 		const messages = yield Promise.all(
 			postids.map(
