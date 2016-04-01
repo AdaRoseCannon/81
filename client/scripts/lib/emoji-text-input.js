@@ -15,7 +15,7 @@ function combineEmojis(emoji, skinTone='') {
 }
 
 function isCombinableEmojis(emoji, skinTone='') {
-	return twemoji.parse(emoji + skinTone).match(/<img/gi).length === 1;
+	return (twemoji.parse(emoji + skinTone).match(/<img/gi) || []).length > 1;
 }
 
 function tapOnChar(e) {
