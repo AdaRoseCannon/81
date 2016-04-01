@@ -64,6 +64,10 @@ function fetchNewMessages({
 	}
 	const messageTarget = $('#emoji__messages');
 	return getAllMessages(cached)
+	.catch(e => {
+		console.log(e);
+		return getAllMessages(true);
+	})
 	.then(function (m) {
 		messageTarget.empty();
 		m.forEach(function (message) {

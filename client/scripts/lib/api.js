@@ -20,40 +20,47 @@ sentMessages.upToDate = false;
 receivedMessages.upToDate = false;
 
 function save() {
-	return Promise.all([
-		setItem('v1.0-sent-messages', Array.from(sentMessages.entries())),
-		setItem('v1.0-recieved-messages', Array.from(receivedMessages.entries())),
-		setItem('v1.0-correspondents', Array.from(correspondents.values()))
-	]);
+	readyPromise.then(() => {
+		return Promise.all([
+			setItem('v1.0-sent-messages', Array.from(sentMessages.entries())),
+			setItem('v1.0-recieved-messages', Array.from(receivedMessages.entries())),
+			setItem('v1.0-correspondents', Array.from(correspondents.values()))
+		]);
+	});
 }
+
+let readyPromiseResolve;
+let readyPromise = new Promise(function (resolve) {
+	readyPromiseResolve = resolve;
+});
 
 function init() {
 
-	window.addEventListener('unload', save);
+	Promise.all([
+		getItem('v1.0-sent-messages')
+		.then(r => r === null ? [] : r)
+		.then(arr => arr.forEach(
+			pair => sentMessages.set(pair[0], pair[1])
+		))
+		.catch(e => console.log(e)),
 
-	getItem('v1.0-sent-messages')
-	.then(r => r === null ? [] : r)
-	.then(arr => arr.forEach(
-		pair => sentMessages.set(pair[0], pair[1])
-	))
-	.catch(e => console.log(e));
+		getItem('v1.0-recieved-messages')
+		.then(r => r === null ? [] : r)
+		.then(arr => arr.forEach(
+			pair => receivedMessages.set(pair[0], pair[1])
+		))
+		.catch(e => console.log(e)),
 
-	getItem('v1.0-recieved-messages')
-	.then(r => r === null ? [] : r)
-	.then(arr => arr.forEach(
-		pair => receivedMessages.set(pair[0], pair[1])
-	))
-	.catch(e => console.log(e));
+		getItem('v1.0-correspondents')
+		.then(r => r === null ? [] : r)
+		.then(arr => arr.forEach(
+			correspondent => correspondents.add(correspondent)
+		))
+		.catch(e => console.log(e)),
 
-	getItem('v1.0-correspondents')
-	.then(r => r === null ? [] : r)
-	.then(arr => arr.forEach(
-		correspondent => correspondents.add(correspondent)
-	))
-	.catch(e => console.log(e));
-
-	getItem('last-correspondent')
-	.then(value => $('#emoji__recipient').value = value);
+		getItem('last-correspondent')
+		.then(value => $('#emoji__recipient').value = value),
+	]).then(() => readyPromiseResolve());
 }
 
 function checkForErrors(r) {
@@ -120,7 +127,6 @@ function getMessages({start, amount, cache, sent} = {}) {
 			map.set(m.messageId, m);
 		});
 
-		// store in idb then return
 		return json.filter(m => typeof m === 'object');
 	});
 }
@@ -132,8 +138,9 @@ function getAllMessages(cached) {
 	return Promise.all([
 		(cached ? Promise.resolve([]) : getMessages()),
 		(cached ? Promise.resolve([]) : getMessages({sent: true})),
-	]).
-	then(() => {
+	])
+	.then(() => readyPromise)
+	.then(() => {
 		save();
 		const sent = Array.from(sentMessages.values());
 		const received = Array.from(receivedMessages.values());
@@ -171,5 +178,6 @@ export {
 	getMessages,
 	sendMesage,
 	sendPhoto,
+	save,
 	init
 };

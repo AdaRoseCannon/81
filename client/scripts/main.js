@@ -13,7 +13,7 @@ import tinycam from './lib/tinycam';
 import {updateMessageTextInput, combineEmojis, isCombinableEmojis, init as initTextInput} from './lib/emoji-text-input';
 import {init as messages} from './lib/messages';
 import {init as touchInit} from './lib/touch';
-import {init as apiInit} from './lib/api';
+import {init as apiInit, save as apiSave} from './lib/api';
 import {init as shareInit} from './lib/share';
 
 Promise.all([
@@ -117,6 +117,8 @@ Promise.all([
 	initTextInput();
 
 	shareInit();
+
+	window.addEventListener('unload', apiSave);
 })
 .catch(e => {
 
