@@ -41,7 +41,7 @@ function fetchNewMessages({
 			const emojiEls = selectedEls.filter(el => !el.$('img.photo'));
 			shareWrapper.fire('update', {
 				text: emojiEls.map(el => el.dataset.message).join('\n'),
-				postids: selectedEls.map(el => el.dataset.id)
+				postids: selectedEls.map(el => el.dataset.id).reverse()
 			});
 		} else {
 			let otherParty;
