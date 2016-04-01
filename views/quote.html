@@ -21,6 +21,9 @@
 	</head>
 	<body>
 		<div id="emoji__content" style="overflow-y: auto;">
+			<div>
+				<h1>Hello world</h1>
+			</div>
 			<ul id="emoji__messages" style="position: relative;">
 			{{#messages}}
 				<li class="{{#sent}}sent{{/sent}}{{^sent}}received{{/sent}}" data-timestamp="{{timestamp}}" data-sender="{{from}}" data-recipient="{{to}}">{{{message}}}</li>
