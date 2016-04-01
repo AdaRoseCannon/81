@@ -18,7 +18,6 @@ function isCombinableEmojis(emoji, skinTone='') {
 	return twemoji.parse(emoji + skinTone).match(/<img/gi).length === 1;
 }
 
-
 function tapOnChar(e) {
 	if (e.target !== e.currentTarget) cursorPos = e.target.prevAll().length;
 	updateMessageTextInput();

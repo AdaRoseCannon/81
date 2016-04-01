@@ -19,22 +19,28 @@
 		<link rel="manifest" href="/manifest.json">
 		<link href="https://81.ada.is/launcher-icon-4x.png" rel="icon" sizes="192x192" />
 	</head>
-	<body {{#if user}}class="user-logged-in"{{/if}}>
+	<body {{#if hasUser}}class="user-logged-in" data-username="{{user.username}}"{{/if}}>
 		<ul id="emoji__notifications"></ul>
 		<div id="emoji__header">
 			<span class="text-input__prefix">@</span>
 			<input class="text-input has-prefix" type="text" id="emoji__recipient" placeholder="Recipient"></input>
 			<button id="emoji__options-button">⚙</button>
 		</div>
-		{{#if user}}
+		{{#if hasUser}}
 		<div id="emoji__push" class="banner" style="display: none;">Enable Push Notifications</div>
 		{{/if}}
 		<a href="/auth/twitter" id="emoji__login-banner" class="banner"><b>Login</b> to receive messages. We won't tweet at you or email you.</a>
+		<div id="emoji__share-wrapper" style="display: none;"><div id="emoji__share">
+			<input type="text" id="emoji__share-link" class="text-input"></input>
+			<div id="emoji__share-buttons">
+				<button id="emoji__share-clipboard" data-clipboard-target="#emoji__share-link">Copy To Clipboard</button><button id="emoji__share-cancel">Cancel</button>
+			</div>
+		</div></div>
 		<div id="emoji__options" class="modal">
 			<div id="emoji__options-handle" class="handle"></div>
 			<h1 class="heading">Settings</h1>
 			<div class="content">
-				{{#if user}}
+				{{#if hasUser}}
 				<a href="/auth/logout"><button class="emoji__register">Logout</button></a>
 				{{else}}
 				<a href="/auth/twitter"><button class="emoji__register">Login With Twitter</button></a>
@@ -59,8 +65,6 @@
 				<button id="emoji__text-input-backspace" class="text-input__suffix"><</button>
 			</span>
 			<button id="emoji__submit">Send</button></div>
-		</div>
-		<div id="emoji__share">
 		</div>
 		<script type="text/javascript" src="scripts/main.js"></script>
 	</body>

@@ -11,7 +11,6 @@
     align-items: baseline;
 	transition: transform 0.5s ease;
 	transition-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1.275);
-	background: white;
 	min-height: 100%;
 
 	&:before {
@@ -20,8 +19,9 @@
 	    background: rgba(0, 0, 0, 0.5);
 	    color: white;
 	    padding: 0.5em;
-	    margin-bottom: -3em;
-		height: 3em;
+	    margin-bottom: -2em;
+		height: 2em;
+		line-height: 2em;
 	    transition: transform 0.5s ease;
 	    transform-origin: 0 1.75em 1.75em;
 	    transform: rotateX(-90deg);
@@ -88,13 +88,24 @@
 	background: #C5C5C5;
 	margin-right: 0.4em;
 	align-self: flex-end;
+
+
+	&[data-recipient]:not(.selected):after {
+		content: 'to @' attr(data-recipient);
+		font-size: small;
+		color: white;
+		display: block;
+		width: 100%;
+		text-align: right;
+		margin-top: 0.5em;
+	}
 }
 
 #emoji__messages > li.received {
 	background: #13BB23;
 	margin-left: 0.4em;
 
-	&[data-sender]:after {
+	&[data-sender]:not(.selected):after {
 		content: '@' attr(data-sender);
 		font-size: small;
 		color: white;
@@ -108,6 +119,25 @@
 #emoji__messages > li.sent + li.sent:before,
 #emoji__messages > li.received + li.received:before {
 	content: none;
+}
+
+#emoji__messages > li {
+	&.selected:after {
+		position: absolute;
+	    left: -0.3em;
+	    right: -0.3em;
+	    top: -0.3em;
+	    bottom: -0.8em;
+	    content: '✔️';
+	    background: rgba(59, 136, 195, 0.34);
+	    outline: 1px dashed blue;
+	    text-align: center;
+	    display: flex;
+	    align-content: stretch;
+	    align-items: flex-end;
+	    justify-content: flex-end;
+	    color: #13bb23;
+	}
 }
 
 .gradient-hr {

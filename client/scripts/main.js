@@ -14,6 +14,7 @@ import {updateMessageTextInput, combineEmojis, isCombinableEmojis, init as initT
 import {init as messages} from './lib/messages';
 import {init as touchInit} from './lib/touch';
 import {init as apiInit} from './lib/api';
+import {init as shareInit} from './lib/share';
 
 Promise.all([
 	addScript('https://cdn.rawgit.com/AdaRoseEdwards/dirty-dom/v1.3.1/build/dirty-dom-lib.min.js').promise,
@@ -114,9 +115,11 @@ Promise.all([
 
 	// Set up the text input
 	initTextInput();
+
+	shareInit();
 })
 .catch(e => {
 
 	// Script loading errors
-	console.error(e);
+	throw e;
 });

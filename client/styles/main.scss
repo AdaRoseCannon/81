@@ -70,7 +70,7 @@ img.emoji {
 
 #emoji__content {
 	position: relative;
-    box-shadow: 0 0.1em 0.5em -0.3em black inset;
+    box-shadow: 0 1.5em 2em -2em black inset;
     flex-grow: 1;
     background: white;
 	padding-top: 1em;
@@ -85,6 +85,46 @@ img.emoji {
 	#emoji__skin-tone-selector__wrapper ul {
 		font-size: 2em;
 		line-height: 1em;
+	}
+}
+
+#emoji__share-wrapper {
+	height: 5em;
+    flex-shrink: 0;
+    flex-grow: 0;
+    margin-bottom: -5em;
+	overflow: hidden;
+    z-index: 10;
+	pointer-events: none;
+
+	#emoji__share {
+		pointer-events: all;
+	    display: flex;
+	    background: rgba(59, 136, 195, 0.74);
+	    flex-direction: row;
+	    box-shadow: 0 0.5em 2em -0.5em rgba(0,0,0,0.5);
+	    border-bottom: 1px solid grey;
+	    align-items: center;
+	    justify-content: space-around;
+	    flex-wrap: wrap;
+		padding: 0 0.5em;
+		transition: transform 0.5s ease;
+		transform: translateY(-200%);
+
+		body.post-select & {
+			transform: translateY(0);
+		}
+
+		& > div,& > input {
+			flex-basis: 90%;
+			flex-shrink: 0;
+			flex-grow: 1;
+		}
+
+		div {
+			display: flex;
+			justify-content: flex-end;
+		}
 	}
 }
 

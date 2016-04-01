@@ -24,7 +24,8 @@ app.use('/api', require('./api'));
 app.use('/images', require('./images'));
 
 app.get('/', (req, res) => res.render('index', {
-	user: !!req.user
+	hasUser: !!req.user,
+	user: req.user
 }));
 
 app.get('/quote', quote);
