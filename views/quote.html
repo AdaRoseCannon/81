@@ -14,15 +14,19 @@
 		<meta name="twitter:title" content="81 Emoji" />
 		<meta name="twitter:description" content="{{twitter-description}}" />
 		<meta name="twitter:url" content="https://81.ada.is/" />
-		<meta name="twitter:image" content="https://81.ada.is/images/screenshot.png">
+		<meta name="twitter:image" content="{{twitter-image}}">
 		<title>81 Emoji</title>
 		<link rel="manifest" href="/manifest.json">
 		<link href="https://81.ada.is/launcher-icon-4x.png" rel="icon" sizes="192x192" />
 	</head>
 	<body>
-		<div id="emoji__content">
-			<ul id="emoji__messages">
+		<div id="emoji__content" style="overflow-y: auto;">
+			<ul id="emoji__messages" style="position: relative;">
+			{{#messages}}
+				<li class="{{#sent}}sent{{/sent}}{{^sent}}received{{/sent}}" data-timestamp="{{timestamp}}" data-sender="{{from}}" data-recipient="{{to}}">{{{message}}}</li>
+			{{/messages}}
 			</ul>
 		</div>
+		<script src="/scripts/quote.min.js"></script>
 	</body>
 </html>

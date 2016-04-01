@@ -13,8 +13,7 @@ import tinycam from './lib/tinycam';
 import {updateMessageTextInput, combineEmojis, isCombinableEmojis, init as initTextInput} from './lib/emoji-text-input';
 import {init as messages} from './lib/messages';
 import {init as touchInit} from './lib/touch';
-import {warn} from './lib/notify';
-import {sendPhoto, init as apiInit} from './lib/api';
+import {init as apiInit} from './lib/api';
 
 Promise.all([
 	addScript('https://cdn.rawgit.com/AdaRoseEdwards/dirty-dom/v1.3.1/build/dirty-dom-lib.min.js').promise,

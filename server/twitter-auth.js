@@ -96,7 +96,12 @@ app.use(require('express-session')({
 	secret: appSecret,
 	resave: true,
 	saveUninitialized: true,
-	store: redisStore
+	store: redisStore,
+	cookie: {
+		maxAge : 3600000 * 24 * 30,
+		secure: 'auto',
+		secret: appSecret
+	}
 }));
 
 // Initialize Passport and restore authentication state, if any, from the
