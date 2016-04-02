@@ -59,11 +59,15 @@ app.all('/get-collage', function (req, res) {
 		return errorResponse(res, Error('Needs more than one id, comma seperated.'));
 	}
 
+	if (postids.length > 4) {
+		return errorResponse(res, Error('Sorry four is the limit.'));
+	}
+
 	lwip.colorPromise = lwip.colorPromise
 	.then(() => Promise.all(postids.map(postid => loadImageFromMessage(postid))))
 	.then(images => {
 		const padding = 8;
-		const columns = 2;
+		const columns = postids.length === 3 ? 3 : 2;
 		const rows = Math.ceil(images.length/columns);
 		return denodeify(lwip.create)(
 			(192+padding) * columns + padding,
