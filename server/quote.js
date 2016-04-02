@@ -57,7 +57,7 @@ module.exports = function quote(req, res) {
 			details['twitter-image'] = 'https://81.ada.is/images/get-collage?postids=' + photoMessages.map(m => m.messageId).join(',');
 		}
 
-		details['twitter-description'] = emojiMessages.join('\n');
+		details['twitter-description'] = emojiMessages.join('\n') || '81 Emoji';
 
 		res.render('quote', details);
 	})
