@@ -63,14 +63,21 @@ function fetchNewMessages({
 		noti = notify('Checking for new Messages', false);
 	}
 	const messageTarget = $('#emoji__messages');
+
+	function sort() {
+		const els = Array.from(messageTarget.children);
+		els.sort((elA, elB) => Number(elB.dataset.timestamp || 0) - Number(elA.dataset.timestamp || 0));
+		els.forEach(el => messageTarget.appendChild(el));
+	}
+
 	return getAllMessages(cached)
-	.catch(e => {
-		console.log(e);
-		return getAllMessages(true);
-	})
 	.then(function (m) {
-		messageTarget.empty();
-		m.forEach(function (message) {
+
+		m.filter(message => {
+
+			// only add new messages
+			return !messageTarget.querySelector(`li.${message.sent ? 'sent' : 'received'}[data-id="${message.messageId}"]`);
+		}).forEach(function (message) {
 
 			if (message.hidden) return;
 
@@ -107,14 +114,12 @@ function fetchNewMessages({
 				messageTarget.appendChild(li);
 			}
 		});
-	}).catch(function (e) {
-		if (e.message) {
-			return error(e.message);
-		}
-	}).then(function () {
+	}).catch(e => e).then(function (e) {
 		if (noti) {
 			return noti.remove();
 		}
+		sort();
+		if (e) throw e;
 	});
 }
 
@@ -184,13 +189,18 @@ function init() {
 		draggableMessage.update();
 	});
 
+	// Update the messages and show them
+	// Render again if changed
 	fetchNewMessages({
 		silent: true
-	})
-	.catch(() => fetchNewMessages({
+	});
+
+	// Show cached messages
+	fetchNewMessages({
 		silent: true,
 		cached: true
-	}));
+	});
+
 	window.addEventListener('hashchange', function () {
 		if (window.location.hash === '#refresh') {
 			location.hash = '';
