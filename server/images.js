@@ -78,7 +78,7 @@ app.all('/get-collage', function (req, res) {
 			return co(function *() {
 				for (let i=0; i<images.length; i++) {
 					const image = images[i];
-					const x = (i % 2);
+					const x = (i % columns);
 					const y = Math.floor(i/columns);
 					const posX = x * (192+padding) + padding;
 					const posY = y * (192+padding) + padding;
