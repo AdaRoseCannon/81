@@ -59,10 +59,11 @@ function init() {
 			return warn('No User');
 		}
 		sendMesage(username, message)
+		.then(() => {
+			message.splice(0);
+			updateMessageTextInput();
+		})
 		.catch(e => warn(e));
-
-		message.splice(0);
-		updateMessageTextInput();
 	});
 
 	$('#emoji__text-input').on('click', e => {

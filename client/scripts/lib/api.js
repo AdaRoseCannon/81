@@ -172,11 +172,31 @@ function sendPhoto(username, photo) {
 	.then(() => fetchNewMessages());
 }
 
+function setReceiveAnon(value) {
+	return fetch(`/api/toggle-receive-anon?anon=${value===true}`, {
+		credentials: 'same-origin',
+		headers: jsonHeader
+	})
+	.then(checkForErrors);
+}
+
+function queryUser(key) {
+	return fetch('/auth/profile', {
+		credentials: 'same-origin',
+		headers: jsonHeader
+	})
+	.then(r => r.json())
+	.then(r => r.user)
+	.then(user => user[key]);
+}
+
 export {
 	sendSubscriptionToServer,
+	setReceiveAnon,
 	getAllMessages,
 	getMessages,
 	sendMesage,
+	queryUser,
 	sendPhoto,
 	save,
 	init

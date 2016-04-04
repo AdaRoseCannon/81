@@ -23,7 +23,8 @@ function getSummary(profile) {
 		username: profile.username,
 		displayName: profile.displayName,
 		photos: profile.photos[0],
-		pushUrl: profile.pushUrl || 'NONE_SET'
+		pushUrl: profile.pushUrl || 'NONE_SET',
+		receiveAnon: profile.receiveAnon
 	};
 }
 

@@ -33,8 +33,7 @@ app.get('/quote', quote);
 app.use('*', (req,res) => {
 	res.status(404);
 	res.json({
-		error: 404,
-		message: 'Page not found',
+		error: '404, Page not found',
 		haiku: 'You step in the stream, but the water has moved on. This page is not here.'
 	});
 });

@@ -50,13 +50,19 @@ function pushMessage(toUser, fromUser, messageObject) {
 	messageObject.messageId = messageId;
 
 	return Promise.all([getProfileFromHandle(fromUser), getProfileFromHandle(toUser)])
-	.then(details => ({
-		messageHashTableKey: genMessagesHashKey(),
-		fromUserDetails: details[0],
-		fromUser: genMessagesSentFromId(details[0]),
-		toUser: genMessagesSentToId(details[1])
-	}))
+	.then(details => {
+		if (fromUser === '@AnonymousUser' && details[1].receiveAnon !== true) {
+			throw Error(toUser + ' cannot receive anonymous messages.');
+		}
+		return {
+			messageHashTableKey: genMessagesHashKey(),
+			fromUserDetails: details[0],
+			fromUser: genMessagesSentFromId(details[0]),
+			toUser: genMessagesSentToId(details[1])
+		};
+	})
 	.then(keys => {
+
 		messageObject.from = keys.fromUserDetails.username;
 		messageObject.fromDisplayName = keys.fromUserDetails.displayName;
 		return redis.redisHSet(keys.messageHashTableKey, messageId, JSON.stringify(messageObject))
