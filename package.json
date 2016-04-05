@@ -26,7 +26,7 @@
   "dependencies": {
     "babel-preset-es2015-rollup": "^1.1.1",
     "body-parser": "^1.15.0",
-    "clipboard": "^1.5.9",
+    "clipboard": "^1.5.10",
     "co": "^4.6.0",
     "color-thief": "github:lokesh/color-thief",
     "connect-ensure-login": "^0.1.1",
