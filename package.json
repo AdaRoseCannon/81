@@ -44,7 +44,7 @@
     "localforage": "^1.4.0",
     "lwip": "0.0.8",
     "morgan": "^1.7.0",
-    "node-fetch": "^1.4.0",
+    "node-fetch": "^1.5.0",
     "node-sass": "^3.4.2",
     "passport": "^0.3.2",
     "passport-twitter": "^1.0.4",
