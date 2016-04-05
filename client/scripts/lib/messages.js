@@ -114,9 +114,10 @@ function fetchNewMessages({
 				messageTarget.appendChild(li);
 			}
 		});
-	}).catch(e => e).then(function (e) {
+	}).catch(e => e)
+	.then(function (e) {
 		if (noti) {
-			return noti.remove();
+			noti.remove();
 		}
 		sort();
 		if (e) throw e;
