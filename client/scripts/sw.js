@@ -53,7 +53,7 @@ function getMessage(event) {
 				}
 			} else if (message.type === 'photo') {
 				// const icon = decompress(message.message);
-				const icon = 'https://81.ada.is/api/get-image?postid=' + message.messageId;
+				const icon = 'https://81.ada.is/images/get-image?postid=' + message.messageId;
 				const title = `${message.from} sent a photo`;
 				return {
 					title,
