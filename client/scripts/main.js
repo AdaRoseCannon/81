@@ -18,7 +18,12 @@ import {init as shareInit} from './lib/share';
 Promise.all([
 	addScript('https://cdn.rawgit.com/AdaRoseEdwards/dirty-dom/v1.3.1/build/dirty-dom-lib.min.js').promise,
 	addScript('https://twemoji.maxcdn.com/2/twemoji.min.js').promise,
+
+	// some useful polyfills
 	addScript('https://cdn.polyfill.io/v2/polyfill.min.js?features=fetch,default').promise,
+
+	// patched array.from polyfill
+	addScript('https://cdn.rawgit.com/Financial-Times/polyfill-service/Array.from-Handle-Iterable/polyfills/Array/from/polyfill.js').promise,
 	addScript('/scripts/color-thief.js').promise
 ]).then(() => {
 

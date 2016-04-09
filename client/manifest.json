@@ -11,5 +11,7 @@
   "start_url": "/?standalone",
   "display": "standalone",
   "orientation": "portrait",
-  "gcm_sender_id": "90157766285"
+  "gcm_sender_id": "90157766285",
+  "background_color": "lavenderblush",
+  "theme_color": "lavenderblush"
 }
