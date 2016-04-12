@@ -92,6 +92,10 @@ Promise.all([
 		}
 	}
 
+	$('#emoji__recipient').on('click', function () {
+		this.value = '';
+	});
+
 	window.addEventListener('correrspondentsUpdated', updateCorrespondentsList);
 
 	// Set up local storage caching
