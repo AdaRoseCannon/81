@@ -12,7 +12,7 @@ import tinycam from './lib/tinycam';
 import {updateMessageTextInput, combineEmojis, isCombinableEmojis, init as initTextInput} from './lib/emoji-text-input';
 import {init as messages} from './lib/messages';
 import {init as touchInit} from './lib/touch';
-import {init as apiInit, save as apiSave} from './lib/api';
+import {init as apiInit, save as apiSave, getCorrespondents} from './lib/api';
 import {init as shareInit} from './lib/share';
 
 Promise.all([
@@ -81,8 +81,21 @@ Promise.all([
 	twemoji.parse(mainGrid);
 	twemoji.parse($('#emoji__options-button'));
 
+	function updateCorrespondentsList() {
+		const c = getCorrespondents();
+		const dom = $('#emoji_correspondents');
+		dom.empty();
+		for (const co of c) {
+			if (co !== '@AnonymousUser') {
+				dom.$(`<option selected>${co}</option>`);
+			}
+		}
+	}
+
+	window.addEventListener('correrspondentsUpdated', updateCorrespondentsList);
+
 	// Set up local storage caching
-	apiInit();
+	apiInit().then(updateCorrespondentsList);
 
 	// Add button interactions
 	touchInit();

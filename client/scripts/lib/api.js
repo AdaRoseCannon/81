@@ -14,7 +14,8 @@ const jsonHeader = new Headers({
 
 const sentMessages = new Map();
 const receivedMessages = new Map();
-const correspondents = new Set();
+const correspondents = new Map();
+correspondents.set('lady_ada_king', 'Lady_Ada_King');
 
 sentMessages.upToDate = false;
 receivedMessages.upToDate = false;
@@ -36,7 +37,7 @@ let readyPromise = new Promise(function (resolve) {
 
 function init() {
 
-	Promise.all([
+	return Promise.all([
 		getItem('v1.0-sent-messages')
 		.then(r => r === null ? [] : r)
 		.then(arr => arr.forEach(
@@ -54,7 +55,7 @@ function init() {
 		getItem('v1.0-correspondents')
 		.then(r => r === null ? [] : r)
 		.then(arr => arr.forEach(
-			correspondent => correspondents.add(correspondent)
+			correspondent => correspondents.set(correspondent.toLowerCase(), correspondent)
 		))
 		.catch(e => console.log(e)),
 
@@ -87,7 +88,6 @@ function checkForErrors(r) {
 		return r;
 	}
 }
-
 
 // Update the server with our subscription details
 function sendSubscriptionToServer(subscription) {
@@ -123,9 +123,14 @@ function getMessages({start, amount, cache, sent} = {}) {
 			if (map.has(m.messageId)) {
 				map.upToDate = true;
 			}
-			correspondents.add(m.from);
+			correspondents.set(m.from.toLowerCase(), m.from);
+			correspondents.set(m.to.toLowerCase(), m.to);
 			map.set(m.messageId, m);
 		});
+
+		if (window && window.fire) {
+			window.fire('correrspondentsUpdated');
+		}
 
 		return json.filter(m => typeof m === 'object');
 	});
@@ -146,6 +151,10 @@ function getAllMessages(cached) {
 		const received = Array.from(receivedMessages.values());
 		return sent.concat(received).sort((a,b) => b.timestamp - a.timestamp);
 	});
+}
+
+function getCorrespondents() {
+	return correspondents.values();
 }
 
 function sendMesage(username, message) {
@@ -192,6 +201,7 @@ function queryUser(key) {
 
 export {
 	sendSubscriptionToServer,
+	getCorrespondents,
 	setReceiveAnon,
 	getAllMessages,
 	getMessages,

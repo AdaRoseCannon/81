@@ -23,7 +23,10 @@
 		<ul id="emoji__notifications"></ul>
 		<div id="emoji__header">
 			<span class="text-input__prefix">@</span>
-			<input class="text-input has-prefix" type="text" id="emoji__recipient" placeholder="Recipient"></input>
+			<input class="text-input has-prefix" type="text" id="emoji__recipient" placeholder="Recipient" list="emoji_correspondents"></input>
+			<datalist id="emoji_correspondents">
+				<option>lady_ada_king</option>
+			</datalist>
 			<button id="emoji__options-button">⚙</button>
 		</div>
 		{{#if hasUser}}
