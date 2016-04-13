@@ -15,7 +15,7 @@ const jsonHeader = new Headers({
 const sentMessages = new Map();
 const receivedMessages = new Map();
 const correspondents = new Map();
-correspondents.set('lady_ada_king', 'Lady_Ada_King');
+correspondents.set('lady_ada_king', 'Lady_Ada_King (The Developer)');
 
 sentMessages.upToDate = false;
 receivedMessages.upToDate = false;
