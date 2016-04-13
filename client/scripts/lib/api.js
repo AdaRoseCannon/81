@@ -128,8 +128,8 @@ function getMessages({start, amount, cache, sent} = {}) {
 			map.set(m.messageId, m);
 		});
 
-		if (window && window.fire) {
-			window.fire('correrspondentsUpdated');
+		if (window && window.$ && window.$('#emoji__recipient')) {
+			window.$('#emoji__recipient').fire('correrspondentsUpdated');
 		}
 
 		return json.filter(m => typeof m === 'object');

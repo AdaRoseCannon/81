@@ -96,7 +96,10 @@ Promise.all([
 		this.value = '';
 	});
 
-	window.addEventListener('correrspondentsUpdated', updateCorrespondentsList);
+	$('#emoji__recipient').on(
+		'correrspondentsUpdated',
+		updateCorrespondentsList
+	);
 
 	// Set up local storage caching
 	apiInit().then(updateCorrespondentsList);
