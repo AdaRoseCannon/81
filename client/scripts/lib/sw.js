@@ -17,4 +17,6 @@ export default (function () {
 			.then(() => navigator.serviceWorker.ready);
 		}
 	}
+
+	return Promise.reject('No serviceworker');
 }());
