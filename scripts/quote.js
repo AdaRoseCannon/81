@@ -5,14 +5,20 @@ var window = window || self
 var __commonjs_global = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : this;
 function __commonjs(fn, module) { return module = { exports: {} }, fn(module, module.exports, __commonjs_global), module.exports; }
 
-
-var babelHelpers = {};
-babelHelpers.typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
-  return typeof obj;
-} : function (obj) {
-  return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
-};
-babelHelpers;
+function addScript(url) {
+	var p = new Promise(function (resolve, reject) {
+		var script = document.createElement('script');
+		script.setAttribute('src', url);
+		document.head.appendChild(script);
+		script.onload = resolve;
+		script.onerror = reject;
+	});
+	function promiseScript() {
+		return p;
+	};
+	promiseScript.promise = p;
+	return promiseScript;
+}
 
 var localforage = __commonjs(function (module, exports, global) {
 /*!
@@ -2873,357 +2879,21 @@ return /******/ (function(modules) { // webpackBootstrap
 ;
 });
 
-var ftdatasquasher = __commonjs(function (module) {
-/**
- * FT Data Squasher
- *
- * Data compression and
- * decompression support,
- * packing base64 into UTF8
- * high and low bytes
- *
- * A requireable module of the
- * compression and decompression
- * algorithm described by
- * @triblondon here:
- * http://bit.ly/11NGLrV
- *
- * @codingstandard ftlabs-jsv2
- * @copyright The Financial Times Limited [All rights reserved]
- */
+var setItem = localforage.setItem;
 
-/*jshint laxbreak:true*/
-
-/**
- * Compresses the Image using
- * the most recent compression
- * algorithm.
- */
-function compress(data) {
-  var i, l, out = '';
-
-  /**
-   * If string is not an even
-   * number of characters, pad
-   * it with a space, so that
-   * when these bytes are read
-   * as UTF-16 data, the final
-   * character is complete
-   */
-  if (data.length % 2 !== 0) {
-    data += ' ';
-  }
-
-  for (i = 0, l = data.length; i < l; i += 2) {
-    out += String.fromCharCode((data.charCodeAt(i) * 256)
-      + data.charCodeAt(i + 1));
-  }
-
-  return out;
-
-}
-
-/**
- * Decompress the Image using
- * decompression algorithm 1.
- *
- * Findings when optimising this
- * function for homescreen iOS 6:
- * 1) Bitwise maths is significantly
- *    faster - ~1.25x faster
- * 2) Caching fromCharCode method
- *    slightly faster - ~1.03x
- *    faster
- * 3) Eliminating temporary storage
- *    variables - ~1.1x faster
- * 4) Passing multiple arguments to
- *    fromCharCode is complex; with
- *    just two, slower (!) - ~1.10x
- *    slower - but combined with
- *    unrolling, faster,
- * 5) Unrolling the loop is faster,
- *    although with diminishing
- *    returns - never near linear.
- * 6) Combining unrolling with
- *    multiple arguments to
- *    fromCharCode leads to a bigger
- *    speed increase due to batched
- *    string creation.
- *
- * @param {string} data The compressed data to uncompress
- *
- * @return string
- */
-function decompress(data) {
-  var i, n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13, n14, n15, n16;
-  var getCharacterCode = String.fromCharCode;
-  var decompressedData = '';
-
-  /**
-   * While l is ultimately the
-   * length to process, unrolling
-   * the loop needs to process
-   * the data in batches, in this
-   * case of 16; so start with the
-   * length rounded to a multiple
-   * of 16.
-   */
-  var l = (data.length >> 4 << 4);
-
-  /**
-   * In a loop, process the data
-   * in batches of 16 characters.
-   */
-  for (i = 0; i < l; i++) {
-
-    /**
-     * Copy to local variables
-     * representing the character
-     * code at the positions
-     */
-    n1 = data.charCodeAt(i);
-    n2 = data.charCodeAt(++i);
-    n3 = data.charCodeAt(++i);
-    n4 = data.charCodeAt(++i);
-    n5 = data.charCodeAt(++i);
-    n6 = data.charCodeAt(++i);
-    n7 = data.charCodeAt(++i);
-    n8 = data.charCodeAt(++i);
-    n9 = data.charCodeAt(++i);
-    n10 = data.charCodeAt(++i);
-    n11 = data.charCodeAt(++i);
-    n12 = data.charCodeAt(++i);
-    n13 = data.charCodeAt(++i);
-    n14 = data.charCodeAt(++i);
-    n15 = data.charCodeAt(++i);
-    n16 = data.charCodeAt(++i);
-
-    /**
-     * Use String.fromCharCode
-     * (or a cached version of
-     * same) to get the ascii
-     * characters from the high
-     * and low parts of each of
-     * the characters. In other
-     * words, each character
-     * from the passed-in data
-     * is converted via:
-     *   decompressedData += String.fromCharCode(n >> 8)
-     *     + String.fromCharCode(n & 255)
-     */
-    decompressedData += getCharacterCode(
-      n1 >> 8, n1 & 255, n2 >> 8, n2 & 255, n3 >> 8, n3 & 255, n4 >> 8, n4 & 255,
-      n5 >> 8, n5 & 255, n6 >> 8, n6 & 255, n7 >> 8, n7 & 255, n8 >> 8, n8 & 255,
-      n9 >> 8, n9 & 255, n10 >> 8, n10 & 255, n11 >> 8, n11 & 255, n12 >> 8, n12 & 255,
-      n13 >> 8, n13 & 255, n14 >> 8, n14 & 255, n15 >> 8, n15 & 255, n16 >> 8, n16 & 255
-    );
-  }
-
-  /**
-   * Finally, output the end
-   * of the string, by processing
-   * any characters left over
-   * after the groups of 16
-   * have been handled.
-   */
-  for (l = data.length; i < l; i++) {
-    n1 = data.charCodeAt(i);
-    decompressedData += getCharacterCode(n1 >> 8) + getCharacterCode(n1 & 255);
-  }
-
-  return decompressedData;
-}
-
-
-module.exports = {
-  compress: compress,
-  decompress: decompress
-};
-});
-
-var jsonHeader = new Headers({
-	'Content-Type': 'application/json',
-	'Accept': 'application/json'
-});
-
-var sentMessages = new Map();
-var receivedMessages = new Map();
-var correspondents = new Map();
-correspondents.set('lady_ada_king', 'Lady_Ada_King (The Developer)');
-
-sentMessages.upToDate = false;
-receivedMessages.upToDate = false;
-
-function checkForErrors(r) {
-	if (!r.ok) {
-		return r.json().then(function (j) {
-
-			// if error in the server
-			if (window && window.location && j.error === 'No username param') {
-				document.body.classList.remove('user-logged-in');
-				throw false;
-			} else {
-				throw Error(j.error);
-			}
-		}, function (e) {
-
-			// Error fetching or parsing JSON.
-			console.error(e);
-			throw Error(e.message);
-		});
-	} else {
-		return r;
-	}
-}
-
-// get messages from the server
-function getMessages() {
-	var _ref = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-
-	var start = _ref.start;
-	var amount = _ref.amount;
-	var cache = _ref.cache;
-	var sent = _ref.sent;
-
-	var map = sent ? sentMessages : receivedMessages;
-	return fetch('/api/get' + (sent ? '-sent' : '') + '-messages?start=' + (start || 0) + '&amount=' + (amount || 10) + (cache ? '&sw-cache' : ''), {
-		method: 'POST',
-		credentials: 'same-origin',
-		headers: jsonHeader
-	}).then(checkForErrors).then(function (r) {
-		return r.json();
-	}).then(function (json) {
-
-		// need to maintain two of these one for sent and one for recieved
-		map.upToDate = false;
-		json.forEach(function (m) {
-			m.sent = !!sent;
-			if (map.has(m.messageId)) {
-				map.upToDate = true;
-			}
-			correspondents.set(m.from.toLowerCase(), m.from);
-			correspondents.set(m.to.toLowerCase(), m.to);
-			map.set(m.messageId, m);
-		});
-
-		if (window && window.$ && window.$('#emoji__recipient')) {
-			window.$('#emoji__recipient').fire('correrspondentsUpdated');
-		}
-
-		return json.filter(function (m) {
-			return (typeof m === 'undefined' ? 'undefined' : babelHelpers.typeof(m)) === 'object';
+Promise.all([addScript('https://cdn.rawgit.com/AdaRoseEdwards/dirty-dom/v1.3.1/build/dirty-dom-lib.min.js').promise, addScript('https://twemoji.maxcdn.com/2/twemoji.min.js').promise, addScript('https://cdn.polyfill.io/v2/polyfill.min.js?features=fetch,default').promise]).then(function () {
+	twemoji.parse(document.body);
+	$$('li').forEach(function (li) {
+		return li.on('click', function () {
+			setItem('last-correspondent', this.dataset.sender).then(function () {
+				window.location.assign('/');
+			}).catch(function (e) {
+				return console.log(e);
+			});
 		});
 	});
-}
-
-/* eslint-env worker */
-/* global toolbox, clients, twemoji */
-
-importScripts('/sw-toolbox.js');
-importScripts('https://twemoji.maxcdn.com/2/twemoji.min.js');
-
-// Try network but fallback to cache
-toolbox.router.default = toolbox.fastest;
-
-// Data should query the network first
-toolbox.router.any('/api/*', function (request) {
-	if (new URL(request.url).search.split('&').indexOf('sw-cache') !== -1) {
-		return toolbox.fastest(request);
-	} else {
-		return toolbox.networkOnly(request);
-	}
-});
-
-// Data should query the network first
-toolbox.router.any('/auth/*', toolbox.networkOnly);
-
-// The index page should be got from the network first in case of login/logout
-toolbox.router.any(/\/(index\.html)?$/i, toolbox.networkFirst);
-
-function getMessage(event) {
-	var data = {
-		title: 'Something Has Happened',
-		message: 'Here\'s something you might want to check out.',
-		icon: 'launcher-icon-4x.png'
-	};
-	if (event.data) {
-		data = Promise.resolve(event.data.json());
-	} else {
-		data = getMessages({ amount: 1 }).then(function (messages) {
-			return messages[0];
-		}).then(function (message) {
-			if (message.type === 'message') {
-
-				// Get the url for the twemoji image for the first emoji in the message.
-				var iconUrl = void 0;
-				try {
-					iconUrl = twemoji.parse(message.message[0]).match(/http[^"]+\.png/);
-					iconUrl = iconUrl[0];
-				} catch (e) {
-					// An error happened with twemoji, ignore it and carry on.
-				}
-				return {
-					title: message.from + ' says: ' + message.message.join(''),
-					icon: iconUrl || 'launcher-icon-4x.png'
-				};
-			} else if (message.type === 'photo') {
-				// const icon = decompress(message.message);
-				var icon = 'https://81.ada.is/images/get-image?postid=' + message.messageId;
-				var title = message.from + ' sent a photo';
-				return {
-					title: title,
-					icon: icon
-				};
-			}
-		});
-	}
-
-	var reload = clients.matchAll({
-		type: 'window'
-	}).then(function (windows) {
-		windows.forEach(function (w) {
-			w.navigate('/#refresh');
-		});
-	});
-
-	return Promise.all([data, reload]).then(function () {
-		return data;
-	});
-}
-
-self.addEventListener('notificationclick', function (event) {
-	event.notification.close();
-
-	// This looks to see if the current is already open and
-	// focuses if it is
-	event.waitUntil(clients.matchAll({
-		type: 'window'
-	}).then(function (clientList) {
-		for (var i = 0; i < clientList.length; i++) {
-			var client = clientList[i];
-			if ('focus' in client) {
-				return client.focus();
-			}
-		}
-		if (clients.openWindow) return clients.openWindow('/');
-	}));
-});
-
-self.addEventListener('push', function (event) {
-	if (!(self.Notification && self.Notification.permission === 'granted')) {
-		return;
-	}
-
-	if (!('showNotification' in ServiceWorkerRegistration.prototype)) {
-		console.warn('Notifications aren\'t supported.');
-		return;
-	}
-
-	var noti = getMessage(event).then(function (message) {
-		return self.registration.showNotification(message.title, message);
-	});
-
-	event.waitUntil(noti);
+}).catch(function (e) {
+	return console.log(e);
 });
 }());
-//# sourceMappingURL=sw.js.map
+//# sourceMappingURL=quote.js.map
