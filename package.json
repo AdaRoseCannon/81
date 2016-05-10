@@ -42,7 +42,7 @@
     "ftdatasquasher": "0.0.4",
     "git-directory-deploy": "^1.4.0",
     "gsap": "^1.18.4",
-    "localforage": "^1.4.0",
+    "localforage": "^1.4.1",
     "lwip": "0.0.8",
     "morgan": "^1.7.0",
     "node-fetch": "^1.5.1",
