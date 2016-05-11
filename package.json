@@ -50,7 +50,7 @@
     "passport": "^0.3.2",
     "passport-twitter": "^1.0.4",
     "redis": "^2.5.0-1",
-    "rollup": "^0.26.1",
+    "rollup": "^0.26.3",
     "rollup-plugin-babel": "^2.4.0",
     "rollup-plugin-commonjs": "^2.2.1",
     "rollup-plugin-json": "^2.0.0",
